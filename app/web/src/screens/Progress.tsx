@@ -1,12 +1,14 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import { api } from '../api/client'
+import { useNavigate } from 'react-router'
+import { api, setUserId } from '../api/client'
 import type { Progress } from '../api/types'
 import { winIcon } from '../content/copy'
 import { AnimatedNumber, Card, ErrorBox, Header, Skeleton } from '../ui/kit'
 import { spring, stagger } from '../ui/motion'
 
 export default function ProgressScreen() {
+  const nav = useNavigate()
   const [p, setP] = useState<Progress | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => { api.progress().then(setP).catch((e: Error) => setError(e.message)) }, [])
@@ -49,6 +51,9 @@ export default function ProgressScreen() {
               {p.wins.length === 0 && <p className="col-span-2 text-sm text-inchiostro/60">La prima vittoria arriva presto. Anche solo iniziare conta.</p>}
             </div>
           </div>
+          <button onClick={() => { setUserId(null); nav('/benvenuto', { replace: true }) }} className="mx-auto block pt-6 text-sm text-petrolio/70 underline decoration-petrolio/30 underline-offset-4">
+            Esci e ricomincia da capo
+          </button>
         </div>
       )}
     </div>

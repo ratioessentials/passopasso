@@ -64,7 +64,7 @@ export default function Food() {
       <div className="space-y-4 px-5">
         {!habit ? <Skeleton className="h-48" /> : (
           <Card initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={stagger(0)}>
-            <div className="text-xs font-semibold uppercase tracking-wider text-acqua">Abitudine della settimana {habit.week}</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-acqua">Abitudine della settimana · {habit.week}ª</div>
             <h2 className="font-title mt-1 text-[24px] leading-tight text-inchiostro">{habit.title}</h2>
             <p className="mt-2 text-[14.5px] text-inchiostro/75">{habit.why}</p>
             {habit.tips?.length > 0 && (
