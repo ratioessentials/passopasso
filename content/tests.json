@@ -1,0 +1,232 @@
+{
+  "note": "Test di prontezza per il passaggio di livello. Il target è il limite basso della fascia normale per età e sesso: serve a dire 'sei pronto', non a dare un voto.",
+  "tests": [
+    {
+      "id": "sit_to_stand_30s",
+      "title": "Alzati e siediti per 30 secondi",
+      "measures": "La forza delle gambe che usi ogni giorno: alzarti, fare le scale, portare la spesa.",
+      "unit": "ripetizioni",
+      "direction": "atLeast",
+      "durationSec": 30,
+      "equipment": [
+        "sedia"
+      ],
+      "instructions": [
+        "Usa una sedia stabile senza braccioli, appoggiata al muro",
+        "Siediti al centro, piedi a terra, braccia incrociate sul petto",
+        "Al via alzati in piedi del tutto e torna a sederti, più volte che puoi in 30 secondi",
+        "Conta solo le volte in cui arrivi in piedi del tutto"
+      ],
+      "safety": "Fermati se senti dolore al ginocchio, capogiri o fiato molto corto. Non è una gara.",
+      "norms": {
+        "source": "Rikli & Jones, Senior Fitness Test (2013), 30-Second Chair Stand: fasce normali 60-94 anni. Sotto i 60 anni: stima prudente estesa dalla fascia 60-64.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/10380242/",
+        "bands": [
+          {
+            "ageMin": 16,
+            "ageMax": 39,
+            "f": [
+              15,
+              20
+            ],
+            "m": [
+              17,
+              22
+            ]
+          },
+          {
+            "ageMin": 40,
+            "ageMax": 59,
+            "f": [
+              13,
+              18
+            ],
+            "m": [
+              15,
+              20
+            ]
+          },
+          {
+            "ageMin": 60,
+            "ageMax": 64,
+            "f": [
+              12,
+              17
+            ],
+            "m": [
+              14,
+              19
+            ]
+          },
+          {
+            "ageMin": 65,
+            "ageMax": 69,
+            "f": [
+              11,
+              16
+            ],
+            "m": [
+              12,
+              18
+            ]
+          },
+          {
+            "ageMin": 70,
+            "ageMax": 74,
+            "f": [
+              10,
+              15
+            ],
+            "m": [
+              12,
+              17
+            ]
+          },
+          {
+            "ageMin": 75,
+            "ageMax": 79,
+            "f": [
+              10,
+              15
+            ],
+            "m": [
+              11,
+              17
+            ]
+          },
+          {
+            "ageMin": 80,
+            "ageMax": 84,
+            "f": [
+              9,
+              14
+            ],
+            "m": [
+              10,
+              15
+            ]
+          },
+          {
+            "ageMin": 85,
+            "ageMax": 89,
+            "f": [
+              8,
+              13
+            ],
+            "m": [
+              8,
+              14
+            ]
+          },
+          {
+            "ageMin": 90,
+            "ageMax": 120,
+            "f": [
+              4,
+              11
+            ],
+            "m": [
+              7,
+              12
+            ]
+          }
+        ],
+        "otherSex": "f"
+      },
+      "targetRule": "target = limite basso della fascia (sesso 'altro' o 'non_dico' → valori 'f') + levelBonus del livello di arrivo + trackAdjust del percorso, minimo 4",
+      "levelBonus": {
+        "2": 0,
+        "3": 1,
+        "4": 2,
+        "5": 3
+      },
+      "trackAdjust": {
+        "corsa": 0,
+        "forza": 1,
+        "mobilita": -2
+      }
+    },
+    {
+      "id": "marcia_1min",
+      "title": "Marcia sul posto per 1 minuto",
+      "measures": "Quanto ti costa uno sforzo moderato: se il fiato regge, il cuore e i polmoni sono pronti per il passo dopo.",
+      "unit": "sforzo",
+      "direction": "atMost",
+      "durationSec": 60,
+      "equipment": [],
+      "instructions": [
+        "Marcia sul posto a passo svelto per 1 minuto, ginocchia all'altezza che ti è comoda",
+        "Muovi le braccia a ritmo e respira normalmente",
+        "Alla fine scegli sulla scala quanto è stato faticoso"
+      ],
+      "safety": "Fermati subito se senti dolore al petto, capogiri o il cuore che batte in modo strano.",
+      "scale": [
+        {
+          "value": 0,
+          "label": "Niente",
+          "hint": "Come stare a riposo"
+        },
+        {
+          "value": 1,
+          "label": "Leggerissimo",
+          "hint": "Quasi non me ne accorgo"
+        },
+        {
+          "value": 2,
+          "label": "Leggero",
+          "hint": "Respiro tranquillo"
+        },
+        {
+          "value": 3,
+          "label": "Moderato",
+          "hint": "Respiro più veloce, parlo bene"
+        },
+        {
+          "value": 4,
+          "label": "Un po' faticoso",
+          "hint": "Parlo ancora, con qualche pausa"
+        },
+        {
+          "value": 5,
+          "label": "Faticoso",
+          "hint": "Parlo a frasi brevi"
+        },
+        {
+          "value": 6,
+          "label": "Faticoso",
+          "hint": "Parlo a fatica"
+        },
+        {
+          "value": 7,
+          "label": "Molto faticoso",
+          "hint": "Respiro corto, poche parole"
+        },
+        {
+          "value": 8,
+          "label": "Molto faticoso",
+          "hint": "Non riesco a parlare"
+        },
+        {
+          "value": 9,
+          "label": "Quasi al massimo",
+          "hint": "Devo fermarmi"
+        },
+        {
+          "value": 10,
+          "label": "Massimo",
+          "hint": "Non ce la faccio più"
+        }
+      ],
+      "norms": {
+        "source": "Scala dello sforzo percepito CR10 di Borg; talk test per l'intensità moderata (ACSM).",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/7154893/"
+      },
+      "target": 5,
+      "targetRule": "superato se lo sforzo è minore o uguale al target (5 = faticoso, parli a frasi brevi)"
+    }
+  ],
+  "skip": {
+    "label": "Non oggi",
+    "effect": "Il test si ripropone tra una settimana. Il percorso non si ferma."
+  }
+}

@@ -275,6 +275,30 @@ if (fuel) {
   if (FORBIDDEN_FOOD_WORDS.test(txt) || /\d+\s*(g|gr|grammi|ml|kcal)\b/i.test(txt)) err('fuel.json', 'niente quantità, calorie o peso');
 }
 
+// --- tests.json ---
+const tests = load('tests.json');
+if (tests) {
+  const byId = new Map((tests.tests ?? []).map((x) => [x.id, x]));
+  for (const id of ['sit_to_stand_30s', 'marcia_1min']) if (!byId.has(id)) err('tests.json', `test mancante: ${id}`);
+  for (const x of tests.tests ?? []) {
+    const w = `tests.json[${x.id}]`;
+    for (const k of ['title', 'measures', 'unit', 'safety']) if (!isStr(x[k])) err(w, `${k} mancante`);
+    if (!['atLeast', 'atMost'].includes(x.direction)) err(w, 'direction: atLeast | atMost');
+    if (!strArr(x.instructions, 3)) err(w, 'servono almeno 3 istruzioni');
+    if (!isStr(x.norms?.source) || !/^https?:\/\//.test(x.norms?.url ?? '')) err(w, 'norms: fonte e link obbligatori');
+  }
+  const sts = byId.get('sit_to_stand_30s');
+  if (sts) {
+    const bands = sts.norms.bands ?? [];
+    for (let a = 16; a <= 100; a++) if (bands.filter((b) => a >= b.ageMin && a <= b.ageMax).length !== 1) { err('tests.json[sit_to_stand_30s]', `età ${a}: serve esattamente una fascia`); break; }
+    for (const b of bands) for (const s of ['f', 'm']) if (!(Array.isArray(b[s]) && b[s][0] < b[s][1])) err('tests.json[sit_to_stand_30s]', `fascia ${b.ageMin}-${b.ageMax}: ${s} non valido`);
+    for (const n of ['2', '3', '4', '5']) if (!Number.isInteger(sts.levelBonus?.[n])) err('tests.json[sit_to_stand_30s]', `levelBonus.${n} mancante`);
+    for (const t of ['corsa', 'forza', 'mobilita']) if (!Number.isInteger(sts.trackAdjust?.[t])) err('tests.json[sit_to_stand_30s]', `trackAdjust.${t} mancante`);
+  }
+  const m1 = byId.get('marcia_1min');
+  if (m1 && (!Array.isArray(m1.scale) || m1.scale.length !== 11 || !isInt(m1.target, 1, 10))) err('tests.json[marcia_1min]', 'scala 0-10 e target obbligatori');
+}
+
 // --- red_flags.json ---
 const flags = load('red_flags.json');
 const allKeywords = [];
