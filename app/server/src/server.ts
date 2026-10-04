@@ -13,6 +13,7 @@ import { mealFeedback } from './engine/meals.js';
 import { submitTest, testsFor } from './engine/tests.js';
 import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncStravaIfStale, verifyState } from './engine/strava.js';
 import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
+import { applyAction, inbox, markRead, recordOpen, simulate, TRIGGERS, type Trigger } from './engine/proactive.js';
 import { IngestSchema, healthToken, ingest, readiness, summary, userByHealthToken } from './engine/health.js';
 import { afterFood, FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
@@ -192,7 +193,31 @@ export async function buildServer() {
     return patchProfile(user, parse(CardPatchSchema, req.body));
   });
 
-  app.get('/api/me', async (req) => mePayload(requireUser(req)));
+  app.get('/api/me', async (req) => {
+    const user = requireUser(req);
+    recordOpen(user.id); // per il trigger "assenza_3_giorni"
+    return mePayload(user);
+  });
+
+  // ---------- Coach proattivo (inbox) ----------
+  app.get('/api/coach/inbox', async (req) => inbox(requireUser(req).id));
+  app.post('/api/coach/inbox/:id/read', async (req, reply) => {
+    const user = requireUser(req);
+    if (!markRead(user.id, (req.params as { id: string }).id)) throw fail(404, 'not_found', 'Questo messaggio non lo trovo.');
+    return reply.status(204).send();
+  });
+  app.post('/api/coach/inbox/:id/action', async (req) => {
+    const user = requireUser(req);
+    const { actionIndex } = parse(z.object({ actionIndex: z.coerce.number().int().min(0).max(5).default(0) }), req.body);
+    const done = applyAction(user, (req.params as { id: string }).id, actionIndex);
+    if (!done) throw fail(404, 'not_found', 'Questa azione non è più disponibile.');
+    return { ...mePayload(getUser(user.id)!), applied: [done] };
+  });
+  app.post('/api/coach/inbox/simulate', async (req) => {
+    const user = requireUser(req);
+    const { trigger } = parse(z.object({ trigger: z.enum(TRIGGERS) }), req.body);
+    return simulate(user, trigger as Trigger);
+  });
 
   app.get('/api/week', async (req) => {
     const user = requireUser(req);

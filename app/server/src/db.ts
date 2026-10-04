@@ -70,6 +70,12 @@ const migrations: string[] = [
    ALTER TABLE sessions ADD COLUMN was_planned INTEGER NOT NULL DEFAULT 0;
    CREATE TABLE push_subs (endpoint TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, subscription TEXT NOT NULL, minutes_before INTEGER NOT NULL DEFAULT 60, created_at TEXT NOT NULL);
    CREATE TABLE push_log (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, date TEXT NOT NULL, kind TEXT NOT NULL, sent_at TEXT NOT NULL, PRIMARY KEY (user_id, date));`,
+  // 7: coach proattivo (inbox) e aperture dell'app
+  `CREATE TABLE coach_messages (
+     id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, created_at TEXT NOT NULL, day TEXT NOT NULL,
+     trigger TEXT NOT NULL, key TEXT NOT NULL, text TEXT NOT NULL, because TEXT NOT NULL, read INTEGER NOT NULL DEFAULT 0, actions TEXT);
+   CREATE INDEX coach_messages_user ON coach_messages(user_id, day);
+   CREATE TABLE app_opens (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, date TEXT NOT NULL, PRIMARY KEY (user_id, date));`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');
