@@ -1,5 +1,6 @@
 import type { BodyZone, RedFlag } from '../api/types'
 import levelsJson from './levels.json'
+import redFlagsJson from '../api/mockdata/red_flags.json'
 
 // Microtesti dell'app. La fonte "ufficiale" è content/copy.json (chat 3);
 // qui teniamo i testi che servono al client anche senza server.
@@ -47,17 +48,12 @@ export const ZONE_LABELS: Record<BodyZone, string> = {
   caviglie: 'Caviglie',
 }
 
-// Le voci del check-in "Oggi hai…?". Gli id coincidono con content/red_flags.json.
-export const RED_FLAGS: RedFlag[] = [
-  { id: 'dolore_petto', label: 'Dolore o oppressione al petto', urgent: true, message: 'Oggi niente allenamento. Questo sintomo va sentito da un medico prima di riprendere. Se è forte o improvviso chiama il 112.' },
-  { id: 'fiato_corto_riposo', label: 'Fiato corto anche da fermo', urgent: true, message: 'Oggi niente allenamento. Il fiato corto a riposo va sentito da un medico. Se peggiora, chiama il 112.' },
-  { id: 'svenimento_vertigini', label: 'Capogiri forti o svenimenti', urgent: true, message: 'Oggi riposo. Capogiri e svenimenti vanno raccontati al tuo medico prima di riprendere.' },
-  { id: 'febbre', label: 'Febbre o sintomi influenzali', urgent: false, message: 'Con la febbre il corpo ha già il suo lavoro da fare. Riposa: riprendiamo quando stai meglio.' },
-  { id: 'dolore_acuto', label: 'Un dolore acuto e improvviso', urgent: false, message: 'Un dolore acuto è un segnale da ascoltare. Oggi niente allenamento: se non passa, senti un medico.' },
-]
+// Le voci del check-in "Oggi hai…?": copia di content/red_flags.json (il server le espone con GET /api/red-flags).
+export const RED_FLAGS: RedFlag[] = (redFlagsJson as (RedFlag & { keywords?: string[] })[]).map(({ id, label, message, urgent }) => ({ id, label, message, urgent }))
 
 export const WIN_ICONS: Record<string, string> = {
   star: '⭐', trophy: '🏆', heart: '💚', flame: '🔥', sun: '☀️', leaf: '🌿', stairs: '🪜',
   walk: '🚶', run: '🏃', moon: '🌙', water: '💧', medal: '🏅', sparkle: '✨', clock: '⏱️', calendar: '📅',
+  flag: '🏁', bolt: '⚡', sprout: '🌱', shoe: '👟', camera: '📷', shield: '🛡️', smile: '😊',
 }
 export const winIcon = (icon: string) => WIN_ICONS[icon] ?? '✨'

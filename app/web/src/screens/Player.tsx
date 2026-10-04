@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router'
 import type { SessionItem } from '../api/types'
 import { findExercise } from '../content/catalog'
 import { hasFormCheck } from '../lib/formcheck'
+import { ExerciseFigure } from '../lib/motionFigure'
 import { useStore } from '../lib/store'
 import { useSession } from '../lib/useSession'
 import { Button, ErrorBox, Skeleton } from '../ui/kit'
@@ -98,7 +99,7 @@ export default function Player() {
             transition={spring.gentle}
             className="px-5 pb-6"
           >
-            <ExerciseView key={it.exerciseId + set + phase} it={it} set={Math.min(set, it.sets)} phase={phase} onSetDone={setDone} onRestDone={afterRest} nextName={items[idx + 1]?.exercise.name} restingBeforeNext={set > it.sets} />
+            <ExerciseView key={it.exerciseId + set + phase} level={session.level} it={it} set={Math.min(set, it.sets)} phase={phase} onSetDone={setDone} onRestDone={afterRest} nextName={items[idx + 1]?.exercise.name} restingBeforeNext={set > it.sets} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -113,8 +114,8 @@ export default function Player() {
   )
 }
 
-function ExerciseView({ it, set, phase, onSetDone, onRestDone, nextName, restingBeforeNext }: {
-  it: SessionItem; set: number; phase: Phase; onSetDone: () => void; onRestDone: () => void; nextName?: string; restingBeforeNext: boolean
+function ExerciseView({ it, level, set, phase, onSetDone, onRestDone, nextName, restingBeforeNext }: {
+  it: SessionItem; level: number; set: number; phase: Phase; onSetDone: () => void; onRestDone: () => void; nextName?: string; restingBeforeNext: boolean
 }) {
   const nav = useNavigate()
   const ex = it.exercise
@@ -129,6 +130,10 @@ function ExerciseView({ it, set, phase, onSetDone, onRestDone, nextName, resting
 
       <div className="my-6 flex justify-center">
         {it.seconds ? <Timer seconds={it.seconds} onDone={onSetDone} /> : <Reps reps={it.reps ?? ex.prescription.default} progress={(set - 1) / it.sets} onDone={onSetDone} />}
+      </div>
+
+      <div className="mb-4 flex justify-center">
+        <ExerciseFigure motion={ex.motion} playing level={level} size={190} />
       </div>
 
       {ex.formCheck && hasFormCheck && (

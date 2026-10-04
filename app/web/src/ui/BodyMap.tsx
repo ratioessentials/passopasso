@@ -72,6 +72,11 @@ export function BodyMap({ value, onChange }: { value: BodyZone[]; onChange: (z: 
             initial={{ rotateY: -90, opacity: 0 }} animate={{ rotateY: 0, opacity: 1 }} exit={{ rotateY: 90, opacity: 0 }}
             transition={{ duration: 0.22 }}
           >
+            {/* aree di tocco invisibili più grandi (almeno 44px sul telefono) per polsi, ginocchia e caviglie */}
+            {parts(side).filter((p) => p.zone && p.shape.kind === 'circle' && p.shape.r < 14).map((p, i) => p.shape.kind === 'circle' && (
+              <circle key={'hit' + i} cx={p.shape.cx} cy={p.shape.cy} r={34} fill="transparent" style={{ cursor: 'pointer' }}
+                onPointerEnter={() => setHover(p.zone)} onPointerLeave={() => setHover(null)} onClick={() => p.zone && toggle(p.zone)} />
+            ))}
             {parts(side).map((p, i) => {
               const on = p.zone ? value.includes(p.zone) : false
               const hot = p.zone && hover === p.zone

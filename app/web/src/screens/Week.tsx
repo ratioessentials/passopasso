@@ -35,7 +35,7 @@ export default function WeekScreen() {
   const [error, setError] = useState<string | null>(null)
   const [skipFor, setSkipFor] = useState<Session | null>(null)
   const [busy, setBusy] = useState(false)
-  const [restart, setRestart] = useState<{ message: string; s: Session } | null>(null)
+  const [restart, setRestart] = useState<{ message: string; s: Session; unwell: boolean } | null>(null)
 
   const load = () => api.week().then((w) => { setWeek(w); setError(null) }).catch((e: Error) => setError(e.message))
   useEffect(() => { void load() }, [])
@@ -52,7 +52,7 @@ export default function WeekScreen() {
       setSkipFor(null)
       setWeek(r.week)
       putSession(r.restart)
-      setRestart({ message: r.message || copy['skip.title'], s: r.restart })
+      setRestart({ message: r.message || copy['skip.title'], s: r.restart, unwell: reason === 'malessere' })
       void loadMe()
     } catch (e) {
       setError((e as Error).message)
@@ -93,6 +93,9 @@ export default function WeekScreen() {
             {restart && (
               <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0 }} transition={spring.bouncy} className="mx-5 mt-4">
                 <p className="font-title mb-3 text-center text-[22px] leading-tight text-petrolio">{restart.message}</p>
+                {restart.unwell && (
+                  <p className="mb-3 rounded-2xl bg-white/80 px-4 py-3 text-center text-sm text-inchiostro/75">Riposati. Se hai febbre, dolore al petto o capogiri forti, senti un medico prima di riprendere.</p>
+                )}
                 <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-b from-petrolio to-acqua p-5 text-white shadow-soft">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wider text-white/80">Ripartenza · {new Date(restart.s.date + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'long' })}</span>

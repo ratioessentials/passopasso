@@ -35,6 +35,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const m = await api.me()
       setMe(m)
       setMeError(null)
+      window.dispatchEvent(new Event('passopasso:refresh'))
       if (m.today) setSessions((s) => ({ ...s, [m.today!.id]: m.today! }))
       return m
     } catch (e) {

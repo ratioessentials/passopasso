@@ -8,7 +8,13 @@ import { stagger } from '../ui/motion'
 
 function useWidget() {
   const [d, setD] = useState<WidgetData | null>(null)
-  useEffect(() => { api.widget(getUserId() ?? 'demo').then(setD).catch(() => {}) }, [])
+  useEffect(() => {
+    const load = () => api.widget(getUserId() ?? 'demo').then(setD).catch(() => {})
+    void load()
+    // si aggiorna quando cambiano i dati dell'utente (seduta completata, livello accettato…)
+    window.addEventListener('passopasso:refresh', load)
+    return () => window.removeEventListener('passopasso:refresh', load)
+  }, [])
   return d
 }
 

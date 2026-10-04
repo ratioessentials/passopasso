@@ -51,11 +51,11 @@ export function LevelUpOverlay() {
               <motion.span animate={{ x: [0, 6, 0] }} transition={{ duration: 1.2, repeat: Infinity }} className="text-2xl text-acqua">→</motion.span>
               <LevelIcon n={lu.to} size={84} initial={{ scale: 0.6, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ ...spring.bouncy, delay: 0.2 }} />
             </div>
-            <h2 className="font-title mt-6 text-[28px] leading-tight text-inchiostro">Sei pronto per il livello {lu.to}: {levelInfo(lu.to).verb}?</h2>
-            <p className="mt-2 text-inchiostro/70">Le ultime sedute dicono di sì. Si chiama {lu.name}: un passo in più, sempre col tuo ritmo. Puoi anche restare qui ancora un po'.</p>
+            <h2 className="font-title mt-6 text-[28px] leading-tight text-inchiostro">È il momento del livello {lu.to}, {lu.name}?</h2>
+            <p className="mt-2 text-inchiostro/70">Le ultime sedute dicono di sì. Il tuo corpo ti ha portato fin qui: ora si passa a {levelInfo(lu.to).verb.toLowerCase()}, sempre col tuo ritmo. Nessuna fretta, puoi anche restare qui ancora un po'.</p>
             <div className="mt-6 space-y-2 pb-4">
               <Button className="w-full py-4 text-lg" onClick={accept} disabled={busy}>{busy ? 'Un attimo…' : 'Sì, andiamo!'}</Button>
-              <Button variant="ghost" className="w-full" onClick={close}>Resto ancora qui</Button>
+              <Button variant="ghost" className="w-full" onClick={close}>Resto ancora un po' qui</Button>
             </div>
           </motion.div>
         </motion.div>
