@@ -158,6 +158,29 @@ const c3 = await api('POST', '/api/onboarding/profile', { user: u3, body: { name
 const o3 = await api('POST', '/api/onboarding/message', { user: u3, body: { messages: [{ role: 'assistant', content: 'Ciao!' }, { role: 'user', content: 'Voglio correre' }] } });
 check('minore di 16 anni → nessun piano', c3.json?.minor === true && o3.json?.minor === true && o3.json.done === true, o3.json?.reply);
 
+// --- Health Bridge, push, piani ---
+const demoMe = await api('GET', '/api/me', { user: 'demo' });
+check('demo: prontezza media dai dati salute', demoMe.json?.readiness?.level === 'media' && demoMe.json.readiness.suggestedEnergy === 2, demoMe.json?.readiness?.signals?.join(' · '));
+const tok = await api('GET', '/api/health/token', { user: uid });
+check('token personale', /^ht_/.test(tok.json?.token ?? ''));
+const todayNew = (await api('GET', '/api/week', { user: uid })).json.sessions.find((s) => s.status === 'planned');
+const res = await fetch(`${BASE}/api/health/ingest`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-health-token': tok.json.token },
+  body: JSON.stringify({ source: 'apple_health', steps: '8200', restingHr: 61, hrv: 40, sleepMinutes: 420,
+    workouts: todayNew ? [{ type: 'walk', start: `${todayNew.date}T07:10:00+02:00`, minutes: 32, distanceKm: 3.1, avgHr: 112 }] : [] }) });
+const ing = await res.json();
+check('ingest dal Comando rapido', res.status === 200 && ing.ok && res.headers.get('access-control-allow-origin') === '*', `importati ${ing.imported}`);
+const bad = await fetch(`${BASE}/api/health/ingest`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-health-token': 'ht_falso' }, body: '{}' });
+check('ingest con token sbagliato → 401', bad.status === 401);
+const sum = await api('GET', '/api/health/summary', { user: uid });
+check('riepilogo salute', sum.status === 200 && sum.json.sources.find((x) => x.id === 'apple_health')?.connected && sum.json.history.length === 14);
+const vap = await api('GET', '/api/push/vapid');
+check('chiave VAPID pubblica', typeof vap.json?.publicKey === 'string' && vap.json.publicKey.length > 40);
+const subOk = await api('POST', '/api/push/subscribe', { user: uid, body: { subscription: { endpoint: 'https://example.invalid/push/abc', keys: { p256dh: 'x', auth: 'y' } }, reminderMinutesBefore: 60 } });
+check('iscrizione alle notifiche', subOk.status === 200 && subOk.json.ok);
+await api('DELETE', '/api/push/subscribe', { user: uid });
+const plans = await api('GET', '/api/plans');
+check('piani', plans.status === 200 && plans.json.demo === true && Array.isArray(plans.json.plans));
+
 const hab = await api('POST', '/api/habit/checkin', { user: uid });
 check('habit checkin', hab.status === 200 && hab.json.doneDays >= 1);
 

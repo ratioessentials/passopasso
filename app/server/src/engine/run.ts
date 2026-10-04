@@ -183,7 +183,7 @@ function shortEasy(minutes: number): Segment[] {
   ];
 }
 
-export async function adaptRun(row: SessionRow, profile: Profile, checkin: { minutes: number; energy: number; pain: BodyZone[] }, intensity: number) {
+export async function adaptRun(row: SessionRow, profile: Profile, checkin: { minutes: number; energy: number; pain: BodyZone[] }, intensity: number, context?: string | null) {
   const planned: Segment[] = JSON.parse(row.segments!);
   const plannedMin = segmentsMinutes(planned);
   const legPain = checkin.pain.filter((z) => LEG_ZONES.includes(z));
@@ -208,7 +208,7 @@ export async function adaptRun(row: SessionRow, profile: Profile, checkin: { min
   const user = `CHI È: ${personSummary(profile)}
 SEDUTA DI CORSA PIANIFICATA (${row.title}, ${Math.round(plannedMin)} minuti):
 ${JSON.stringify(planned)}
-CHECK-IN: ${checkin.minutes} minuti disponibili, energia ${checkin.energy}/5, dolori: ${checkin.pain.join(', ') || 'nessuno'}.
+CHECK-IN: ${checkin.minutes} minuti disponibili, energia ${checkin.energy}/5, dolori: ${checkin.pain.join(', ') || 'nessuno'}.${context ? `\n${context}` : ''}
 REGOLE: adatta i SEGMENTI (non gli esercizi). Durata totale al massimo ${Math.round(cap)} minuti, mai più lunga del piano. Poco tempo o energia 1-2 → corsa facile corta (RPE 3). ${noImpact ? 'NIENTE CORSA oggi: usa camminata_veloce o marcia, RPE al massimo 5.' : ''}
 Tieni riscaldamento e defaticamento. "motion" tra: ${MOTIONS.join(', ')}. "repeat" con "recovery" per le ripetute.
 Rispondi con { "title", "reason", "segments" } (reason: una frase, massimo 20 parole, senza numeri del check-in).`;

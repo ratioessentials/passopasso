@@ -4,6 +4,7 @@ import { addDays, today, weekStart } from '../dates.js';
 import { clampIntensity, generateSession } from './builder.js';
 import { adaptRun, segmentsMinutes } from './run.js';
 import { testPassed, testSnoozed } from './tests.js';
+import { readinessLine } from './health.js';
 import {
   consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, replanFrom, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
 } from './store.js';
@@ -27,7 +28,7 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
   }
   // 2a. Corsa a segmenti: l'AI adatta i segmenti (10% e scarico restano deterministici)
   if (row.segments && row.kind === 'normale') {
-    const run = await adaptRun(row, profile, input, user.intensity);
+    const run = await adaptRun(row, profile, input, user.intensity, readinessLine(user.id));
     updateSession(row.id, {
       status: 'planned', minutes: Math.round(segmentsMinutes(run.segments)), intensity: run.intensity, title: run.title,
       reason: run.reason, segments: run.segments, source: run.source, checkin: JSON.stringify(input),
@@ -46,6 +47,7 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
     template: restart ? r.sessionTemplate : undefined,
     kindNote: restart ? `È una seduta di ripartenza dopo una seduta saltata: più corta e leggera, preferisci le versioni facili. Vale +${row.bonus_points} punti di costanza: ricordalo nella reason con calore, senza colpa.` : undefined,
     easy: restart,
+    context: readinessLine(user.id),
   });
   updateSession(row.id, {
     status: 'planned', minutes: draft.minutes, intensity: draft.intensity, title: restart ? (r.title ?? draft.title) : draft.title,

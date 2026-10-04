@@ -4,6 +4,7 @@ import { addDays, today, weekStart } from '../dates.js';
 import { currentHabit, evaluateWins, getUser, insertSession, planWeek, ruleDraft, updateSession } from './store.js';
 import type { Feedback, Profile, UserRow } from './types.js';
 import { startIntensity } from './person.js';
+import { healthToken, touchSource, updateRunnerKm } from './health.js';
 
 /** Fine dell'onboarding: salva il profilo, fissa il livello di partenza e pianifica la prima settimana (con una seduta già oggi). */
 export function saveProfile(user: UserRow, profile: Profile) {
@@ -87,12 +88,13 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v6`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v8`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
   if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID) && getUser(RUNNER_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();
   seedGiulia(t, stamp);
   seedRunner(t);
+  seedHealth(t);
 }
 
 function seedGiulia(t: string, stamp: string) {
@@ -207,7 +209,7 @@ function seedRunner(t: string) {
     const rows = db.prepare('SELECT id, date, run_type FROM sessions WHERE user_id = ? AND date >= ? AND date <= ? ORDER BY date').all(RUNNER_ID, ws, addDays(ws, 6)) as { id: string; date: string; run_type: string | null }[];
     for (const r of rows) {
       if (r.date >= t) continue;
-      if (w === 0 && r.run_type === null) { updateSession(r.id, { status: 'skipped', skip_reason: 'tempo' }); continue; }
+      if (w === 0 && r.run_type === 'forza') { updateSession(r.id, { status: 'skipped', skip_reason: 'tempo' }); continue; }
       updateSession(r.id, { status: 'done', feedback: feedbacks[fi++ % feedbacks.length], done_at: `${r.date}T06:45:00.000Z` });
       evaluateWins(getUser(RUNNER_ID)!, r.date);
     }
@@ -217,4 +219,38 @@ function seedRunner(t: string) {
   for (const d of [addDays(t, -1), addDays(t, -2)].filter((x) => x >= weekStart(t))) {
     db.prepare('INSERT OR IGNORE INTO habit_checkins (user_id, date, habit_id) VALUES (?, ?, ?)').run(RUNNER_ID, d, habit.id);
   }
+}
+
+// ---------- Dati salute dei demo ----------
+
+/** Rumore deterministico (stesso giorno → stessi dati). */
+const noise = (seed: string) => { let h = 7; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) % 100003; return (h % 1000) / 1000; };
+
+function seedHealth(t: string) {
+  // Giulia: 14 giorni di Apple Salute; oggi sonno corto e battito alto → prontezza media, energia suggerita 2
+  const ins = db.prepare(`INSERT OR REPLACE INTO health_days (user_id, source, date, steps, resting_hr, hrv, sleep_minutes, active_minutes, updated_at)
+    VALUES (?, 'apple_health', ?, ?, ?, ?, ?, ?, ?)`);
+  for (let i = 14; i >= 1; i--) {
+    const d = addDays(t, -i);
+    const n = noise(d);
+    ins.run(DEMO_ID, d, Math.round(5200 + n * 3600), Math.round((53 + n * 2.5) * 10) / 10, Math.round(46 + n * 5), Math.round(395 + n * 45), Math.round(15 + n * 30), `${d}T08:02:00.000Z`);
+  }
+  ins.run(DEMO_ID, t, 1240, 59, 46, 340, 4, `${t}T08:02:00.000+02:00`);
+  touchSource(DEMO_ID, 'apple_health');
+  db.prepare("UPDATE health_sources SET last_sync = ? WHERE user_id = ? AND source = 'apple_health'").run(`${t}T06:02:00.000Z`, DEMO_ID);
+  healthToken(DEMO_ID);
+
+  // Luca: Strava "collegato" (simulato) con le corse importate al posto delle sedute pianificate
+  touchSource(RUNNER_ID, 'strava', { demo: true, athlete: { id: 0, firstname: 'Luca' } });
+  const KM: Record<string, number> = { facile: 6, ripetute: 6.5, progressivo: 6, allunghi: 6.5 };
+  const runs = db.prepare("SELECT id, date, run_type, minutes, title, segments FROM sessions WHERE user_id = ? AND status = 'done' AND segments IS NOT NULL ORDER BY date").all(RUNNER_ID) as { id: string; date: string; run_type: string; minutes: number; title: string }[];
+  for (const r of runs) {
+    const km = r.run_type === 'lungo' ? Math.round((r.minutes / 6.1) * 10) / 10 : KM[r.run_type] ?? 6;
+    const ext = `strava:demo-${r.date}`;
+    db.prepare("UPDATE sessions SET kind = 'importata', origin = 'strava', external_id = ?, was_planned = 1, title = ? WHERE id = ?")
+      .run(ext, `${r.title} · Corsa ${String(km).replace('.', ',')} km`, r.id);
+    db.prepare('INSERT OR REPLACE INTO health_workouts (user_id, source, external_id, date, type, minutes, distance_km, avg_hr, session_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .run(RUNNER_ID, 'strava', ext, r.date, 'run', r.minutes, km, r.run_type === 'facile' || r.run_type === 'lungo' ? 141 : 156, r.id);
+  }
+  updateRunnerKm(getUser(RUNNER_ID)!);
 }

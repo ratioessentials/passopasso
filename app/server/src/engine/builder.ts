@@ -228,7 +228,7 @@ export interface CheckinInput { minutes: number; energy: number; pain: BodyZone[
  * Se l'AI non risponde o fallisce: seduta a regole.
  */
 export async function generateSession(opts: {
-  level: number; profile: Profile; intensity: number; checkin: CheckinInput; seed: string; template?: SessionTemplate; kindNote?: string; easy?: boolean;
+  level: number; profile: Profile; intensity: number; checkin: CheckinInput; seed: string; template?: SessionTemplate; kindNote?: string; easy?: boolean; context?: string | null;
 }): Promise<DraftSession> {
   const lvl = content.level(opts.level, opts.profile.track);
   const template = opts.template ?? lvl.sessionTemplate;
@@ -252,7 +252,7 @@ CHI È (contesto per i dosaggi): ${personSummary(opts.profile)}
 LIVELLO ${lvl.n} "${lvl.name}" (${lvl.verb}). Obiettivo del livello: ${lvl.goal}.${typeof lvl.cardioGuide === 'string' ? `\nGuida al cardio: ${lvl.cardioGuide}` : ''}
 STRUTTURA DEL LIVELLO (per ${template.minutes} minuti): ${template.blocks.map((b) => `${b.category} x${b.count}${b.seconds ? ` (${Math.round(b.seconds / 60)} min)` : ''}`).join(', ')}.${opts.kindNote ? `\nNOTA: ${opts.kindNote}` : ''}
 
-CHECK-IN DI OGGI: ${minutes} minuti disponibili, energia ${energy}/5, dolori: ${pain.length ? zonesText(pain) : 'nessuno'}.
+CHECK-IN DI OGGI: ${minutes} minuti disponibili, energia ${energy}/5, dolori: ${pain.length ? zonesText(pain) : 'nessuno'}.${opts.context ? `\n${opts.context} Se i segnali dicono stanchezza, tienine conto e puoi citarli in parole semplici nella reason ("hai dormito poco").` : ''}
 INTENSITÀ da applicare: ${intensity} (1.0 = normale).
 
 ESERCIZI CONSENTITI (id | nome | categoria | livello minimo | zone | prescrizione):

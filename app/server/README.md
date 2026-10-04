@@ -31,6 +31,9 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 | `WEB_DIST` | `../web/dist` | se esiste `index.html` serve la PWA con fallback SPA |
 | `TZ` | `Europe/Rome` | definisce "oggi" |
 | `DEMO_RESET_MINUTES` | `30` | il demo torna allo stato iniziale dopo N minuti senza modifiche |
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | generate | Web Push; `npx web-push generate-vapid-keys`. Se mancano il server le genera e le salva nel DB |
+| `PUSH_SCHEDULER` | `on` | `off` spegne il cron dei promemoria (ogni minuto) |
+| `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET` | — | OAuth Strava; callback `https://<dominio>/api/connect/strava/callback` (Authorization Callback Domain = il dominio) |
 
 **Per il Dockerfile (chat 4):** nessuna CLI `claude` da installare: il Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`, in `dependencies`) porta con sé l'eseguibile. `better-sqlite3` è nativo: fai `npm ci` nella stessa immagine base dell'esecuzione (es. `node:22-slim`; se manca il binario precompilato servono `python3 make g++`). In produzione copia `dist/`, `node_modules/`, `fixtures/`, `package.json`, e passa `CONTENT_DIR=/app/content`, `WEB_DIST=/app/app/web/dist`, `DATA_DIR=/data`.
 
@@ -44,6 +47,12 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 - `src/engine/coach.ts`: chat libera con il coach (`POST /api/coach/message`), modifiche al profilo validate e applicate dal server, `applied` in italiano, riserva a regole.
 - `src/engine/calendar.ts`: iCal con `node-ical` (download con timeout 8 s, max 5 MB, cache 15 min, ricorrenze espanse, eventi di un giorno intero e "libero" ignorati), spazi liberi 6:30-22:00, proposta dei giorni senza giorni consecutivi.
 - `src/engine/redflags.ts`: bandiere rosse nel testo libero, deterministiche (parole chiave di `red_flags.json` più quelle di riserva, gestione semplice delle negazioni: "non ho febbre").
+- `src/engine/person.ts`: scheda (PAR-Q+), prudenza e `cautionMessage`, derivati (`bmi`, `impactAllowed`, `cardioCap`), riassunto della persona per i prompt. Il peso non esce mai dalle API (solo nell'export).
+- `src/engine/run.ts`: settimana da podista (percorso corsa 4-5): tipi di seduta, lungo la domenica che cresce, scarico, regola del 10% sul volume reale, adattamento dei segmenti al check-in.
+- `src/engine/food.ts`: alimentazione 2.0 (abitudine dai `signals`, prima e dopo da `fuel.json`, riepilogo della settimana).
+- `src/engine/tests.ts`: test di prontezza (target da `tests.json`), passaggio di livello con test.
+- `src/engine/health.ts`: Health Bridge (ingest con token, baseline 14 giorni, prontezza da `readiness.json`, allenamenti importati, giorni attivi dai passi).
+- `src/engine/strava.ts`: OAuth Strava e import delle attività. `src/engine/push.ts`: Web Push e scheduler dei promemoria.
 - `src/engine/seed.ts`: profilo e prima settimana dopo l'onboarding, utente demo `demo`.
 
 ## Regole del motore (sicurezza)
@@ -60,5 +69,9 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 - Calendario: errori con status 422 e `code` tra `bad_url`, `fetch_failed`, `not_ical`, `timeout`, `too_large`. L'URL resta nel profilo come `calendarUrl`. `GET /api/calendar/demo.ics` è un calendario di esempio (settimana di lavoro relativa a oggi) per provare la funzione senza il proprio.
 - In più: `POST /api/demo/reset` riporta l'utente demo allo stato iniziale (utile prima di registrare il video).
 
-## Utente demo
+## Utenti demo
+- `demo-runner` (Luca, 43 anni, 25 km a settimana): livello 4 del percorso corsa da tre settimane, settimana da podista con lungo la domenica (oggi), Strava "collegato" in modo simulato e corse importate.
+- `demo`: Giulia, vedi sotto. Ha 14 giorni di dati di Apple Salute: oggi sonno corto e battito alto → prontezza media, energia suggerita 2.
+
+### Giulia
 `demo` (Giulia): circa 3 settimane di storico, livello 1 → 2, due sedute dimenticate, una saltata e recuperata con la ripartenza (+10), un check-in con le ginocchia doloranti, abitudine in corso con 3 giorni segnati. **Completando la seduta di oggi parte la proposta di passare al livello 3**: è il momento wow della demo. Lo storico è relativo alla data di oggi e si rigenera ogni giorno.

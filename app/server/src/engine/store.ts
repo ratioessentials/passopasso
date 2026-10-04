@@ -4,6 +4,7 @@ import { db } from '../db.js';
 import { addDays, diffDays, today, weekday, weekStart } from '../dates.js';
 import { buildRuleItems, ruleReason, ruleTitle } from './builder.js';
 import { derive } from './person.js';
+import { activeDays } from './health.js';
 import { planRunWeek, runDraft, runLevel, runSessionsPerWeek, typeForDate } from './run.js';
 import type { DraftSession, Item, Profile, Session, SessionRow, UserRow } from './types.js';
 
@@ -190,12 +191,16 @@ export function consistencyAt(userId: string, at = today()): number {
   const all = allSessions(userId);
   const recovered = new Set(all.filter((s) => s.kind === 'ripartenza' && s.status === 'done' && s.recovers).map((s) => s.recovers));
   // conta: sedute normali già passate (o fatte), escluse quelle saltate e recuperate e quelle bloccate per sicurezza
-  const counted = rows.filter((s) => s.kind === 'normale' && s.status !== 'blocked' && !recovered.has(s.id) && (s.date < at || s.status === 'done'));
-  const done = counted.filter((s) => s.status === 'done').length;
+  // le sedute importate che hanno completato una seduta pianificata (Strava, Apple Salute) contano come fatte
+  const counted = rows.filter((s) => (s.kind === 'normale' || (s.kind === 'importata' && s.was_planned)) && s.status !== 'blocked' && !recovered.has(s.id) && (s.date < at || s.status === 'done'));
+  // giorni attivi dai passi (livelli 1-2, max 2 a settimana): un giorno "fatto" in più
+  const user = getUser(userId);
+  const active = user ? activeDays(user, from, at).length : 0;
+  const done = counted.filter((s) => s.status === 'done').length + active;
   const restartsDone = rows.filter((s) => s.kind === 'ripartenza' && s.status === 'done');
   const bonus = restartsDone.reduce((a, s) => a + s.bonus_points, 0);
   const restartDoneCount = restartsDone.length;
-  const planned = counted.length;
+  const planned = counted.length + active;
   if (!planned && !restartDoneCount) return 0;
   const base = planned ? (done / planned) * 100 : 100;
   return Math.max(0, Math.min(100, Math.round(base + bonus)));

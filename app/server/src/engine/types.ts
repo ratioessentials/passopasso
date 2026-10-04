@@ -71,6 +71,7 @@ export interface SessionRow {
   run_type: string | null;
   origin: string | null;
   external_id: string | null;
+  was_planned: number;
 }
 
 export interface UserRow {

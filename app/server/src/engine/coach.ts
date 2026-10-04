@@ -7,6 +7,7 @@ import { db } from '../db.js';
 import { freeSlots, loadBusy, suggestDays, type FreeSlot } from './calendar.js';
 import { detectRedFlag, normalize } from './redflags.js';
 import { personSummary } from './person.js';
+import { readinessLine } from './health.js';
 import { getUser, levelInfo, profileOf, replanFrom, sessionsBetween, sessionsPerWeek, updateSession } from './store.js';
 import type { PreferredTime, Profile, UserRow } from './types.js';
 
@@ -151,7 +152,8 @@ CHI È: ${personSummary(profile)}
 LIVELLO: ${info.n} "${info.name}" (${info.verb}), avanzamento ${Math.round(info.progress * 100)}%, costanza ${info.consistency}/100.
 SETTIMANA:
 ${week}
-CALENDARIO (spazi liberi nei prossimi 7 giorni): ${slotText}`;
+CALENDARIO (spazi liberi nei prossimi 7 giorni): ${slotText}
+${readinessLine(user.id) ?? 'PRONTEZZA: nessun dato dai dispositivi oggi.'} Se ci sono segnali, puoi citarli con naturalezza ("hai dormito poco, lo vedo"); con riposo consigliato suggerisci riposo vero e, se c'è febbre o malessere, il medico.`;
 }
 
 // ---------- Riserva senza AI ----------

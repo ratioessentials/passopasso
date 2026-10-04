@@ -11,6 +11,9 @@ import { db } from './db.js';
 import { acceptLevel, checkin, complete, skip } from './engine/actions.js';
 import { mealFeedback } from './engine/meals.js';
 import { submitTest, testsFor } from './engine/tests.js';
+import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncStravaIfStale, verifyState } from './engine/strava.js';
+import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
+import { IngestSchema, healthToken, ingest, readiness, summary, userByHealthToken } from './engine/health.js';
 import { FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
@@ -75,6 +78,7 @@ function mePayload(user: UserRow) {
     today: todaySession(user),
     habit: { ...habit, doneDays: habitDoneDays(user.id) },
     wins: listWins(user.id),
+    readiness: readiness(user.id),
   };
 }
 
@@ -241,6 +245,90 @@ export async function buildServer() {
     if (res === 'not_ready') throw fail(409, 'not_ready', 'Ancora qualche seduta e ci siamo. Il prossimo livello ti aspetta.');
     if (res === 'test_required') throw fail(409, 'test_required', 'Prima un piccolo test di prontezza: due prove brevi, e si sale.');
     return mePayload(getUser(user.id)!);
+  });
+
+  // ---------- Salute e wearable (Health Bridge) ----------
+  app.get('/api/health/token', async (req) => {
+    const user = requireUser(req);
+    return { token: healthToken(user.id, (req.query as { new?: string }).new === '1'), ingestUrl: '/api/health/ingest' };
+  });
+  app.post('/api/health/token', async (req) => ({ token: healthToken(requireUser(req).id, true) }));
+
+  // Pubblico con token personale (Comando rapido di Apple Salute): CORS aperto
+  app.options('/api/health/ingest', async (_req, reply) => reply
+    .header('Access-Control-Allow-Origin', '*').header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    .header('Access-Control-Allow-Headers', 'Content-Type, X-Health-Token').status(204).send());
+  app.post('/api/health/ingest', async (req, reply) => {
+    reply.header('Access-Control-Allow-Origin', '*');
+    const token = String(req.headers['x-health-token'] ?? (req.query as { token?: string }).token ?? '').trim();
+    const user = token ? userByHealthToken(token) : undefined;
+    if (!user || !user.profile) throw fail(401, 'bad_token', 'Token non valido. Copialo di nuovo da Coach → Salute e dispositivi.');
+    if (isDemo(user.id)) touchDemo();
+    const body = parse(IngestSchema, req.body);
+    const res = ingest(user, body);
+    return { ok: true, imported: res.imported, readiness: readiness(user.id, body.date ?? today()) };
+  });
+
+  app.get('/api/health/summary', async (req) => {
+    const user = requireUser(req);
+    await syncStravaIfStale(user).catch((e) => req.log.warn(e));
+    return summary(user);
+  });
+
+  // Strava: OAuth vero. Il link si apre dal browser (niente header): l'utente arriva anche come ?u=
+  const originOf = (req: FastifyRequest) => `${(req.headers['x-forwarded-proto'] as string) ?? req.protocol}://${req.headers['x-forwarded-host'] ?? req.headers.host}`;
+  app.get('/api/connect/strava', async (req, reply) => {
+    const q = req.query as { u?: string };
+    if (q.u && !req.headers['x-user-id']) req.headers['x-user-id'] = q.u;
+    const user = requireUser(req);
+    if (!stravaConfigured()) return reply.redirect('/coach?connected=strava&error=non_configurato');
+    return reply.redirect(authorizeUrl(user.id, `${originOf(req)}/api/connect/strava/callback`));
+  });
+  app.get('/api/connect/strava/callback', async (req, reply) => {
+    const q = req.query as { code?: string; state?: string; error?: string };
+    const userId = q.state ? verifyState(q.state) : null;
+    if (q.error || !q.code || !userId || !getUser(userId)) return reply.redirect('/coach?connected=strava&error=annullato');
+    try {
+      const n = await handleCallback(q.code, userId);
+      return reply.redirect(`/coach?connected=strava&imported=${n}`);
+    } catch (err) {
+      req.log.warn(err);
+      return reply.redirect('/coach?connected=strava&error=scambio_token');
+    }
+  });
+  app.delete('/api/connect/strava', async (req) => {
+    const user = requireUser(req);
+    await disconnectStrava(user.id);
+    return { ok: true };
+  });
+
+  // ---------- Notifiche push ----------
+  app.get('/api/push/vapid', async () => ({ publicKey: vapid().publicKey }));
+  app.post('/api/push/subscribe', async (req) => {
+    const user = requireUser(req);
+    const body = parse(z.object({
+      subscription: z.object({ endpoint: z.string().url(), keys: z.object({ p256dh: z.string(), auth: z.string() }), expirationTime: z.number().nullish() }),
+      reminderMinutesBefore: z.coerce.number().int().min(10).max(240).default(60),
+    }), req.body);
+    subscribe(user.id, body.subscription, body.reminderMinutesBefore);
+    return { ok: true };
+  });
+  app.delete('/api/push/subscribe', async (req) => {
+    const user = requireUser(req);
+    const body = (req.body ?? {}) as { endpoint?: string };
+    unsubscribe(user.id, typeof body.endpoint === 'string' ? body.endpoint : undefined);
+    return { ok: true };
+  });
+  app.post('/api/push/test', async (req) => {
+    const user = requireUser(req);
+    const sent = await sendTo(user.id, { title: 'PassoPasso', body: content.text('push.test_body', 'Eccomi! Così ti arriveranno i promemoria: gentili, al massimo uno al giorno.'), tag: 'test' });
+    if (!sent) throw fail(409, 'no_subscription', 'Prima attiva i promemoria su questo dispositivo, poi riprova.');
+    return { ok: true, sent };
+  });
+
+  // ---------- Piani ----------
+  app.get('/api/plans', async () => {
+    try { return { demo: true, ...content.plans() }; } catch { return { demo: true, plans: [] }; }
   });
 
   // ---------- I miei dati ----------
