@@ -100,6 +100,22 @@ if (demoNext) {
   check('demo: skip', sk.status === 200 && sk.json.restart?.bonusPoints > 0, sk.json?.message);
 }
 
+// --- coach e calendario (utente nuovo) ---
+const coachRf = await api('POST', '/api/coach/message', { user: uid, body: { messages: [{ role: 'user', content: 'Stamattina mi girava la testa e sono quasi svenuto' }] } });
+check('coach: bandiera rossa sul testo', coachRf.status === 200 && !!coachRf.json.redFlag, `${coachRf.ms} ms, ${coachRf.json?.redFlag?.id}`);
+const coachNeg = await api('POST', '/api/coach/message', { user: uid, body: { messages: [{ role: 'user', content: 'Non ho febbre, tutto bene. Questa settimana però ho poco tempo, al massimo 15 minuti' }] } });
+check('coach: modifica del piano', coachNeg.status === 200 && !coachNeg.json.redFlag && Array.isArray(coachNeg.json.applied), `${coachNeg.ms} ms, applied ${JSON.stringify(coachNeg.json?.applied)}`);
+console.log(`   reply: ${coachNeg.json?.reply}`);
+const badCal = await api('POST', '/api/calendar/connect', { user: uid, body: { icsUrl: 'non è un link' } });
+check('calendario: link non valido → errore gentile', badCal.status === 422 && !!badCal.json?.error?.message, badCal.json?.error?.message);
+const cal = await api('POST', '/api/calendar/connect', { user: uid, body: { icsUrl: `${BASE}/api/calendar/demo.ics` } });
+check('calendario demo collegato', cal.status === 200 && cal.json.ok && cal.json.freeSlots.length > 0, `${cal.json?.eventsNext7Days} impegni, "${cal.json?.suggestion}"`);
+const move = await api('POST', '/api/coach/message', { user: uid, body: { messages: [
+  { role: 'assistant', content: cal.json?.suggestion ?? '' }, { role: 'user', content: 'Sì, spostale negli spazi liberi' }] } });
+check('coach: sposta negli spazi liberi', move.status === 200 && move.json.applied.some((a) => /spazi liberi|riorganizzata/i.test(a)), `${move.ms} ms, ${JSON.stringify(move.json?.applied)}`);
+const unlink = await api('DELETE', '/api/calendar', { user: uid });
+check('calendario scollegato', unlink.status === 200 && unlink.json.ok);
+
 const hab = await api('POST', '/api/habit/checkin', { user: uid });
 check('habit checkin', hab.status === 200 && hab.json.doneDays >= 1);
 

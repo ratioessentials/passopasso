@@ -10,6 +10,8 @@ import { addDays, DAY_LETTERS, diffDays, today, weekStart } from './dates.js';
 import { db } from './db.js';
 import { acceptLevel, checkin, complete, skip } from './engine/actions.js';
 import { mealFeedback } from './engine/meals.js';
+import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
+import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
 import { saveProfile, seedDemo, touchDemo, DEMO_ID } from './engine/seed.js';
 import {
@@ -76,6 +78,13 @@ const DAY_NAMES = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 
 
 export async function buildServer() {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL || 'info' }, bodyLimit: 10 * 1024 * 1024 });
+
+  // JSON tollerante: un corpo vuoto (es. DELETE dal client con content-type json) vale {}
+  app.removeContentTypeParser('application/json');
+  app.addContentTypeParser('application/json', { parseAs: 'string' }, (_req, body, done) => {
+    if (!body || !String(body).trim()) return done(null, {});
+    try { done(null, JSON.parse(String(body))); } catch (e) { (e as Error & { statusCode?: number }).statusCode = 400; done(e as Error, undefined); }
+  });
 
   app.setErrorHandler((err: Error & { statusCode?: number; validation?: unknown }, req, reply) => {
     if (err instanceof HttpError) return reply.status(err.status).send({ error: { code: err.code, message: err.message } });
@@ -246,6 +255,33 @@ export async function buildServer() {
       lastWin: lastWin ? { title: lastWin.title } : null,
     };
   });
+
+  app.post('/api/coach/message', async (req) => {
+    const user = requireUser(req);
+    const { messages } = parse(z.object({
+      messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(2000) })).min(1).max(60),
+    }), req.body);
+    if (messages[messages.length - 1].role !== 'user') throw fail(400, 'bad_request', 'Manca il tuo messaggio. Scrivimi pure!');
+    return coachMessage(user, messages.slice(-20));
+  });
+
+  app.post('/api/calendar/connect', async (req) => {
+    const user = requireUser(req);
+    const { icsUrl } = parse(z.object({ icsUrl: z.string().min(1).max(2000) }), req.body);
+    try {
+      const url = isDemoIcs(icsUrl) ? icsUrl.trim() : normalizeIcsUrl(icsUrl);
+      return await connectCalendar(user, url);
+    } catch (err) {
+      if (err instanceof CalendarError) throw fail(422, err.code, err.message);
+      req.log.warn(err);
+      throw fail(422, 'calendar_error', 'Non riesco a leggere questo calendario. Controlla il link e riprova.');
+    }
+  });
+
+  app.delete('/api/calendar', async (req) => disconnectCalendar(requireUser(req)));
+
+  // Calendario di esempio per provare la funzione senza il proprio (settimana di lavoro relativa a oggi)
+  app.get('/api/calendar/demo.ics', async (_req, reply) => reply.type('text/calendar; charset=utf-8').send(demoIcs()));
 
   // Riporta l'utente demo allo stato iniziale (usato dallo smoke test e prima di registrare la demo).
   app.post('/api/demo/reset', async () => { seedDemo(true); return { ok: true }; });

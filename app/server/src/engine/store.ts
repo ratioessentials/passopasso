@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { content, type Habit, type WinDef } from '../content.js';
+import { content, type BodyZone, type Habit, type WinDef } from '../content.js';
 import { db } from '../db.js';
 import { addDays, diffDays, today, weekday, weekStart } from '../dates.js';
 import { buildRuleItems, ruleReason, ruleTitle } from './builder.js';
@@ -54,7 +54,7 @@ export function updateSession(id: string, fields: Partial<Record<keyof SessionRo
 }
 
 /** Seduta pianificata a regole (nessuna chiamata all'AI: il check-in la rigenera). */
-export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean } = {}): DraftSession & { bonus_points: number; kind: 'normale' | 'ripartenza' } {
+export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean; pain?: BodyZone[] } = {}): DraftSession & { bonus_points: number; kind: 'normale' | 'ripartenza' } {
   const level = opts.level ?? user.level;
   const lvl = content.level(level);
   if (opts.restart) {
@@ -65,15 +65,15 @@ export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: {
       minutes: r.sessionTemplate.minutes, intensity,
       title: r.title ?? 'Seduta di ripartenza',
       reason: `Più corta e leggera, per rimetterti in moto senza strafare. Completala e guadagni +${r.bonusPoints ?? 10} punti di costanza.`,
-      items: buildRuleItems({ level, template: r.sessionTemplate, minutes: r.sessionTemplate.minutes, intensity, profile, seed: date, easy: true }),
+      items: buildRuleItems({ level, template: r.sessionTemplate, minutes: r.sessionTemplate.minutes, intensity, profile, seed: date, easy: true, pain: opts.pain }),
     };
   }
   const minutes = Math.round(Math.min(Math.max(profile.minutesPerSession || lvl.sessionTemplate.minutes, 10), lvl.sessionTemplate.minutes * 1.5));
   return {
     kind: 'normale', bonus_points: 0, source: 'rules', minutes, intensity: user.intensity,
     title: ruleTitle(level),
-    reason: ruleReason({ level, minutes, templateMinutes: lvl.sessionTemplate.minutes }),
-    items: buildRuleItems({ level, template: lvl.sessionTemplate, minutes, intensity: user.intensity, profile, seed: date }),
+    reason: ruleReason({ level, minutes, templateMinutes: lvl.sessionTemplate.minutes, pain: opts.pain }),
+    items: buildRuleItems({ level, template: lvl.sessionTemplate, minutes, intensity: user.intensity, profile, seed: date, pain: opts.pain }),
   };
 }
 
@@ -109,21 +109,38 @@ export function sessionsPerWeek(user: UserRow, profile: Profile) {
 }
 
 /** Pianifica i giorni della settimana a partire da `from` (incluso), senza toccare quelli che hanno già una seduta. */
-export function planWeek(user: UserRow, profile: Profile, ws: string, from: string, opts: { includeFrom?: boolean } = {}) {
+export function planWeek(user: UserRow, profile: Profile, ws: string, from: string, opts: { includeFrom?: boolean; prefer?: string[]; pain?: BodyZone[] } = {}): string[] {
   const count = sessionsPerWeek(user, profile);
-  const existing = sessionsBetween(user.id, ws, addDays(ws, 6));
+  const existing = sessionsBetween(user.id, ws, addDays(ws, 6)).filter((s) => s.status !== 'skipped');
   const busy = new Set(existing.map((s) => s.date));
-  let days = PATTERNS[count].map((d) => addDays(ws, d)).filter((d) => d >= from);
-  if (opts.includeFrom && !days.includes(from)) days = [from, ...days];
-  const needed = Math.max(0, count - existing.filter((s) => s.kind === 'normale').length);
-  days = days.filter((d) => !busy.has(d)).slice(0, needed);
+  const weekEnd = addDays(ws, 6);
+  // ordine di preferenza: oggi (se richiesto), spazi liberi del calendario, schema della settimana
+  const candidates = [
+    ...(opts.includeFrom ? [from] : []),
+    ...(opts.prefer ?? []).filter((d) => d >= from && d >= ws && d <= weekEnd).sort(),
+    ...PATTERNS[count].map((d) => addDays(ws, d)).filter((d) => d >= from),
+  ].filter((d, i, arr) => arr.indexOf(d) === i && !busy.has(d));
+  const needed = Math.max(0, count - existing.length);
+  const taken = new Set(busy);
+  const days: string[] = [];
+  const adjacent = (d: string) => taken.has(addDays(d, -1)) || taken.has(addDays(d, 1));
+  // prima senza giorni consecutivi, poi se serve anche attaccati
+  for (const strict of [true, false]) {
+    for (const d of candidates) {
+      if (days.length >= needed) break;
+      if (taken.has(d) || (strict && adjacent(d))) continue;
+      days.push(d); taken.add(d);
+    }
+  }
+  if (opts.includeFrom && !days.includes(from) && !busy.has(from)) days.unshift(from);
   db.transaction(() => {
     for (const date of days) {
-      const d = ruleDraft(user, profile, date);
+      const d = ruleDraft(user, profile, date, { pain: opts.pain });
       insertSession(user.id, { date, level: user.level, ...d });
     }
     db.prepare('INSERT OR IGNORE INTO planned_weeks (user_id, week_start) VALUES (?, ?)').run(user.id, ws);
   })();
+  return days.sort();
 }
 
 export function ensureCurrentWeek(user: UserRow) {
@@ -255,3 +272,28 @@ export function evaluateWins(user: UserRow, at = today()): Win[] {
 
 export const isPast = (date: string) => date < today();
 export { weekday };
+
+/**
+ * Ripianifica da oggi in avanti (settimana corrente e, se serve, la prossima): toglie le sedute normali
+ * non ancora iniziate e le ricrea con il profilo aggiornato. Fatte, saltate e ripartenze restano.
+ */
+export function replanFrom(user: UserRow, profile: Profile, opts: { prefer?: string[]; pain?: BodyZone[]; weeks?: number } = {}): string[] {
+  const t = today();
+  const out: string[] = [];
+  const weeks = opts.weeks ?? 1;
+  // la seduta di oggi resta oggi (aggiornata), a meno che il calendario non indichi altri giorni
+  const todayRow = (db.prepare("SELECT * FROM sessions WHERE user_id = ? AND date = ? AND status = 'planned' AND checkin IS NULL").get(user.id, t)) as SessionRow | undefined;
+  const moveToday = !!opts.prefer?.length && !opts.prefer.includes(t);
+  if (todayRow && !moveToday) {
+    const d = ruleDraft(user, profile, t, { restart: todayRow.kind === 'ripartenza', pain: opts.pain });
+    updateSession(todayRow.id, { minutes: d.minutes, title: d.title, reason: d.reason, items: d.items, source: 'rules' });
+    out.push(t);
+  }
+  for (let w = 0; w < weeks; w++) {
+    const ws = addDays(weekStart(t), 7 * w);
+    const from = w === 0 ? (todayRow && !moveToday ? addDays(t, 1) : t) : ws;
+    db.prepare("DELETE FROM sessions WHERE user_id = ? AND status = 'planned' AND kind = 'normale' AND checkin IS NULL AND date >= ? AND date <= ?").run(user.id, from, addDays(ws, 6));
+    if (from <= addDays(ws, 6)) out.push(...planWeek(user, profile, ws, from, { prefer: opts.prefer, pain: opts.pain }));
+  }
+  return out;
+}

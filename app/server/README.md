@@ -41,18 +41,23 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 - `src/engine/store.ts`: sedute, pianificazione della settimana, costanza, prontezza, abitudini, vittorie (`content/wins.json` → `rule`).
 - `src/engine/actions.ts`: check-in (bandiere rosse prima di tutto), skip con ripartenza, complete, cambio di livello.
 - `src/engine/onboarding.ts`: conversazione con Claude e copione di riserva.
+- `src/engine/coach.ts`: chat libera con il coach (`POST /api/coach/message`), modifiche al profilo validate e applicate dal server, `applied` in italiano, riserva a regole.
+- `src/engine/calendar.ts`: iCal con `node-ical` (download con timeout 8 s, max 5 MB, cache 15 min, ricorrenze espanse, eventi di un giorno intero e "libero" ignorati), spazi liberi 6:30-22:00, proposta dei giorni senza giorni consecutivi.
+- `src/engine/redflags.ts`: bandiere rosse nel testo libero, deterministiche (parole chiave di `red_flags.json` più quelle di riserva, gestione semplice delle negazioni: "non ho febbre").
 - `src/engine/seed.ts`: profilo e prima settimana dopo l'onboarding, utente demo `demo`.
 
 ## Regole del motore (sicurezza)
 1. Bandiere rosse → `blocked`, senza chiamare l'AI.
 2. L'AI vede solo gli esercizi già filtrati e risponde con id: quelli sconosciuti vengono scartati, i dosaggi riportati nei limiti, riscaldamento e defaticamento garantiti. Con meno di 3 esercizi validi → seduta a regole.
 3. Zone doloranti → esercizio escluso, si risale la catena `regression`. Le `limitations` del profilo fanno solo preferire alternative.
-4. Testi brevi: `reason` di una frase (max 20 parole nel prompt, 160 caratteri tagliati dal server), dosaggi arrotondati, note di max 6 parole.
-5. Foto del piatto: frasi con numeri, calorie, peso o diete vengono scartate.
+4. Coach: il testo passa prima dal controllo delle bandiere rosse (se scatta: niente AI, seduta di oggi in pausa). L'AI propone `changes`, il server le valida (zone, attrezzatura, limiti 2-6 giorni e 10-45 minuti) e ripianifica; il livello non si cambia dalla chat. Al modello arrivano solo gli spazi liberi del calendario, mai gli eventi.
+5. Testi brevi: `reason` di una frase (max 20 parole nel prompt, 160 caratteri tagliati dal server), dosaggi arrotondati, note di max 6 parole.
+6. Foto del piatto: frasi con numeri, calorie, peso o diete vengono scartate.
 
 ## Note sul contratto
 - `GET /api/levels` risponde `{ "levels": [...], "current": 2 }` (un array JSON non può avere la chiave `current`).
 - `GET /api/health` aggiunge `model` e `content` (da dove arrivano i contenuti).
+- Calendario: errori con status 422 e `code` tra `bad_url`, `fetch_failed`, `not_ical`, `timeout`, `too_large`. L'URL resta nel profilo come `calendarUrl`. `GET /api/calendar/demo.ics` è un calendario di esempio (settimana di lavoro relativa a oggi) per provare la funzione senza il proprio.
 - In più: `POST /api/demo/reset` riporta l'utente demo allo stato iniziale (utile prima di registrare il video).
 
 ## Utente demo
