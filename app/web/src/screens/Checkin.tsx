@@ -10,6 +10,7 @@ import { BodyMap } from '../ui/BodyMap'
 import { Button, Card, ErrorBox, Header, RotatingText, Skeleton, Typewriter } from '../ui/kit'
 import { press, spring, stagger } from '../ui/motion'
 import { BonusBadge } from './Home'
+import { RPE } from './SegmentPlayer'
 
 const MINUTES = [10, 15, 20, 25, 30]
 const ENERGY = [
@@ -208,7 +209,7 @@ export function SessionPreview({ s }: { s: Session }) {
     <div>
       <motion.div layoutId={`session-${s.id}`} transition={spring.gentle} className="relative overflow-hidden rounded-[28px] bg-gradient-to-b from-petrolio to-acqua p-5 text-white shadow-soft">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-white/75">{s.minutes} minuti · {s.items.length} esercizi</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-white/75">{s.minutes} minuti · {s.segments?.length ? `${s.segments.length} segmenti` : `${s.items.length} esercizi`}</span>
           {s.bonusPoints > 0 && <BonusBadge points={s.bonusPoints} />}
         </div>
         <h2 className="font-title mt-1 text-[26px] leading-tight">{s.title}</h2>
@@ -222,6 +223,22 @@ export function SessionPreview({ s }: { s: Session }) {
           </div>
         )}
       </motion.div>
+      {s.segments && s.segments.length > 0 && (
+        <div className="mt-4 space-y-2.5">
+          {s.segments.map((g, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={stagger(i + 2, 0.07)}
+              className="flex items-center gap-3 rounded-[20px] bg-white/80 p-3 shadow-[0_6px_16px_-12px_rgb(44_105_117/.6)]">
+              <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl font-title text-lg ${(g.rpe ?? 0) >= 6 ? 'bg-sole/40 text-[#7a4f05]' : 'bg-salvia-chiaro text-petrolio'}`}>{g.rpe ?? '·'}</div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate font-semibold text-inchiostro">{g.repeat && g.repeat > 1 ? `${g.repeat} × ${g.label}` : g.label}</div>
+                <div className="text-xs text-inchiostro/60">
+                  {g.minutes} min{g.recovery ? ` + ${g.recovery.minutes} min ${g.recovery.label.toLowerCase()}` : ''}{g.rpe ? ` · ${RPE[g.rpe]}` : ''}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
       <div className="mt-4 space-y-2.5">
         {s.items.map((it, i) => (
           <motion.div key={it.exerciseId + i} initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={stagger(i + 2, 0.07)}

@@ -8,6 +8,7 @@ import { ExerciseFigure } from '../lib/motionFigure'
 import { useStore } from '../lib/store'
 import { useSession } from '../lib/useSession'
 import { Button, ErrorBox, Skeleton } from '../ui/kit'
+import SegmentPlayer from './SegmentPlayer'
 import { press, spring, vibrate } from '../ui/motion'
 
 type Phase = 'work' | 'rest'
@@ -28,6 +29,8 @@ export default function Player() {
 
   if (error) return <div className="pt-24"><ErrorBox message={error} /></div>
   if (!session || !items) return <div className="space-y-4 px-5 pt-20"><Skeleton className="h-64" /><Skeleton className="h-24" /></div>
+
+  if (session.segments?.length) return <SegmentPlayer session={session} />
 
   const it = items[idx]
   const total = items.length
