@@ -4,95 +4,256 @@
     "week": 1,
     "title": "Un bicchiere d'acqua a ogni pasto",
     "why": "Bere con regolarità aiuta energia e sazietà. È il gesto più semplice da cui partire.",
-    "tips": ["Tieni una bottiglia in vista sul tavolo", "Riempi il bicchiere prima di sederti", "Se l'acqua liscia ti annoia, prova con una fetta di limone"],
-    "photoPrompt": "Nella foto c'è un bicchiere o una bottiglia d'acqua vicino al piatto?"
+    "tips": [
+      "Tieni una bottiglia in vista sul tavolo",
+      "Riempi il bicchiere prima di sederti",
+      "Se l'acqua liscia ti annoia, prova con una fetta di limone"
+    ],
+    "photoPrompt": "Nella foto c'è un bicchiere o una bottiglia d'acqua vicino al piatto?",
+    "signals": [
+      {
+        "field": "sugaryDrinks",
+        "op": "in",
+        "value": [
+          "a_volte",
+          "spesso"
+        ],
+        "why": "Bevi spesso bibite: partiamo dall'acqua ai pasti, il gesto più semplice."
+      }
+    ]
   },
   {
     "id": "frutta_spuntino",
     "week": 2,
     "title": "Un frutto come spuntino",
     "why": "La frutta dà dolcezza, fibre e vitamine. Averla a portata di mano rende la scelta facile.",
-    "tips": ["Lascia un cesto di frutta in vista", "Porta un frutto in borsa quando esci", "Frutta di stagione: costa meno ed è più buona"],
-    "photoPrompt": "Nella foto c'è della frutta fresca?"
+    "tips": [
+      "Lascia un cesto di frutta in vista",
+      "Porta un frutto in borsa quando esci",
+      "Frutta di stagione: costa meno ed è più buona"
+    ],
+    "photoPrompt": "Nella foto c'è della frutta fresca?",
+    "signals": [
+      {
+        "field": "veggiesPerDay",
+        "op": "lte",
+        "value": 1,
+        "why": "Frutta e verdura sono poche nella tua giornata: partiamo da un frutto come spuntino."
+      },
+      {
+        "field": "breakfast",
+        "op": "eq",
+        "value": false,
+        "why": "Salti spesso la colazione: un frutto è un modo facile per cominciare."
+      }
+    ]
   },
   {
     "id": "verdura_un_pasto",
     "week": 3,
     "title": "Verdura in un pasto al giorno",
     "why": "La verdura riempie, nutre e aggiunge colore. Basta iniziare da un pasto.",
-    "tips": ["Verdure già lavate o surgelate fanno risparmiare tempo", "Un'insalata veloce va bene", "Aggiungi verdure al sugo della pasta"],
-    "photoPrompt": "Nel piatto c'è della verdura, cruda o cotta?"
+    "tips": [
+      "Verdure già lavate o surgelate fanno risparmiare tempo",
+      "Un'insalata veloce va bene",
+      "Aggiungi verdure al sugo della pasta"
+    ],
+    "photoPrompt": "Nel piatto c'è della verdura, cruda o cotta?",
+    "signals": [
+      {
+        "field": "veggiesPerDay",
+        "op": "lte",
+        "value": 1,
+        "why": "La verdura è ancora poca: aggiungiamola a un pasto al giorno."
+      }
+    ]
   },
   {
     "id": "mangiare_seduti",
     "week": 4,
     "title": "A tavola, senza schermi",
     "why": "Quando mangi con calma senti meglio il gusto e capisci prima quando sei sazio.",
-    "tips": ["Lascia il telefono in un'altra stanza", "Appoggia la forchetta tra un boccone e l'altro", "Inizia da un solo pasto al giorno"],
-    "photoPrompt": "Il pasto è servito in un piatto, a tavola, con calma?"
+    "tips": [
+      "Lascia il telefono in un'altra stanza",
+      "Appoggia la forchetta tra un boccone e l'altro",
+      "Inizia da un solo pasto al giorno"
+    ],
+    "photoPrompt": "Il pasto è servito in un piatto, a tavola, con calma?",
+    "signals": [
+      {
+        "field": "mealsOut",
+        "op": "gte",
+        "value": 5,
+        "why": "Mangi spesso fuori o di corsa: proviamo a goderci almeno un pasto con calma."
+      }
+    ]
   },
   {
     "id": "proteine_colazione",
     "week": 5,
     "title": "Una fonte di proteine a colazione",
     "why": "Le proteine al mattino aiutano a restare sazi più a lungo e sostengono i muscoli che stai allenando.",
-    "tips": ["Yogurt bianco con un po' di frutta", "Un uovo, anche sodo preparato la sera prima", "Pane integrale con ricotta o hummus"],
-    "photoPrompt": "Nella colazione c'è una fonte di proteine, come yogurt, uova, latte o legumi?"
+    "tips": [
+      "Yogurt bianco con un po' di frutta",
+      "Un uovo, anche sodo preparato la sera prima",
+      "Pane integrale con ricotta o hummus"
+    ],
+    "photoPrompt": "Nella colazione c'è una fonte di proteine, come yogurt, uova, latte o legumi?",
+    "signals": [
+      {
+        "field": "breakfast",
+        "op": "eq",
+        "value": false,
+        "why": "Salti spesso la colazione: partiamo da lì, con qualcosa che ti tenga sazio."
+      }
+    ]
   },
   {
     "id": "cereali_integrali",
     "week": 6,
     "title": "Cereali integrali al posto dei raffinati",
     "why": "Gli integrali danno energia più costante e più fibre.",
-    "tips": ["Inizia mescolando pasta integrale e normale", "Prova riso integrale, orzo o farro", "Leggi l'etichetta: 'integrale' deve essere il primo ingrediente"],
-    "photoPrompt": "Nel piatto ci sono cereali integrali, come pasta o pane integrale, farro o orzo?"
+    "tips": [
+      "Inizia mescolando pasta integrale e normale",
+      "Prova riso integrale, orzo o farro",
+      "Leggi l'etichetta: 'integrale' deve essere il primo ingrediente"
+    ],
+    "photoPrompt": "Nel piatto ci sono cereali integrali, come pasta o pane integrale, farro o orzo?",
+    "signals": [
+      {
+        "field": "cooks",
+        "op": "in",
+        "value": [
+          "a_volte",
+          "spesso"
+        ],
+        "why": "Cucini già: cambiare pasta o pane con quelli integrali è un passo facile."
+      }
+    ]
   },
   {
     "id": "legumi_settimana",
     "week": 7,
     "title": "Legumi almeno due volte a settimana",
     "why": "Ceci, lenticchie e fagioli sono proteine vegetali ricche di fibre, economiche e versatili.",
-    "tips": ["I legumi in barattolo sono già pronti: sciacquali e via", "Pasta e ceci o pasta e fagioli contano", "Prova un hummus come spuntino"],
-    "photoPrompt": "Nel piatto ci sono legumi, come ceci, lenticchie, fagioli o piselli?"
+    "tips": [
+      "I legumi in barattolo sono già pronti: sciacquali e via",
+      "Pasta e ceci o pasta e fagioli contano",
+      "Prova un hummus come spuntino"
+    ],
+    "photoPrompt": "Nel piatto ci sono legumi, come ceci, lenticchie, fagioli o piselli?",
+    "signals": [
+      {
+        "field": "cooks",
+        "op": "in",
+        "value": [
+          "a_volte",
+          "spesso"
+        ],
+        "why": "Visto che cucini, i legumi sono un'aggiunta semplice ed economica."
+      }
+    ]
   },
   {
     "id": "bevande_senza_zucchero",
     "week": 8,
     "title": "Bevande senza zucchero",
     "why": "Le bibite zuccherate non saziano. Sostituirle con acqua o tè è un cambio piccolo con un grande effetto.",
-    "tips": ["Acqua frizzante con agrumi è un buon sostituto", "Tè o tisane fredde fatte in casa, senza zucchero", "Se ti va una bibita, scegli il formato piccolo"],
-    "photoPrompt": "La bevanda accanto al piatto è acqua, tè o un'altra bevanda senza zucchero?"
+    "tips": [
+      "Acqua frizzante con agrumi è un buon sostituto",
+      "Tè o tisane fredde fatte in casa, senza zucchero",
+      "Se ti va una bibita, scegli il formato piccolo"
+    ],
+    "photoPrompt": "La bevanda accanto al piatto è acqua, tè o un'altra bevanda senza zucchero?",
+    "signals": [
+      {
+        "field": "sugaryDrinks",
+        "op": "eq",
+        "value": "spesso",
+        "why": "Le bibite zuccherate sono frequenti: sostituirle è il cambio con più effetto per te."
+      }
+    ]
   },
   {
     "id": "piatto_bilanciato",
     "week": 9,
     "title": "Il piatto in tre parti",
     "why": "Metà verdura, un quarto proteine e un quarto cereali: una guida visiva semplice, senza pesare niente.",
-    "tips": ["Riempi prima la metà con la verdura", "Le proteine possono essere pesce, uova, legumi, carne o formaggi", "Vale anche per un piatto unico: guarda le proporzioni"],
-    "photoPrompt": "Il piatto è diviso più o meno in metà verdura, un quarto proteine e un quarto cereali?"
+    "tips": [
+      "Riempi prima la metà con la verdura",
+      "Le proteine possono essere pesce, uova, legumi, carne o formaggi",
+      "Vale anche per un piatto unico: guarda le proporzioni"
+    ],
+    "photoPrompt": "Il piatto è diviso più o meno in metà verdura, un quarto proteine e un quarto cereali?",
+    "signals": [
+      {
+        "field": "veggiesPerDay",
+        "op": "lte",
+        "value": 2,
+        "why": "Il piatto in tre parti ti aiuta a dare spazio alla verdura senza contare niente."
+      }
+    ]
   },
   {
     "id": "spuntini_pianificati",
     "week": 10,
     "title": "Spuntini scelti in anticipo",
     "why": "Decidere prima cosa mangerai quando avrai fame ti evita scelte di fretta.",
-    "tips": ["Prepara la sera uno spuntino per il giorno dopo", "Buone idee: frutta, yogurt, una manciata di frutta secca", "Tieni qualcosa di semplice in borsa o in ufficio"],
-    "photoPrompt": "Lo spuntino nella foto è semplice e nutriente, come frutta, yogurt o frutta secca?"
+    "tips": [
+      "Prepara la sera uno spuntino per il giorno dopo",
+      "Buone idee: frutta, yogurt, una manciata di frutta secca",
+      "Tieni qualcosa di semplice in borsa o in ufficio"
+    ],
+    "photoPrompt": "Lo spuntino nella foto è semplice e nutriente, come frutta, yogurt o frutta secca?",
+    "signals": [
+      {
+        "field": "mealsOut",
+        "op": "gte",
+        "value": 4,
+        "why": "Sei spesso fuori casa: avere uno spuntino pronto evita le scelte di fretta."
+      }
+    ]
   },
   {
     "id": "cucinare_a_casa",
     "week": 11,
     "title": "Un pasto in più cucinato a casa",
     "why": "Cucinare ti fa scegliere gli ingredienti. Anche un piatto semplice conta.",
-    "tips": ["Cucina doppia porzione e tieni il resto per il giorno dopo", "Tieni in dispensa legumi, cereali e verdure surgelate", "Ricette da 15 minuti: frittata con verdure, pasta e legumi"],
-    "photoPrompt": "Il piatto sembra preparato in casa?"
+    "tips": [
+      "Cucina doppia porzione e tieni il resto per il giorno dopo",
+      "Tieni in dispensa legumi, cereali e verdure surgelate",
+      "Ricette da 15 minuti: frittata con verdure, pasta e legumi"
+    ],
+    "photoPrompt": "Il piatto sembra preparato in casa?",
+    "signals": [
+      {
+        "field": "cooks",
+        "op": "in",
+        "value": [
+          "mai",
+          "raramente"
+        ],
+        "why": "Cucini poco: proviamo con un pasto semplice in più a casa."
+      },
+      {
+        "field": "mealsOut",
+        "op": "gte",
+        "value": 6,
+        "why": "Mangi spesso fuori: un pasto in più a casa ti dà più scelta."
+      }
+    ]
   },
   {
     "id": "ascoltare_fame",
     "week": 12,
     "title": "Ascolta fame e sazietà",
     "why": "Mangiare quando hai fame e fermarti quando sei soddisfatto è un'abilità che si allena, come la corsa.",
-    "tips": ["A metà pasto fermati un momento e chiediti come stai", "Va bene lasciare qualcosa nel piatto", "Prima di uno spuntino chiediti: è fame o noia?"],
-    "photoPrompt": "La porzione sembra adatta a un pasto normale, né troppo scarsa né esagerata?"
+    "tips": [
+      "A metà pasto fermati un momento e chiediti come stai",
+      "Va bene lasciare qualcosa nel piatto",
+      "Prima di uno spuntino chiediti: è fame o noia?"
+    ],
+    "photoPrompt": "La porzione sembra adatta a un pasto normale, né troppo scarsa né esagerata?",
+    "signals": []
   }
 ]

@@ -16,6 +16,14 @@ const WIN_TYPES = {
 const MOTIONS = ['marcia', 'camminata_veloce', 'corsetta', 'corsa', 'scatto', 'squat', 'affondo', 'ponte', 'plank', 'flessioni_muro', 'polpacci', 'rotazioni_braccia', 'rotazioni_anche', 'allungamento', 'respirazione', 'jumping_jack', 'step'];
 const ICONS = ['star', 'flag', 'heart', 'bolt', 'leaf', 'trophy', 'sun', 'sprout', 'shoe', 'clock', 'camera', 'water', 'calendar', 'shield', 'medal', 'smile'];
 const FORBIDDEN_FOOD_WORDS = /calori|kcal|\bpeso\b|chil[oi]|dimagr|bilancia\b|grass[oi] corpore/i;
+// mini-onboarding alimentare (profile.food): valori ammessi
+const FOOD_FIELDS = {
+  breakfast: (v) => typeof v === 'boolean',
+  veggiesPerDay: (v) => isInt(v, 0, 10),
+  sugaryDrinks: (v) => ['mai', 'a_volte', 'spesso'].includes(v),
+  mealsOut: (v) => isInt(v, 0, 21),
+  cooks: (v) => ['mai', 'raramente', 'a_volte', 'spesso'].includes(v),
+};
 const ID_RE = /^[a-z0-9]+(_[a-z0-9]+)*$/;
 
 const errors = [];
@@ -235,8 +243,36 @@ if (habits) {
       for (const k of ['title', 'why', 'photoPrompt']) if (!isStr(h[k])) err(w, `${k} mancante`);
       if (!strArr(h.tips, 2)) err(w, 'servono almeno 2 tips');
       if (FORBIDDEN_FOOD_WORDS.test(JSON.stringify(h))) err(w, 'niente calorie, peso o bilancia');
+      if (!Array.isArray(h.signals)) err(w, 'signals deve essere un array (anche vuoto)');
+      else for (const sg of h.signals) {
+        if (!(sg.field in FOOD_FIELDS)) err(w, `signal: campo sconosciuto ${sg.field}`);
+        else if (!['eq', 'in', 'lte', 'gte'].includes(sg.op)) err(w, `signal: op non valido ${sg.op}`);
+        else {
+          const vals = sg.op === 'in' ? sg.value : [sg.value];
+          if (!Array.isArray(vals) || !vals.every((v) => FOOD_FIELDS[sg.field](v))) err(w, `signal ${sg.field}: valore non valido ${JSON.stringify(sg.value)}`);
+        }
+        if (!isStr(sg.why)) err(w, 'signal senza why');
+      }
     });
   }
+}
+
+// --- fuel.json ---
+const fuel = load('fuel.json');
+if (fuel) {
+  const slots = Object.keys(fuel.slots ?? {});
+  const types = Object.keys(fuel.types ?? {});
+  if (slots.join() !== 'mattina,pranzo,sera') err('fuel.json', 'slots: mattina, pranzo, sera');
+  if (!['leggera', 'forza', 'corsa', 'corsa_lunga'].every((t) => types.includes(t))) err('fuel.json', 'types: leggera, forza, corsa, corsa_lunga');
+  for (const sl of slots) for (const t of types) {
+    const a = (fuel.advice ?? []).filter((x) => x.slot === sl && x.type === t);
+    if (a.length !== 1) err('fuel.json', `serve un consiglio per ${sl}/${t}`);
+    else if (!isStr(a[0].before) || !isStr(a[0].after)) err('fuel.json', `${sl}/${t}: before e after obbligatori`);
+  }
+  for (const k of ['corsa', 'forza', 'mobilita']) if (!isStr(fuel.trackNotes?.[k])) err('fuel.json', `trackNotes.${k} mancante`);
+  if (!isStr(fuel.safety)) err('fuel.json', 'safety mancante');
+  const txt = JSON.stringify(fuel.advice) + JSON.stringify(fuel.trackNotes);
+  if (FORBIDDEN_FOOD_WORDS.test(txt) || /\d+\s*(g|gr|grammi|ml|kcal)\b/i.test(txt)) err('fuel.json', 'niente quantità, calorie o peso');
 }
 
 // --- red_flags.json ---

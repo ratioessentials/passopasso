@@ -1,0 +1,103 @@
+{
+  "note": "Consigli di tempistica prima e dopo la seduta. Qualitativi: mai quantità, calorie o grammi. Il server sceglie la voce per fascia oraria (slot) e tipo di seduta (type).",
+  "slots": {
+    "mattina": {
+      "from": "05:00",
+      "to": "11:00"
+    },
+    "pranzo": {
+      "from": "11:00",
+      "to": "15:00"
+    },
+    "sera": {
+      "from": "15:00",
+      "to": "23:30"
+    }
+  },
+  "types": {
+    "leggera": "Livelli 1-2, percorso mobilità, sedute di ripartenza e corse facili sotto i 30 minuti",
+    "forza": "Sedute del percorso forza e forza di supporto dei corridori",
+    "corsa": "Corse dai 30 minuti in su, ripetute e progressivi",
+    "corsa_lunga": "Il lungo della settimana (livelli 4-5 del percorso corsa)"
+  },
+  "advice": [
+    {
+      "slot": "mattina",
+      "type": "leggera",
+      "before": "Puoi partire anche a digiuno, se ti senti bene. Un bicchiere d'acqua appena sveglio aiuta.",
+      "after": "Una colazione normale, con un po' di frutta e qualcosa di proteico come yogurt o latte."
+    },
+    {
+      "slot": "mattina",
+      "type": "forza",
+      "before": "Qualcosa di leggero, come un frutto o uno yogurt, se ti alleni subito dopo la sveglia.",
+      "after": "Colazione con una fonte di proteine (uova, yogurt, latte o ricotta) e pane o fiocchi d'avena."
+    },
+    {
+      "slot": "mattina",
+      "type": "corsa",
+      "before": "Un frutto o una fetta di pane con un velo di miele, una mezz'ora prima. Acqua a piccoli sorsi.",
+      "after": "Colazione vera, con carboidrati e proteine: per esempio pane, yogurt e frutta."
+    },
+    {
+      "slot": "mattina",
+      "type": "corsa_lunga",
+      "before": "Una piccola colazione facile da digerire almeno un'ora prima: pane o fette biscottate con marmellata, e acqua.",
+      "after": "Bevi con calma e fai una colazione abbondante quanto senti di aver bisogno, con carboidrati e proteine."
+    },
+    {
+      "slot": "pranzo",
+      "type": "leggera",
+      "before": "Niente di speciale: se la colazione è stata leggera, un frutto a metà mattina.",
+      "after": "Pranzo normale, con verdura, una fonte di proteine e cereali."
+    },
+    {
+      "slot": "pranzo",
+      "type": "forza",
+      "before": "Uno spuntino a metà mattina, come frutta o yogurt, così non arrivi alla seduta con la fame.",
+      "after": "Un pranzo con il piatto in tre parti: verdura, proteine e cereali."
+    },
+    {
+      "slot": "pranzo",
+      "type": "corsa",
+      "before": "Uno spuntino semplice a metà mattina, come un frutto o qualche cracker.",
+      "after": "Pranzo con cereali e una fonte di proteine. Bevi bene nel pomeriggio."
+    },
+    {
+      "slot": "pranzo",
+      "type": "corsa_lunga",
+      "before": "Una colazione completa e uno spuntino facile a metà mattina. Evita cibi molto grassi o piccanti.",
+      "after": "Pranzo ricco di carboidrati e proteine, con verdura. Ricordati di bere."
+    },
+    {
+      "slot": "sera",
+      "type": "leggera",
+      "before": "Se il pranzo è lontano, uno spuntino leggero nel pomeriggio.",
+      "after": "Cena normale. Niente da recuperare: è stata una seduta leggera."
+    },
+    {
+      "slot": "sera",
+      "type": "forza",
+      "before": "Uno spuntino nel pomeriggio, per esempio frutta e una manciata di frutta secca.",
+      "after": "Cena con una fonte di proteine (pesce, uova, legumi, carne o formaggi) e verdura."
+    },
+    {
+      "slot": "sera",
+      "type": "corsa",
+      "before": "Uno spuntino leggero un'ora o due prima, facile da digerire. Evita di correre subito dopo un pasto pesante.",
+      "after": "Cena con cereali, proteine e verdura. Bevi un bicchiere d'acqua appena rientri."
+    },
+    {
+      "slot": "sera",
+      "type": "corsa_lunga",
+      "before": "Pranzo completo e uno spuntino facile nel pomeriggio. Porta dell'acqua se fa caldo.",
+      "after": "Cena con carboidrati e proteine, e un po' di verdura. Dormire bene stanotte fa parte del recupero."
+    }
+  ],
+  "trackNotes": {
+    "corsa": "Correndo di più, i carboidrati sono il tuo carburante: pane, pasta, riso e patate non sono nemici.",
+    "forza": "Per la forza conta distribuire le proteine nei pasti della giornata, non solo dopo la seduta.",
+    "mobilita": "Per la mobilità non servono accorgimenti speciali: bevi con regolarità e mangia come al solito."
+  },
+  "safety": "Se hai una condizione medica, un disturbo alimentare o segui una dieta prescritta, valgono le indicazioni del tuo medico o del tuo dietista."
+}
