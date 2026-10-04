@@ -30,6 +30,7 @@ const widget = await api('GET', '/api/widget/demo');
 check('widget pubblico', widget.status === 200 && widget.json.week.length === 7, JSON.stringify(widget.json?.week?.map((d) => d.status)));
 const progress = await api('GET', '/api/progress', { user: 'demo' });
 check('demo: /progress', progress.status === 200 && progress.json.sessionsDone > 0, `${progress.json?.sessionsDone} sedute, ${progress.json?.minutesTotal} min`);
+check('demo: Allora / Adesso', JSON.stringify(progress.json?.thenNow?.map((x) => [x.then, x.now])) === '[[9,14],[8,20],[1,3]]', JSON.stringify(progress.json?.thenNow?.map((x) => `${x.then}→${x.now}`)));
 const runner = await api('GET', '/api/me', { user: 'demo-runner' });
 const segs = runner.json?.today?.segments;
 check('demo-runner: livello 4, corsa a segmenti', runner.status === 200 && runner.json.level.n === 4 && Array.isArray(segs) && segs.length >= 3, `${runner.json?.today?.title}, ${runner.json?.today?.minutes} min`);
@@ -163,8 +164,6 @@ const zero = await api('GET', '/api/session-zero');
 check('seduta zero senza utente', zero.status === 200 && zero.json.minutes === 5 && zero.json.items.length >= 4);
 const zd = await api('POST', '/api/session-zero/done');
 check('seduta zero fatta → utente e vittoria', zd.status === 200 && /^u_/.test(zd.json.userId) && !!zd.json.win?.title, zd.json?.win?.title);
-const prog = await api('GET', '/api/progress', { user: 'demo' });
-check('demo: Allora / Adesso', JSON.stringify(prog.json?.thenNow?.map((x) => [x.then, x.now])) === '[[9,14],[8,20],[1,3]]', JSON.stringify(prog.json?.thenNow?.map((x) => `${x.then}→${x.now}`)));
 
 // --- Ottava ondata: perché, 10 minuti invece di niente, coach proattivo, percorso alimentare ---
 check('onboarding: il perché nel profilo', typeof onboarding.json?.profile?.why === 'string' || onboarding.json?.profile?.why === null, onboarding.json?.profile?.why ?? '(non detto)');
