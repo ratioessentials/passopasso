@@ -75,5 +75,19 @@
     "source": "Jones, Rikli & Beam, Research Quarterly for Exercise and Sport 1999",
     "url": "https://pubmed.ncbi.nlm.nih.gov/10380242/",
     "inApp": "Il test di prontezza prima del passaggio di livello"
+  },
+  {
+    "id": "prontezza",
+    "claim": "Sonno, battito a riposo e variabilità del battito, confrontati con la tua media, dicono quando spingere e quando recuperare",
+    "source": "Buchheit, Frontiers in Physiology 2014; Plews et al., Sports Medicine 2013",
+    "url": "https://www.frontiersin.org/articles/10.3389/fphys.2014.00073/full",
+    "inApp": "La prontezza del giorno che precompila l'energia nel check-in"
+  },
+  {
+    "id": "niente_dark_pattern",
+    "claim": "Rinnovi nascosti e disdette difficili costano cari alla fiducia (e non solo): Noom ha chiuso una class action da 56 milioni di dollari",
+    "source": "Athletech News 2022; FTC, regola 'Click to Cancel' 2024",
+    "url": "https://athletechnews.com/noom-class-action-settlement/",
+    "inApp": "Piani Free e Plus con prezzo chiaro, disdetta in un tocco e sicurezza sempre gratis"
   }
 ]

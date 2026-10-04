@@ -17,6 +17,8 @@ node content/validate.mjs
 | `copy.json` | microtesti dell'app (segnaposto tra graffe: `{name}`, `{level}`, `{verb}`, `{points}`, `{track}`, `{label}`, `{rpe}`) |
 | `fuel.json` | consigli prima e dopo la seduta per fascia oraria (`slots`) e tipo (`leggera`, `forza`, `corsa`, `corsa_lunga`), note per percorso, frase di sicurezza |
 | `tests.json` | test di prontezza: `sit_to_stand_30s` (fasce per età e sesso) e `marcia_1min` (scala dello sforzo 0-10) |
+| `readiness.json` | prontezza del giorno: segnali (sonno < 6 h, battito a riposo +8%, HRV −15% sulla baseline di 14 giorni), punteggio, livelli, energia suggerita, riposo consigliato dopo 3 giorni, giorno attivo dai passi, fonti |
+| `plans.json` | piani Free e Plus, cosa resta sempre gratis, promesse anti-dark-pattern (`demo: true` → tutto sbloccato) |
 | `science.json` | le scelte di design con la fonte (per `GET /api/science`) |
 
 ## Note per il backend (chat 2)
@@ -47,6 +49,12 @@ node content/validate.mjs
 ## Alimentazione
 - `habits.json` → `signals`: condizioni sul mini-onboarding (`profile.food`) che rendono prioritaria l'abitudine, ognuna con `why` già pronto per la risposta. `op`: `eq`, `in`, `lte`, `gte`. Valori attesi: `breakfast` booleano, `veggiesPerDay` 0-10, `sugaryDrinks` `mai|a_volte|spesso`, `mealsOut` 0-21 a settimana, `cooks` `mai|raramente|a_volte|spesso`. Senza segnali che scattano si segue `week`.
 - `fuel.json`: il server sceglie lo slot dall'orario della seduta e il tipo dalla seduta; `trackNotes` e `safety` si possono aggiungere sotto.
+
+## Prontezza (`readiness.json`)
+- Baseline: media degli ultimi 14 giorni escluso oggi; servono almeno `baseline.minDays` giorni per i segnali relativi (battito, HRV); il sonno ha una soglia assoluta.
+- Punteggio = `score.start` − `penalty` dei segnali attivi (minimo `score.min`); livello = primo di `levels` con `minScore` ≤ punteggio. `suggestedEnergy` = `energyBySignals[numero di segnali]`. Esempio di api.md: sonno corto + battito alto → 62, media, energia 2.
+- `restAdvised` con almeno `minSignals` segnali per `consecutiveDays` giorni di fila; testi pronti in `restAdvised.text` e `medicalText`.
+- Segnaposto nei testi: `{hours}` (es. "5h40"), `{pct}`, `{steps}`.
 
 ## Tipi di condizione delle vittorie (`wins.json` → `rule`)
 Ogni vittoria ha `condition` (testo per l'utente) e `rule` (per il calcolo). Si assegna una volta sola, quando la regola diventa vera.

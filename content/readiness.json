@@ -1,0 +1,99 @@
+{
+  "note": "Prontezza del giorno, calcolata in modo deterministico dai dati del corpo rispetto alla baseline personale. Non è una diagnosi: orienta la seduta e il check-in.",
+  "baseline": {
+    "days": 14,
+    "minDays": 5,
+    "method": "media degli ultimi 14 giorni, escluso oggi; senza almeno minDays giorni valgono solo le soglie assolute"
+  },
+  "signals": [
+    {
+      "id": "sonno_corto",
+      "metric": "sleepMinutes",
+      "rule": "below",
+      "value": 360,
+      "penalty": 18,
+      "text": "Sonno {hours} (meno del solito)",
+      "textNoBaseline": "Sonno {hours}"
+    },
+    {
+      "id": "battito_alto",
+      "metric": "restingHr",
+      "rule": "aboveBaselinePct",
+      "value": 8,
+      "penalty": 20,
+      "text": "Battito a riposo +{pct}%"
+    },
+    {
+      "id": "hrv_bassa",
+      "metric": "hrv",
+      "rule": "belowBaselinePct",
+      "value": 15,
+      "penalty": 20,
+      "text": "Variabilità del battito −{pct}%"
+    }
+  ],
+  "score": {
+    "start": 100,
+    "min": 20,
+    "rule": "start meno le penalty dei segnali attivi"
+  },
+  "levels": [
+    {
+      "id": "alta",
+      "minScore": 80,
+      "suggestion": "I tuoi dati dicono che hai recuperato bene. Seduta piena, se ti va."
+    },
+    {
+      "id": "media",
+      "minScore": 55,
+      "suggestion": "Oggi ti propongo una seduta leggera."
+    },
+    {
+      "id": "bassa",
+      "minScore": 0,
+      "suggestion": "Il corpo chiede recupero: oggi camminata e mobilità."
+    }
+  ],
+  "energyBySignals": {
+    "0": 4,
+    "1": 3,
+    "2": 2,
+    "3": 2
+  },
+  "restAdvised": {
+    "consecutiveDays": 3,
+    "minSignals": 2,
+    "text": "Da qualche giorno i tuoi dati dicono che sei sotto sforzo. Oggi riposo vero: ti fa bene.",
+    "medicalText": "Se hai febbre o non ti senti bene, senti il tuo medico prima di riprendere."
+  },
+  "activeDay": {
+    "minSteps": 7000,
+    "maxLevel": 2,
+    "maxPerWeek": 2,
+    "text": "Giornata attiva: {steps} passi. Conta per la tua costanza."
+  },
+  "noData": "Nessun dato di oggi: il check-in lo fai tu, come sempre.",
+  "sources": [
+    {
+      "claim": "Il battito a riposo che sale di qualche punto sulla propria media è un segnale semplice di fatica o di malattia in arrivo",
+      "source": "Buchheit, Frontiers in Physiology 2014",
+      "url": "https://www.frontiersin.org/articles/10.3389/fphys.2014.00073/full"
+    },
+    {
+      "claim": "La variabilità del battito confrontata con la propria media aiuta a decidere quando spingere e quando recuperare",
+      "source": "Plews et al., Sports Medicine 2013",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23852425/"
+    },
+    {
+      "claim": "Battito a riposo e sonno misurati dai wearable cambiano nei giorni di malattia",
+      "source": "Radin et al., The Lancet Digital Health 2020",
+      "url": "https://www.thelancet.com/journals/landig/article/PIIS2589-7500(19)30222-5/fulltext"
+    },
+    {
+      "claim": "Gli adulti hanno bisogno di 7-9 ore di sonno; sotto le 6 il recupero ne risente",
+      "source": "Hirshkowitz et al., National Sleep Foundation, Sleep Health 2015",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29073412/"
+    }
+  ],
+  "energyNote": "suggestedEnergy (1-5) per il check-in dipende dal numero di segnali attivi: energyBySignals"
+}

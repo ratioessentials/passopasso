@@ -24,3 +24,18 @@ Non sostituiscono il parere di un medico.
 ## Motivazione
 - **Lally et al. (2010)**: un'abitudine richiede in mediana 66 giorni e saltare un giorno non la compromette. Da qui il punteggio di costanza invece della streak. https://www.researchgate.net/publication/32898894
 - **Milkman et al. (Nature, 2021)**: l'intervento più efficace premiava chi riprende dopo una seduta saltata. Da qui la seduta di ripartenza con bonus. https://www.nia.nih.gov/news/testing-ways-encourage-exercise
+
+## Prontezza del giorno (dati del corpo)
+- **Buchheit (2014)**, monitorare lo stato di allenamento con il battito. https://www.frontiersin.org/articles/10.3389/fphys.2014.00073/full
+- **Plews et al. (2013)**, variabilità del battito e adattamento all'allenamento. https://pubmed.ncbi.nlm.nih.gov/23852425/
+- **Radin et al. (2020)**, battito a riposo e sonno dai wearable nei giorni di malattia. https://www.thelancet.com/journals/landig/article/PIIS2589-7500(19)30222-5/fulltext
+- **Hirshkowitz et al. (2015)**, National Sleep Foundation: ore di sonno raccomandate. https://pubmed.ncbi.nlm.nih.gov/29073412/
+
+## Test di prontezza e progressione della corsa
+- **Jones, Rikli & Beam (1999)**, 30-second chair stand; fasce normali dal Senior Fitness Test di Rikli & Jones. https://pubmed.ncbi.nlm.nih.gov/10380242/ (sotto i 60 anni i target sono una stima prudente)
+- **Borg (1982)**, scala dello sforzo percepito. https://pubmed.ncbi.nlm.nih.gov/7154893/
+- **Nielsen et al. (2014)**, aumento rapido del volume di corsa e infortuni. https://www.jospt.org/doi/10.2519/jospt.2014.5164
+
+## Abbonamenti senza dark pattern
+- Noom, accordo da 56 milioni di dollari sui rinnovi automatici. https://athletechnews.com/noom-class-action-settlement/
+- FTC, regola "Click to Cancel" (2024).

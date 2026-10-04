@@ -1,0 +1,81 @@
+{
+  "demo": true,
+  "demoNote": "Nella demo è tutto sbloccato.",
+  "currency": "EUR",
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "tagline": "Per iniziare, davvero gratis",
+      "priceMonthly": 0,
+      "priceYearly": 0,
+      "features": [
+        "Livelli 1 e 2 di tutti i percorsi",
+        "Check-in con mappa dei dolori e bandiere rosse",
+        "Seduta di ripartenza con bonus",
+        "Abitudine alimentare della settimana",
+        "Coach: 5 messaggi a settimana",
+        "Foto del piatto: 3 a settimana"
+      ],
+      "limits": {
+        "maxLevel": 2,
+        "coachMessagesPerWeek": 5,
+        "mealPhotosPerWeek": 3
+      }
+    },
+    {
+      "id": "plus",
+      "name": "Plus",
+      "tagline": "Tutto il percorso, al tuo ritmo",
+      "priceMonthly": 4.99,
+      "priceYearly": 39.99,
+      "priceNote": "Prezzo indicativo, IVA inclusa",
+      "features": [
+        "Tutti i 5 livelli e i 3 percorsi",
+        "Coach senza limiti",
+        "Calendario collegato",
+        "Salute e dispositivi: Apple Salute, Strava e in futuro gli altri",
+        "Test di prontezza e sedute di corsa a segmenti",
+        "Foto del piatto senza limiti e riepilogo settimanale"
+      ],
+      "limits": null
+    }
+  ],
+  "alwaysFree": [
+    "Le bandiere rosse e lo screening di salute",
+    "La seduta di ripartenza",
+    "Esportare e cancellare i tuoi dati"
+  ],
+  "promises": [
+    {
+      "id": "no_trappole",
+      "title": "Nessuna prova che si rinnova a tradimento",
+      "text": "Se provi Plus, ti avvisiamo prima che inizi a pagare. Niente sorprese sull'estratto conto."
+    },
+    {
+      "id": "un_tocco",
+      "title": "Cancelli in un tocco",
+      "text": "Dall'app, senza telefonate, moduli o domande insistenti."
+    },
+    {
+      "id": "prezzo_chiaro",
+      "title": "Prezzo chiaro prima",
+      "text": "Vedi quanto paghi prima di scegliere, IVA inclusa. Nessun costo nascosto."
+    },
+    {
+      "id": "dati_tuoi",
+      "title": "I dati restano tuoi",
+      "text": "Anche se smetti: li esporti o li cancelli quando vuoi."
+    },
+    {
+      "id": "niente_pubblicita",
+      "title": "Niente pubblicità",
+      "text": "Non vendiamo i tuoi dati e non ti mostriamo annunci."
+    },
+    {
+      "id": "sicurezza_gratis",
+      "title": "La sicurezza non si paga",
+      "text": "Screening di salute, bandiere rosse e ripartenza sono gratis per tutti, sempre."
+    }
+  ]
+}

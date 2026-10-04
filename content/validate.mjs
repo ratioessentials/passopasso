@@ -313,6 +313,37 @@ if (science) {
   }
 }
 
+// --- readiness.json ---
+const readiness = load('readiness.json');
+if (readiness) {
+  const w = 'readiness.json';
+  const sig = readiness.signals ?? [];
+  const metrics = Object.fromEntries(sig.map((s) => [s.metric, s]));
+  if (metrics.sleepMinutes?.rule !== 'below' || metrics.sleepMinutes?.value !== 360) err(w, 'sonno: below 360 minuti (6 h)');
+  if (metrics.restingHr?.rule !== 'aboveBaselinePct' || metrics.restingHr?.value !== 8) err(w, 'battito a riposo: +8% sulla baseline');
+  if (metrics.hrv?.rule !== 'belowBaselinePct' || metrics.hrv?.value !== 15) err(w, 'HRV: -15% sulla baseline');
+  for (const s of sig) if (!isStr(s.id) || !isStr(s.text) || !isInt(s.penalty, 1, 50)) err(w, `segnale ${s.id}: id, text e penalty obbligatori`);
+  if (readiness.restAdvised?.consecutiveDays !== 3) err(w, 'restAdvised: 3 giorni consecutivi');
+  const lv = readiness.levels ?? [];
+  if (lv.map((l) => l.id).join() !== 'alta,media,bassa') err(w, 'levels: alta, media, bassa');
+  for (let n = 0; n <= sig.length; n++) if (!isInt(readiness.energyBySignals?.[n], 1, 5)) err(w, `energyBySignals.${n} mancante`);
+  // esempio di api.md: sonno corto + battito alto → media, energia 2
+  const score = readiness.score.start - metrics.sleepMinutes.penalty - metrics.restingHr.penalty;
+  const level = lv.find((l) => score >= l.minScore)?.id;
+  if (level !== 'media' || readiness.energyBySignals['2'] !== 2) err(w, `due segnali devono dare prontezza media ed energia 2 (ora ${level}, ${readiness.energyBySignals['2']})`);
+  if (!Array.isArray(readiness.sources) || readiness.sources.length < 2 || !readiness.sources.every((s) => /^https:/.test(s.url))) err(w, 'servono almeno 2 fonti con link');
+}
+
+// --- plans.json ---
+const plans = load('plans.json');
+if (plans) {
+  const ids = (plans.plans ?? []).map((p) => p.id).join();
+  if (ids !== 'free,plus') err('plans.json', 'piani: free, plus');
+  for (const p of plans.plans ?? []) if (!isStr(p.name) || !strArr(p.features, 3) || typeof p.priceMonthly !== 'number') err('plans.json', `${p.id}: name, features e priceMonthly obbligatori`);
+  if (!Array.isArray(plans.promises) || plans.promises.length < 4) err('plans.json', 'servono almeno 4 promesse anti-dark-pattern');
+  if (typeof plans.demo !== 'boolean') err('plans.json', 'demo deve essere booleano');
+}
+
 // --- red_flags.json ---
 const flags = load('red_flags.json');
 const allKeywords = [];
