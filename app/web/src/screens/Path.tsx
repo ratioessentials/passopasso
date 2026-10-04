@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { api } from '../api/client'
 import type { LevelsResponse } from '../api/types'
-import { LEVELS } from '../content/copy'
+import { LEVELS, levelInfo, TRACK_LABELS } from '../content/copy'
 import { useStore } from '../lib/store'
 import { Button, ErrorBox, Header, LevelIcon } from '../ui/kit'
 import { spring, stagger } from '../ui/motion'
@@ -16,11 +16,14 @@ export default function Path() {
   useEffect(() => { api.levels().then(setData).catch((e: Error) => setError(e.message)) }, [])
 
   const current = data?.current ?? me?.level.n ?? 1
+  const track = me?.profile?.track
+  // il server può già mandare i verbi del percorso; altrimenti si usano quelli di riserva
+  const verbOf = (n: number, v: string) => (v !== LEVELS[n - 1]?.verb ? v : levelInfo(n, track).verb)
   const levels = data?.levels?.length ? data.levels : LEVELS.map((l) => ({ ...l, goal: '', weeks: [2, 3] as [number, number], sessionsPerWeek: 3 }))
 
   return (
     <div className="min-h-full bg-gradient-to-b from-salvia via-salvia-chiaro to-white pb-tabbar">
-      <Header title="Il tuo percorso" subtitle="Si sale per prontezza, non per calendario. E non si torna mai a zero." />
+      <Header title={track ? `Percorso ${TRACK_LABELS[track] ?? track}` : 'Il tuo percorso'} subtitle="Si sale per prontezza, non per calendario. E non si torna mai a zero." />
       {error && <ErrorBox message={error} />}
       <div className="relative px-5 pt-2">
         {/* linea del percorso */}
@@ -43,7 +46,7 @@ export default function Path() {
                     {state === 'now' && <span className="rounded-full bg-petrolio px-2 py-0.5 text-[11px] font-bold text-white">sei qui</span>}
                   </div>
                   <div className="font-title text-[22px] leading-tight text-inchiostro">{l.name}</div>
-                  <div className="text-sm font-semibold text-petrolio">{l.verb}</div>
+                  <div className="text-sm font-semibold text-petrolio">{verbOf(l.n, l.verb)}</div>
                   {l.goal && <p className="mt-1 text-[13px] leading-snug text-inchiostro/65">{l.goal}</p>}
                   {state === 'now' && me && (
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-petrolio/10">
@@ -59,6 +62,7 @@ export default function Path() {
       <div className="px-5">
         {me?.level.ready && <Button className="mt-6 w-full" onClick={() => nav('/test')}>✨ Fai il test di prontezza</Button>}
         <Button variant="light" className="mt-3 w-full" onClick={() => nav('/progressi')}>📈 Guarda i tuoi progressi</Button>
+        <Button variant="ghost" className="mt-1 w-full" onClick={() => nav('/scienza')}>🔬 Perché funziona</Button>
       </div>
     </div>
   )

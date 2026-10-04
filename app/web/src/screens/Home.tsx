@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { api } from '../api/client'
 import type { Session } from '../api/types'
-import { winIcon } from '../content/copy'
+import { levelInfo, winIcon } from '../content/copy'
 import { useStore } from '../lib/store'
 import { AnimatedNumber, Button, Card, ConsistencyRing, ErrorBox, LevelIcon, MeshBackground, Pill, Skeleton } from '../ui/kit'
 import { press, spring, stagger } from '../ui/motion'
@@ -58,7 +58,7 @@ export default function Home() {
             <div>
               <div className="text-xs font-semibold uppercase tracking-wider text-white/75">Livello {level.n}</div>
               <div className="font-title text-[24px] leading-tight">{level.name}</div>
-              <div className="text-sm text-white/80">{level.verb}</div>
+              <div className="text-sm text-white/80">{level.verb !== levelInfo(level.n).verb ? level.verb : levelInfo(level.n, profile?.track).verb}</div>
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/25">
               <motion.div className="h-full origin-left rounded-full bg-white" initial={{ scaleX: 0 }} animate={{ scaleX: Math.max(0.04, level.progress) }} transition={{ ...spring.slow, delay: 0.3 }} />

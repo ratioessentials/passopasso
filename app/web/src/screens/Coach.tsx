@@ -239,6 +239,8 @@ function CalendarSheet({ onClose, onMove }: { onClose: () => void; onMove: () =>
 
 export const COACH_MENU: { to: string; icon: string; title: string; sub: string }[] = [
   { to: '/coach/scheda', icon: '🪪', title: 'La mia scheda', sub: 'Età, corpo, lavoro, sonno e salute' },
+  { to: '/coach/dati', icon: '🔒', title: 'I miei dati', sub: 'Scarica, aggiungi al calendario, cancella' },
+  { to: '/scienza', icon: '🔬', title: 'Perché funziona', sub: 'Le scelte dell\'app, con le fonti' },
 ]
 
 function CoachMenu({ onClose, onCalendar }: { onClose: () => void; onCalendar: () => void }) {
