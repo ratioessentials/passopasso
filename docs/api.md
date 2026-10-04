@@ -87,7 +87,7 @@ Riorganizza la settimana e propone una seduta di ripartenza con bonus.
 Accetta il passaggio al livello proposto. → `GET /api/me` aggiornato.
 
 ### `GET /api/levels`
-→ `[ /* Livello da program.json */ ]` più `"current": 2` per disegnare il percorso.
+→ `{ "levels": [ /* Livello da program.json */ ], "current": 2 }` per disegnare il percorso.
 
 ### `GET /api/progress`
 ```json
@@ -110,6 +110,12 @@ Accetta il passaggio al livello proposto. → `GET /api/me` aggiornato.
 // risposta: feedback qualitativo, MAI calorie o numeri
 { "positives": ["Tanta verdura colorata"], "suggestion": "Prova ad aggiungere una fonte di proteine.", "habitMatch": true, "tone": "incoraggiante" }
 ```
+
+### `GET /api/red-flags`
+→ `[ /* RedFlag */ ]` da `content/red_flags.json`, per le caselle del check-in. Un id sconosciuto inviato al check-in blocca comunque la seduta, per prudenza.
+
+### `POST /api/demo/reset`
+Riporta l'utente `demo` allo stato iniziale (da usare prima di registrare o presentare). Il demo si resetta anche da solo dopo 30 minuti senza modifiche.
 
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
