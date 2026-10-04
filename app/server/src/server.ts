@@ -15,7 +15,7 @@ import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncS
 import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
 import { applyAction, inbox, markRead, recordOpen, simulate, TRIGGERS, type Trigger } from './engine/proactive.js';
 import { IngestSchema, healthToken, ingest, readiness, summary, userByHealthToken } from './engine/health.js';
-import { afterFood, FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
+import { afterFood, FoodSchema, foodPath, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
@@ -478,6 +478,7 @@ export async function buildServer() {
   });
 
   app.get('/api/food/recap', async (req) => foodRecap(requireUser(req)));
+  app.get('/api/food/path', async (req) => foodPath(requireUser(req)));
 
   app.post('/api/meals/photo', async (req) => {
     const user = requireUser(req);

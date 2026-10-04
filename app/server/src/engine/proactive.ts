@@ -143,15 +143,19 @@ const FALLBACK: Record<Trigger, string> = {
 
 /** Filtro di tono: niente colpa, niente peso o diete, niente ordini; 1-3 frasi. */
 const BAD_TONE = /colpa|dovresti|\bdevi\b|hai saltato|pigr|delus|peccato|vergogn|\bpeso\b|\bkg\b|chil|dieta|calori|bmi|non hai fatto|purtroppo/i;
+/** Niente maschile o femminile riferito alla persona ("sei arrivata", "bravo", "stanca"). */
+const GENDERED = /\b(sei|sono|resta|rimani)\s+(stat|arrivat|tornat|ripartit|salit|passat|pront|stanc|ricascat|riuscit|cadut|sicur|content|motivat|bloccat|fermat)[oaie]\b|\bbrav[oa]\b|\bben(tornat|venut)[oa]\b/i;
 export function toneOk(text: string): boolean {
   const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
-  return !BAD_TONE.test(text) && sentences.length >= 1 && sentences.length <= 3 && text.length <= 320 && !/[\u{1F300}-\u{1FAFF}]/u.test(text);
+  return !BAD_TONE.test(text) && !GENDERED.test(text) && sentences.length >= 1 && sentences.length <= 3 && text.length <= 320 && !/[\u{1F300}-\u{1FAFF}]/u.test(text);
 }
 
 function fill(tpl: string, user: UserRow, c: Candidate): string {
   const p = profileOf(user);
-  const why = WITH_WHY.includes(c.trigger) && p?.why ? `Ricordi perché hai iniziato: "${p.why}".` : '';
-  let s = tpl.replace('{name}', p?.name ?? '').replace('{why}', why);
+  const hasWhy = WITH_WHY.includes(c.trigger) && !!p?.why;
+  // nei testi di copy.json {why} è dentro la frase; nei nostri di riserva è una frase intera
+  const why = hasWhy ? (tpl.includes(': {why}') ? `"${p!.why}"` : `Ricordi perché hai iniziato: "${p!.why}".`) : '';
+  let s = tpl.replace('{name}', p?.name ?? '').replace('{why}', why).replace('{day}', String(c.facts.giorno ?? ''));
   for (const [k, v] of Object.entries(c.facts)) s = s.replaceAll(`{${k}}`, String(v));
   return s.replace(/\{\w+\}/g, '').replace(/\s+/g, ' ').replace(/ \./g, '.').trim();
 }
@@ -159,7 +163,9 @@ function fill(tpl: string, user: UserRow, c: Candidate): string {
 const CoachText = z.object({ text: z.string().min(10).max(320) });
 
 async function writeText(user: UserRow, c: Candidate): Promise<string> {
-  const fallback = () => fill(content.text(`coach.trigger.${c.trigger}`, FALLBACK[c.trigger]), user, c);
+  const hasWhy = WITH_WHY.includes(c.trigger) && !!profileOf(user)?.why;
+  const fromCopy = content.text(`trigger.${c.trigger}.${hasWhy ? 'text' : 'text_no_why'}`, '') || content.text(`trigger.${c.trigger}.text`, '');
+  const fallback = () => fill(fromCopy && (hasWhy || !fromCopy.includes('{why}')) ? fromCopy : FALLBACK[c.trigger], user, c);
   if (aiMode() === 'off') return fallback();
   const p = profileOf(user)!;
   const useWhy = WITH_WHY.includes(c.trigger) && p.why;
@@ -168,7 +174,7 @@ async function writeText(user: UserRow, c: Candidate): Promise<string> {
 
 COMPITO: scrivi un messaggio breve che il coach manda DI SUA INIZIATIVA (nessuno gliel'ha chiesto). 2-3 frasi, massimo 45 parole, niente emoji, niente domande insistenti.
 Il messaggio deve suonare personale e motivato dal fatto indicato, mai di routine. Mai colpa, mai "devi", mai peso, diete o calorie.
-Non usare aggettivi al maschile o al femminile riferiti alla persona.${useWhy ? '\nCita con delicatezza il suo perché, tra virgolette, così come l\'ha scritto.' : '\nNON citare il suo perché.'}`,
+Mai maschile o femminile riferito alla persona: niente "sei arrivata", "sei tornato", "brava", "bentornata". Usa forme neutre: "hai raggiunto", "di nuovo in pista", "ce l'hai fatta", "eccoti".${useWhy ? '\nCita con delicatezza il suo perché, tra virgolette, così come l\'ha scritto.' : '\nNON citare il suo perché.'}`,
     `PERSONA: ${p.name}. Obiettivo: ${p.goal}.${useWhy ? ` Il suo perché: "${p.why}".` : ''}
 MOTIVO DEL MESSAGGIO (${c.trigger}): ${c.because}.
 FATTI: ${JSON.stringify(c.facts)}${c.actions?.length ? `\nAZIONE PROPOSTA (mostrata come pulsante sotto il messaggio): ${c.actions[0].label}` : ''}

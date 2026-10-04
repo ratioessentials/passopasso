@@ -53,6 +53,7 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 - `src/engine/tests.ts`: test di prontezza (target da `tests.json`), passaggio di livello con test.
 - `src/engine/health.ts`: Health Bridge (ingest con token, baseline 14 giorni, prontezza da `readiness.json`, allenamenti importati, giorni attivi dai passi).
 - `src/engine/strava.ts`: OAuth Strava e import delle attività. `src/engine/push.ts`: Web Push e scheduler dei promemoria.
+- `src/engine/proactive.ts`: coach proattivo (9 trigger deterministici, anti-spam, testo dall'AI con filtro di tono e del genere, testi di riserva da `copy.json` → `trigger.<id>.text`, azione `move_day`, scheduler ogni 15 minuti).
 - `src/engine/seed.ts`: profilo e prima settimana dopo l'onboarding, utente demo `demo`.
 
 ## Regole del motore (sicurezza)

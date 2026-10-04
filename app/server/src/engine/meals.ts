@@ -8,7 +8,7 @@ export interface MealFeedback { positives: string[]; suggestion: string; habitMa
 
 const AiMeal = z.object({
   positives: z.array(z.string().min(2).max(140)).min(1).max(3),
-  suggestion: z.string().min(5).max(220),
+  suggestion: z.string().max(220),
   habitMatch: z.boolean(),
   tone: z.string(),
   plate: z.object({ veggies: z.number().min(0).max(1), protein: z.number().min(0).max(1), grains: z.number().min(0).max(1) }).nullish(),
@@ -43,7 +43,7 @@ export async function mealFeedback(image: { base64: string; mimeType: string }, 
     const positives = ai.positives.filter((p) => !FORBIDDEN.test(p));
     return {
       positives: positives.length ? positives : fb.positives,
-      suggestion: FORBIDDEN.test(ai.suggestion) ? fb.suggestion : ai.suggestion,
+      suggestion: FORBIDDEN.test(ai.suggestion) ? fb.suggestion : ai.suggestion.trim(),
       habitMatch: ai.habitMatch,
       tone: 'incoraggiante',
       plate: normPlate(ai.plate),

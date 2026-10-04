@@ -5,6 +5,7 @@ import { currentHabit, evaluateWins, getUser, insertSession, planWeek, ruleDraft
 import type { Feedback, Profile, UserRow } from './types.js';
 import { startIntensity } from './person.js';
 import { healthToken, touchSource, updateRunnerKm } from './health.js';
+import { saveMessage } from './proactive.js';
 
 /** Fine dell'onboarding: salva il profilo, fissa il livello di partenza e pianifica la prima settimana (con una seduta già oggi). */
 export function saveProfile(user: UserRow, profile: Profile) {
@@ -44,7 +45,7 @@ const DEMO_PROFILE: Profile = {
   calendarUrl: null,
   track: 'corsa',
   runner: null,
-  food: null,
+  food: { breakfast: false, veggiesPerDay: 2, sugaryDrinks: 'mai', mealsOut: 2, cooks: 'a_volte' },
   goal: 'Riuscire a correre 20 minuti senza fermarmi',
   why: 'Per giocare a pallone con mio figlio senza fermarmi dopo cinque minuti',
   experience: 'poca',
@@ -89,7 +90,7 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v9`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v10`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
   if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID) && getUser(RUNNER_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();
@@ -152,6 +153,12 @@ function seedGiulia(t: string, stamp: string) {
       }
     }
 
+    // percorso alimentare: tre tappe fatte, la bibita saltata (non ne beve), oggi la tappa 4
+    const ws0 = weekStart(t);
+    [['merendine_frutta_yogurt', -21], ['spuntini_pianificati', -14], ['proteine_colazione', -7], ['legumi_settimana', 0]].forEach(([id, d]) => {
+      db.prepare('INSERT OR REPLACE INTO user_habits (user_id, week_start, habit_id, why) VALUES (?, ?, ?, ?)')
+        .run(DEMO_ID, addDays(ws0, d as number), id, id === 'legumi_settimana' ? 'Visto che cucini, i legumi sono un\'aggiunta semplice ed economica.' : null);
+    });
     // abitudine in corso: 3 giorni segnati in questa settimana (o negli ultimi giorni)
     const habit = currentHabit(getUser(DEMO_ID)!);
     for (const d of [0, -1, -2, -3, -4, -5, -6].map((x) => addDays(t, x)).filter((x) => x >= ws).slice(1, 4)) {
@@ -241,6 +248,15 @@ function seedHealth(t: string) {
   touchSource(DEMO_ID, 'apple_health');
   db.prepare("UPDATE health_sources SET last_sync = ? WHERE user_id = ? AND source = 'apple_health'").run(`${t}T06:02:00.000Z`, DEMO_ID);
   healthToken(DEMO_ID);
+
+  // Giulia: due messaggi del coach in inbox (dopo la ripartenza, e il record di camminata di due giorni fa)
+  const at = (d: number, hh: number, mm: number) => { const x = new Date(`${addDays(t, d)}T12:00:00`); x.setHours(hh, mm, 0, 0); return x; };
+  const restartRow = db.prepare("SELECT id FROM sessions WHERE user_id = ? AND kind = 'ripartenza' AND status = 'done'").get(DEMO_ID) as { id: string } | undefined;
+  saveMessage(DEMO_ID, { trigger: 'ripartenza_fatta', key: restartRow?.id ?? 'demo_restart', because: 'Ti scrivo perché hai completato la ripartenza', facts: {} },
+    'Di nuovo in pista, e senza fare drammi: è così che si costruisce l\'abitudine. Ripartire è la parte più difficile, ed è fatta.', at(-5, 20, 5));
+  db.prepare("UPDATE coach_messages SET read = 1 WHERE user_id = ? AND trigger = 'ripartenza_fatta'").run(DEMO_ID);
+  saveMessage(DEMO_ID, { trigger: 'record_personale', key: 'demo_record', because: 'Ti scrivo perché hai camminato 17 minuti di fila: il tuo record', facts: { minuti: 17 } },
+    '17 minuti di passo svelto senza fermarti: è il tuo record. Te lo dico perché due settimane fa erano otto.', at(-2, 20, 10));
 
   // Luca: Strava "collegato" (simulato) con le corse importate al posto delle sedute pianificate
   touchSource(RUNNER_ID, 'strava', { demo: true, athlete: { id: 0, firstname: 'Luca' } });

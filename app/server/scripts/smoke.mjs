@@ -158,6 +158,27 @@ const c3 = await api('POST', '/api/onboarding/profile', { user: u3, body: { name
 const o3 = await api('POST', '/api/onboarding/message', { user: u3, body: { messages: [{ role: 'assistant', content: 'Ciao!' }, { role: 'user', content: 'Voglio correre' }] } });
 check('minore di 16 anni → nessun piano', c3.json?.minor === true && o3.json?.minor === true && o3.json.done === true, o3.json?.reply);
 
+// --- Ottava ondata: perché, 10 minuti invece di niente, coach proattivo, percorso alimentare ---
+check('onboarding: il perché nel profilo', typeof onboarding.json?.profile?.why === 'string' || onboarding.json?.profile?.why === null, onboarding.json?.profile?.why ?? '(non detto)');
+const annaToday = (await api('GET', '/api/me', { user: u2 })).json?.today;
+if (annaToday?.status === 'planned') {
+  const alt = await api('GET', `/api/sessions/${annaToday.id}/alternatives`, { user: u2 });
+  check('alternative: seduta da 10 minuti', alt.status === 200 && alt.json.short.minutes === 10 && alt.json.short.kind === 'ridotta');
+  const shortDone = await api('POST', `/api/sessions/${alt.json.short.id}/complete`, { user: u2, body: { feedback: 'giusto' } });
+  check('la ridotta conta come fatta, con afterFood', shortDone.status === 200 && typeof shortDone.json.afterFood === 'string' && shortDone.json.consistency > 0, shortDone.json?.afterFood);
+}
+const inb = await api('GET', '/api/coach/inbox', { user: 'demo' });
+check('demo: inbox con due messaggi', inb.status === 200 && inb.json.messages.length >= 2 && inb.json.unread >= 1);
+const sim = await api('POST', '/api/coach/inbox/simulate', { user: 'demo', body: { trigger: 'pattern_giorno_saltato' } });
+check('simulazione di un messaggio proattivo', sim.status === 200 && !!sim.json.text && sim.json.actions.length === 1, `${sim.ms} ms: ${sim.json?.text}`);
+const act = await api('POST', `/api/coach/inbox/${sim.json.id}/action`, { user: 'demo', body: { actionIndex: 0 } });
+check('azione dal messaggio', act.status === 200 && Array.isArray(act.json.applied), act.json?.applied?.[0]);
+const rd = await api('POST', `/api/coach/inbox/${inb.json.messages[0].id}/read`, { user: 'demo' });
+check('messaggio letto → 204', rd.status === 204);
+const path = await api('GET', '/api/food/path', { user: 'demo' });
+const cur = path.json?.steps?.find((x) => x.status === 'current');
+check('demo: percorso alimentare alla tappa corrente con una saltata', path.status === 200 && path.json.phases.length === 3 && !!cur && path.json.steps.some((x) => x.status === 'skipped'), cur?.habit?.title);
+
 // --- Health Bridge, push, piani ---
 const demoMe = await api('GET', '/api/me', { user: 'demo' });
 check('demo: prontezza media dai dati salute', demoMe.json?.readiness?.level === 'media' && demoMe.json.readiness.suggestedEnergy === 2, demoMe.json?.readiness?.signals?.join(' · '));

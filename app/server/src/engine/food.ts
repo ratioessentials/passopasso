@@ -4,7 +4,7 @@ import { TONO } from '../ai/prompts/tono.js';
 import { content, type Habit } from '../content.js';
 import { addDays, today, weekStart } from '../dates.js';
 import { db } from '../db.js';
-import { profileOf, sessionsBetween } from './store.js';
+import { currentHabit, profileOf, sessionsBetween } from './store.js';
 import type { FoodProfile, Profile, UserRow } from './types.js';
 
 export const FoodSchema = z.object({
@@ -15,8 +15,8 @@ export const FoodSchema = z.object({
   cooks: z.enum(['mai', 'raramente', 'a_volte', 'spesso']),
 });
 
-type Signal = { field: string; op: 'eq' | 'in' | 'lte' | 'gte'; value: unknown; why: string };
-type HabitWithSignals = Habit & { signals?: Signal[] };
+type Signal = { field: string; op: 'eq' | 'in' | 'lte' | 'gte'; value: unknown; why: string; effect?: 'skip' | 'advance' };
+type HabitWithSignals = Habit & { signals?: Signal[]; phase?: string };
 
 function matches(sig: Signal, food: Record<string, unknown>): boolean {
   const v = food[sig.field];
@@ -30,12 +30,40 @@ function matches(sig: Signal, food: Record<string, unknown>): boolean {
   }
 }
 
-/** Abitudini in ordine di priorità per questa persona: prima quelle con segnali che scattano. */
+export const PHASES = [
+  { id: 'sostituire', title: 'Sostituire', weeks: '1-3' },
+  { id: 'aggiungere', title: 'Aggiungere', weeks: '4-7' },
+  { id: 'come_mangi', title: 'Come mangi', weeks: '8-12' },
+];
+const phaseOf = (h: HabitWithSignals) => h.phase ?? (h.week <= 3 ? 'sostituire' : h.week <= 7 ? 'aggiungere' : 'come_mangi');
+
+/**
+ * Il percorso alimentare personalizzato: le fasi restano in ordine ("prima togli, poi aggiungi, poi impari come mangi");
+ * dentro ogni fase salgono le tappe con un segnale "advance"; quelle con "skip" sono già acquisite.
+ */
+export function orderPath(food: Record<string, unknown> | null) {
+  const habits = [...(content.habits() as HabitWithSignals[])].sort((a, b) => a.week - b.week);
+  const ordered: { habit: Habit; why: string | null; phase: string }[] = [];
+  const skipped: { habit: Habit; why: string; phase: string }[] = [];
+  for (const ph of PHASES) {
+    const inPhase = habits.filter((h) => phaseOf(h) === ph.id);
+    const adv: typeof ordered = [];
+    const rest: typeof ordered = [];
+    for (const h of inPhase) {
+      const sigs = food ? (h.signals ?? []).filter((s) => matches(s, food)) : [];
+      const skip = sigs.find((s) => s.effect === 'skip');
+      if (skip) { skipped.push({ habit: h, why: skip.why, phase: ph.id }); continue; }
+      const advance = sigs.find((s) => s.effect === 'advance' || !s.effect);
+      (advance ? adv : rest).push({ habit: h, why: advance?.why ?? null, phase: ph.id });
+    }
+    ordered.push(...adv, ...rest);
+  }
+  return { ordered, skipped };
+}
+
+/** Abitudini in ordine di percorso per questa persona (senza le tappe saltate e quelle escluse). */
 export function rankHabits(food: Record<string, unknown> | null, exclude: string[] = []): { habit: Habit; why: string | null }[] {
-  const habits = [...(content.habits() as HabitWithSignals[])].sort((a, b) => a.week - b.week).filter((h) => !exclude.includes(h.id));
-  if (!food) return habits.map((habit) => ({ habit, why: null }));
-  const hit = habits.map((h) => ({ habit: h, sig: (h.signals ?? []).find((s) => matches(s, food)) }));
-  return [...hit.filter((x) => x.sig), ...hit.filter((x) => !x.sig)].map((x) => ({ habit: x.habit, why: x.sig?.why ?? null }));
+  return orderPath(food).ordered.filter((x) => !exclude.includes(x.habit.id)).map(({ habit, why }) => ({ habit, why }));
 }
 
 // ---------- Abitudine della settimana ----------
@@ -68,7 +96,7 @@ export async function saveFoodProfile(user: UserRow, food: z.infer<typeof FoodSc
   const ranked = rankHabits(food as unknown as Record<string, unknown>);
   let choice = ranked[0];
   if (aiMode() !== 'off') {
-    const candidates = ranked.slice(0, 4);
+    const candidates = ranked.slice(0, 2); // l'AI sceglie tra le prime due tappe del percorso, mai fuori ordine
     try {
       const ai = await askJson(`${TONO}\n\nCOMPITO: scegli l'abitudine alimentare da cui partire per questa persona, tra i CANDIDATI. Una sola, la più utile e la più facile per lei. Mai diete, calorie, peso o numeri. "why": una frase, massimo 20 parole, che spiega la scelta partendo dalle sue risposte (es. "Bevi già abbastanza: partiamo dalla colazione, che salti spesso.").`,
         `RISPOSTE: colazione ${food.breakfast ? 'sì' : 'spesso no'}; verdura ${food.veggiesPerDay} volte al giorno; bibite zuccherate ${food.sugaryDrinks}; pasti fuori ${food.mealsOut} a settimana; cucina ${food.cooks}.
@@ -106,28 +134,66 @@ export function trainingFuel(user: UserRow): { sessionAt: string; before: string
   return { sessionAt: SESSION_AT[profile.preferredTime], before: advice.before, after: advice.after, note: fuel.trackNotes?.[profile.track ?? 'corsa'], safety: fuel.safety };
 }
 
+// ---------- Percorso alimentare ----------
+
+export function foodPath(user: UserRow) {
+  const profile = profileOf(user)!;
+  const ws = weekStart(today());
+  habitFor(user);
+  const history = db.prepare('SELECT week_start, habit_id FROM user_habits WHERE user_id = ? ORDER BY week_start').all(user.id) as { week_start: string; habit_id: string }[];
+  const done = history.filter((h) => h.week_start < ws).map((h) => h.habit_id);
+  const current = history.find((h) => h.week_start === ws)?.habit_id ?? currentHabitId(user);
+  const { ordered, skipped } = orderPath((profile.food ?? null) as Record<string, unknown> | null);
+  const doneSet = new Set(done);
+  const steps: { habit: Habit; order: number; status: 'done' | 'current' | 'next' | 'skipped'; phase: string; why?: string | null; skippedWhy?: string }[] = [];
+  // prima le tappe fatte (nell'ordine in cui sono state fatte), poi quella di adesso, poi le prossime; le saltate nella loro fase
+  const all = [...ordered.map((o) => ({ ...o, skip: null as string | null })), ...skipped.map((s) => ({ habit: s.habit, why: null, phase: s.phase, skip: s.why }))];
+  const phaseIdx = (p: string) => PHASES.findIndex((x) => x.id === p);
+  // per fase; dentro la fase: fatte (nell'ordine in cui sono state fatte), saltate, quella di adesso, le prossime
+  const rank = (x: typeof all[0]) => {
+    const group = doneSet.has(x.habit.id) ? 0 : x.habit.id === current ? 2 : x.skip ? 1 : 3;
+    const within = group === 0 ? done.indexOf(x.habit.id) : ordered.findIndex((o) => o.habit.id === x.habit.id);
+    return phaseIdx(x.phase) * 10000 + group * 1000 + within;
+  };
+  let order = 0;
+  for (const x of [...all].sort((a, b) => rank(a) - rank(b))) {
+    const status = x.skip && !doneSet.has(x.habit.id) && x.habit.id !== current ? 'skipped' : doneSet.has(x.habit.id) ? 'done' : x.habit.id === current ? 'current' : 'next';
+    steps.push({ habit: x.habit, order: ++order, status, phase: x.phase, ...(status === 'skipped' ? { skippedWhy: x.skip! } : { why: x.why }) });
+  }
+  return {
+    phases: PHASES.map((p) => ({ ...p, title: content.text(`foodpath.phase_${p.id}`, p.title), note: content.text(`foodpath.phase_${p.id}_note`, '') || null })),
+    steps,
+    intro: content.text('foodpath.intro', 'Ora che ti alleni non devi mangiare perfetto. Cambiamo una cosa sola alla volta.'),
+    hasFoodProfile: !!profile.food,
+  };
+}
+
+function currentHabitId(user: UserRow): string | null {
+  return habitFor(user)?.habit.id ?? currentHabit(user).id;
+}
+
 // ---------- Fame dopo la seduta ----------
 
 const AFTER_FOOD: Record<string, string> = {
   mattina: 'Avere fame adesso è normale: fai colazione come sempre, con qualcosa di proteico come yogurt o latte.',
   pranzo: 'Avere fame adesso è normale: pranza come sempre, con verdura, proteine e cereali.',
-  pomeriggio: 'Avere fame adesso è normale: un frutto o uno yogurt, e poi cena come sempre.',
-  sera: 'Avere fame adesso è normale: cena come sempre, con una fonte di proteine. Niente da recuperare.',
+  sera: 'Avere fame adesso è normale: un frutto o uno yogurt, poi cena come sempre.',
+  tardi: 'Avere fame adesso è normale: se la cena è già passata, uno yogurt o un frutto bastano.',
 };
 
 /** Una riga sulla fame dopo la seduta, per orario (content/fuel.json → afterFood, altrimenti riserva). */
 export function afterFood(now = new Date()): string {
-  const h = now.getHours();
-  const slot = h < 11 ? 'mattina' : h < 15 ? 'pranzo' : h < 18 ? 'pomeriggio' : 'sera';
+  const h = now.getHours() + now.getMinutes() / 60;
+  const slot = h < 11 ? 'mattina' : h < 15 ? 'pranzo' : h < 21.5 ? 'sera' : 'tardi';
   let fromContent: unknown;
   try { fromContent = (content.fuel() as Record<string, unknown>).afterFood; } catch { /* niente fuel.json */ }
   if (fromContent && typeof fromContent === 'object') {
     if (Array.isArray(fromContent)) {
-      const hit = (fromContent as { slot?: string; text?: string }[]).find((x) => x.slot === slot) ?? (fromContent as { slot?: string; text?: string }[]).find((x) => slot === 'pomeriggio' && x.slot === 'sera');
+      const hit = (fromContent as { slot?: string; text?: string }[]).find((x) => x.slot === slot);
       if (hit?.text) return hit.text;
     } else {
       const map = fromContent as Record<string, string>;
-      const v = map[slot] ?? (slot === 'pomeriggio' ? map.sera : undefined);
+      const v = map[slot] ?? (slot === 'tardi' ? map.sera : undefined);
       if (typeof v === 'string') return v;
     }
   } else if (typeof fromContent === 'string') return fromContent;
