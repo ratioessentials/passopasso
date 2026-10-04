@@ -10,7 +10,7 @@ export default function MotionLab() {
   const [focus, setFocus] = useState<string | null>(null)
 
   return (
-    <div className="min-h-full bg-salvia-chiaro px-4 pb-10 pt-[max(env(safe-area-inset-top),16px)]">
+    <div className="min-h-full bg-salvia-chiaro px-4 pb-10 safe-top">
       <div className="flex items-center justify-between">
         <Link to="/" className="rounded-full px-3 py-2 text-sm font-semibold text-petrolio">
           ← Indietro

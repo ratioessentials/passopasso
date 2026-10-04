@@ -127,7 +127,7 @@ export default function FormCheck() {
   useEffect(() => () => stopRef.current(), [])
 
   return (
-    <div className="flex min-h-full flex-col bg-gradient-to-b from-petrolio to-acqua px-4 pb-8 pt-[max(env(safe-area-inset-top),16px)] text-white">
+    <div className="flex min-h-full flex-col bg-gradient-to-b from-petrolio to-acqua px-4 pb-8 safe-top text-white">
       <div className="flex items-center justify-between">
         <Link to="/" className="rounded-full px-3 py-2 text-sm font-semibold text-white/90">
           ← Indietro
