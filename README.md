@@ -15,6 +15,7 @@ Progetto per l'**Agent Coding Hackathon Solovera**, challenge 02 "Fitness Planni
 ![Desktop con i widget](pitch/screens/desktop-home.png)
 
 ## Il problema
+*"Starting a fitness journey can be overwhelming without guidance."* Lo dice il brief della challenge, e i dati lo confermano:
 - Il **70%** degli utenti abbandona le app salute e fitness entro 100 giorni (mediana su 525.824 utenti) [1].
 - In palestra il 63% dei nuovi iscritti molla entro 3 mesi [2].
 - I piani sono rigidi: non si adattano a sedute saltate, poco tempo o dolori [3].
@@ -23,6 +24,13 @@ Progetto per l'**Agent Coding Hackathon Solovera**, challenge 02 "Fitness Planni
 - Un chatbot generico fa piani corretti al 90% ma completi solo al 41%, e non fa domande [6].
 
 ## Come funziona
+
+### Per chi parte da zero
+- **Seduta zero:** "Prova 5 minuti adesso" e parti, senza nessuna domanda. A fine seduta hai già la tua prima vittoria, e solo allora l'app ti chiede se vuoi un percorso.
+- **Guida vocale:** nel player una voce legge l'esercizio, conta con te (10, 5, 3-2-1) e annuncia recupero e ultima serie. Insieme all'omino animato, non resti mai solo davanti a un esercizio.
+- **Cosa aspettarti:** nelle prime due settimane, una card al giorno in home. L'indolenzimento normale e il dolore per cui fermarsi, perché la seconda settimana è la più dura, i primi cambiamenti (fiato, sonno, umore) che arrivano prima di qualsiasi numero.
+- **Glossario dove serve:** RPE, serie, recupero, defaticamento sono sottolineati; li tocchi e leggi una riga di spiegazione.
+- **Allora / Adesso:** in cima ai Progressi, quanto riuscivi a fare all'inizio e quanto ora (alzate dalla sedia in 30 secondi, minuti di cardio di fila, sedute a settimana).
 
 ### Un percorso in 5 livelli
 In circa 12 settimane. Si sale per prontezza, non per calendario, e il percorso non si azzera mai. **L'icona dell'app evolve con il livello**: l'omino passa dal camminare allo sprint.
@@ -245,8 +253,8 @@ L'app (API e PWA) risponde su `http://127.0.0.1:3210`. Il database SQLite sta ne
 | `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET` | — | facoltative, per collegare Strava |
 | chiavi VAPID | — | facoltative, per le notifiche push: si generano con `npx web-push generate-vapid-keys` (nomi in `.env.example`) |
 
-## Come l'abbiamo costruita: 6 agenti Claude Code
-PassoPasso è stata sviluppata in poche ore da **cinque sessioni di Claude Code in parallelo** sullo stesso repository, più una **chat di regia**. Ogni chat ha il suo prompt e le sue cartelle; nessuna modifica i file delle altre.
+## Come l'abbiamo costruita: 7 agenti Claude Code
+PassoPasso è stata sviluppata in poche ore da **sei sessioni di Claude Code in parallelo** sullo stesso repository, più una **chat di regia**. Ogni chat ha il suo prompt e le sue cartelle; nessuna modifica i file delle altre.
 
 | Chat | Ruolo | Cartelle |
 |---|---|---|
@@ -256,6 +264,7 @@ PassoPasso è stata sviluppata in poche ore da **cinque sessioni di Claude Code 
 | 3 | Contenuti e sicurezza, QA con Playwright | `content/` |
 | 4 | Deploy, PWA tecnica, controllo della forma, omino animato | `deploy/`, `Dockerfile` |
 | 5 | Pitch e consegna | `pitch/`, `README.md` |
+| 6 | Motivazione e alimentazione (frontend): coach proattivo, il tuo perché, percorso alimentare | `app/web/src/features/coach-inbox/`, `why/`, `food-path/` |
 
 Come si coordinano:
 - **Un contratto condiviso** ([`docs/api.md`](docs/api.md), [`docs/schema.md`](docs/schema.md)) che solo la regia modifica: frontend e backend lavorano in parallelo senza aspettarsi.

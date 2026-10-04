@@ -19,7 +19,9 @@ Un coach fitness con l'AI che porta chi parte da zero dalla camminata alla corsa
 ## Descrizione lunga
 Il 70% delle persone abbandona un'app fitness entro 100 giorni (JMIR 2024). Chi parte da zero trova piani rigidi, streak che si azzerano al primo giorno saltato, chatbot che danno piani generici senza fare domande e diete basate sul conteggio delle calorie.
 
-PassoPasso è una PWA che accompagna il principiante in un percorso di 5 livelli in circa 12 settimane: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Dalla camminata allo sprint. Si sale di livello quando sei pronto, non quando lo dice il calendario, e il percorso non si azzera mai. Anche l'icona dell'app cresce con te.
+Il brief lo dice: "Starting a fitness journey can be overwhelming without guidance". PassoPasso parte da qui: con "Prova 5 minuti adesso" fai la prima seduta senza rispondere a nessuna domanda, guidato da una voce e da un omino animato. Nelle prime settimane l'app spiega cosa aspettarti e le parole difficili.
+
+È una PWA che accompagna il principiante in un percorso di 5 livelli in circa 12 settimane: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Dalla camminata allo sprint. Si sale di livello quando sei pronto, non quando lo dice il calendario, e il percorso non si azzera mai. Anche l'icona dell'app cresce con te.
 
 Tre percorsi sugli stessi livelli: corsa, forza e mobilità. Chi corre già parte dal livello 4 o 5 con una settimana da podista e sedute a segmenti.
 
@@ -41,7 +43,7 @@ Niente calorie: un'abitudine a settimana scelta per te, consigli su quando mangi
 
 Oggi è una PWA, così la provi da un link. Il prodotto è un'app nativa sullo stesso backend e contratto, con login, abbonamento Free/Plus senza dark pattern, push native e HealthKit/Health Connect.
 
-L'abbiamo costruita con 5 sessioni di Claude Code in parallelo, più una di regia che custodisce il contratto API.
+L'abbiamo costruita con 6 sessioni di Claude Code in parallelo, più una di regia che custodisce il contratto API.
 
 ## Link alla demo
 https://passopasso.andreavallieri.com
@@ -52,14 +54,15 @@ https://github.com/ratioessentials/passopasso
 ## Istruzioni per la demo
 Non serve registrarsi. Meglio dal telefono; su desktop l'app compare dentro una cornice iPhone.
 
-1. Apri il link e tocca **"Prova con l'utente demo"** (Giulia, livello 2, tre settimane di storico).
-2. Inizia la seduta di oggi: nel check-in scegli 15 minuti e tocca le ginocchia sulla mappa del corpo. Leggi perché la seduta è cambiata.
-3. Completa la seduta e dai un feedback: ti viene proposto il livello 3.
-4. Apri il **Coach** e scrivi come va la tua settimana (es. "questa settimana lavoro di sera"): guarda cosa cambia nel piano.
-5. Carica la foto di un piatto nella sezione **Cibo**.
-6. Guarda la card **"Come stai oggi"** in home: arriva dai dati di sonno e battito. In Coach → "Salute e dispositivi" trovi le sorgenti e il grafico di 14 giorni.
-7. Sei già allenato? Prova l'utente `demo-runner` (Luca, 25 km a settimana).
-8. Vuoi partire da zero? Apri il link in una finestra in incognito e fai l'onboarding.
+1. Apri il link e tocca **"Prova 5 minuti adesso"**: nessuna domanda, solo cinque minuti guidati dalla voce.
+2. Poi tocca **"Prova con l'utente demo"** (Giulia, livello 2, tre settimane di storico).
+3. Inizia la seduta di oggi: nel check-in scegli 15 minuti e tocca le ginocchia sulla mappa del corpo. Leggi perché la seduta è cambiata.
+4. Completa la seduta, dai un feedback e fai il test di 30 secondi: si passa al livello 3. Apri anche "Perché questa seduta" per vedere i 7 controlli.
+5. Apri il **Coach** e scrivi come va la tua settimana (es. "questa settimana lavoro di sera"): guarda cosa cambia nel piano.
+6. Carica la foto di un piatto nella sezione **Cibo**.
+7. Guarda la card **"Come stai oggi"** in home: arriva dai dati di sonno e battito. In Coach → "Salute e dispositivi" trovi le sorgenti e il grafico di 14 giorni.
+8. Sei già allenato? Prova l'utente `demo-runner` (Luca, 25 km a settimana).
+9. Vuoi partire da zero? Apri il link in una finestra in incognito e fai l'onboarding.
 
 Il demo torna da solo allo stato iniziale dopo 30 minuti senza modifiche. Puoi installare l'app con "Aggiungi a schermata Home".
 
@@ -74,7 +77,7 @@ Sì, nella radice del repository, con `docker-compose.yml`. Avvio: `cp .env.exam
 - **Deploy:** Docker e Docker Compose su un server Contabo, esposto con un tunnel Cloudflare.
 
 ## AI agents usati
-- **Claude Code, 6 sessioni:** 5 chat in parallelo sullo stesso repository (frontend, backend e AI, contenuti e QA, deploy, pitch) più una chat di regia. Ognuna ha il suo prompt e le sue cartelle. Si coordinano con un contratto API condiviso (`docs/api.md`), una bacheca delle richieste e uno stato dei lavori (`docs/agenti/`). La chat dei contenuti ha fatto anche il QA con Playwright.
+- **Claude Code, 7 sessioni:** 6 chat in parallelo sullo stesso repository (frontend, backend e AI, contenuti e QA, deploy, pitch, motivazione e alimentazione) più una chat di regia. Ognuna ha il suo prompt e le sue cartelle. Si coordinano con un contratto API condiviso (`docs/api.md`), una bacheca delle richieste e uno stato dei lavori (`docs/agenti/`). La chat dei contenuti ha fatto anche il QA con Playwright.
 - **Claude dentro il prodotto:** onboarding a conversazione, rigenerazione delle sedute con la spiegazione, coach che modifica il piano, feedback sulle foto dei piatti.
 
 ## Domande della giuria (per il Q&A)

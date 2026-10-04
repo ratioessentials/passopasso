@@ -1,137 +1,111 @@
 # Script del video pitch
 
-Durata: **3:52** (massimo 4:00). 466 parole di voce, a 2.3 parole al secondo con un secondo di respiro tra le battute.
-Il voto pesa così: Funzionalità 30%, Tecnica & IA 30%, Impatto 20%, Pitch 20%. La demo prende circa metà del video.
+Durata: **3:20** (massimo 4:00). 405 parole di voce, a 2.3 parole al secondo con un secondo di respiro tra le battute.
+
+Il video segue il brief della challenge: *"Starting a fitness journey can be overwhelming without guidance."* Si apre con la frase del brief e con la seduta zero. Poi ogni blocco risponde a una delle tre richieste (piani, alimentazione, motivazione). Tutto il resto sta in 30 secondi, "e cresce con te".
 
 Come si usa:
-- **Voce:** registrala una battuta alla volta, in un file per battuta (`B01.wav`, `B02.wav`…). Così puoi rifare una battuta senza toccare le altre.
-- **Schermo:** ogni battuta dice cosa si vede. I ciak della registrazione dello schermo sono in [demo.md](demo.md).
-- I tempi sono calcolati dal numero di parole. Se una battuta sfora, accelera lo schermo, non la voce.
+- **Voce:** una battuta per file (`B01.wav`, `B02.wav`…), così puoi rifarne una senza toccare le altre.
+- **Schermo:** ogni battuta dice cosa si vede. I ciak sono in [demo.md](demo.md).
+- I tempi vengono dal numero di parole. Se una battuta sfora, accelera lo schermo, non la voce.
 
-| Blocco | Battute | Tempo |
-|---|---|---|
-| Problema | B01-B03 | 0:00-0:27 |
-| Soluzione | B04-B06 | 0:27-0:51 |
-| Demo | B07-B15 | 0:51-2:44 |
-| Tecnologia e visione | B16-B20 | 2:44-3:41 |
-| Chiusura | B21 | 3:41-3:52 |
+| Blocco | Risponde a | Battute | Tempo |
+|---|---|---|---|
+| Apertura | il brief: *"overwhelming without guidance"* | B01-B04 | 0:00-0:44 |
+| Piani | **piani** personalizzati e sicuri | B05-B09 | 0:44-2:01 |
+| Motivazione | **motivazione** che regge nelle settimane difficili | B10 | 2:01-2:16 |
+| Alimentazione | **alimentazione** semplice, senza calorie | B11 | 2:16-2:29 |
+| E cresce con te | tutto il resto, in 30 secondi | B12-B13 | 2:29-3:00 |
+| Chiusura | come l'abbiamo costruita, e il saluto | B14-B15 | 3:00-3:20 |
 
 ---
 
-## Problema
+## Apertura
 
-**B01 · 0:00-0:07 · 7 s**
-> Pensa a Giulia. Non fa sport da anni. A gennaio scarica un'app fitness.
+**B01 · 0:00-0:15 · 15 s** — il brief
+> "Starting a fitness journey can be overwhelming without guidance." È il brief di questa challenge. E i numeri lo confermano: sette persone su dieci abbandonano un'app fitness entro cento giorni.
 
-*Schermo:* sfondo petrolio, testo che compare: "Gennaio". Icona generica di un'app fitness.
+*Schermo:* la frase del brief in inglese, grande, Archivo corsivo su sfondo petrolio, con la traduzione sotto in piccolo. Poi **"70%"** e "abbandona entro 100 giorni". Fonte: *JMIR 2024, 525.824 utenti*.
 
-**B02 · 0:07-0:17 · 10 s**
-> Il piano è per chi è già allenato. Salta una seduta, la streak si azzera, e l'app la rimprovera.
+**B02 · 0:15-0:24 · 9 s** — seduta zero
+> PassoPasso parte da qui. Non ti chiediamo niente: cinque minuti, e hai già fatto la prima cosa.
 
-*Schermo:* una streak "🔥 12" che diventa "0". Una notifica finta: "Non ti sei allenata ieri!" (mockup, nessuna app reale riconoscibile).
+*Schermo:* ciak 1. Benvenuto → "Prova 5 minuti adesso" → il player parte subito, senza domande. Alla fine: "Fatto: primi 5 minuti" con la vittoria.
 
-**B03 · 0:17-0:27 · 10 s**
-> A marzo l'ha già disinstallata. E non è sola: sette persone su dieci abbandonano un'app fitness entro cento giorni.
+**B03 · 0:24-0:35 · 11 s** — guida vocale e omino
+> Una voce ti guida e conta con te. L'omino ti mostra ogni movimento. Non resti mai solo davanti a un esercizio.
 
-*Schermo:* "Marzo". Poi grande: **"70%"** e sotto "abbandona entro 100 giorni". Fonte in piccolo: *JMIR 2024, 525.824 utenti*.
+*Schermo:* il player con l'omino animato grande e l'icona dell'altoparlante. Lascia sentire due secondi della voce vera ("tre, due, uno… recupero").
 
-## Soluzione
+**B04 · 0:35-0:44 · 9 s** — titolo
+> Questo è PassoPasso: da zero a dove vuoi arrivare. Il brief chiede tre cose: piani, alimentazione, motivazione.
 
-**B04 · 0:27-0:33 · 6 s**
-> Per questo abbiamo fatto PassoPasso. Da zero a dove vuoi arrivare.
+*Schermo:* logotipo e tagline, poi tre etichette che entrano: Piani · Alimentazione · Motivazione.
 
-*Schermo:* logotipo PassoPasso (Archivo corsivo extrabold) con la tagline.
+## Piani
 
-**B05 · 0:33-0:45 · 12 s**
-> Cinque livelli in dodici settimane, su tre percorsi: corsa, forza o mobilità. Si sale quando sei pronto, e il percorso non si azzera mai.
+**B05 · 0:44-0:59 · 15 s** — la scheda
+> Per costruire il percorso, PassoPasso vuole sapere chi sei: età, corpo, salute, con lo screening PAR-Q+ usato dai professionisti. Il peso serve solo a tarare il carico: non te lo rinfacceremo mai.
 
-*Schermo:* `pitch/screens/mobile-percorso.png`, oppure le 5 icone in fila (`brand/icons/level-1..5.svg`) con i nomi: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Tre etichette: Corsa · Forza · Mobilità.
+*Schermo:* ciak 2. "La tua scheda": Chi sei, con la frase sul peso ben leggibile, poi gli interruttori PAR-Q+. Poi, accelerata, la chat e la prima settimana al livello 1.
 
-**B06 · 0:45-0:51 · 6 s**
-> Anche l'icona cresce con te: l'omino passa dal camminare allo sprint.
+**B06 · 0:59-1:12 · 13 s** — check-in
+> Prima di ogni seduta, un check-in. L'energia è già suggerita da sonno e battito: stanotte Giulia ha dormito poco. E oggi le fanno male le ginocchia.
 
-*Schermo:* le 5 icone che si sostituiscono una all'altra al centro, da livello 1 a livello 5.
+*Schermo:* ciak 3. Home con la card "Come stai oggi" (sonno corto, battito alto). Check-in con l'energia precompilata e la riga "Suggerito dai tuoi dati di sonno e battito". 15 minuti, ginocchia sulla mappa del corpo.
 
-## Demo
+**B07 · 1:12-1:20 · 8 s** — seduta rigenerata
+> La seduta si rigenera, e ti dice perché: niente camminata, oggi marcia in casa.
 
-**B07 · 0:51-1:11 · 20 s** — la scheda e l'onboarding
-> Prima di tutto PassoPasso vuole sapere chi sei: età, corpo, salute, con lo screening PAR-Q+ usato dai professionisti. Il peso serve solo a tarare il carico: non te lo rinfacceremo mai. Poi poche domande in chat, e la prima settimana è pronta.
+*Schermo:* il riquadro "Perché questa seduta" con la `reason` dell'AI (zoom).
 
-*Schermo:* ciak 1. "La tua scheda": Chi sei (età, altezza, peso con la frase "Serve solo per tarare il carico…", lavoro, sonno), poi Salute con gli interruttori PAR-Q+. Poi la chat accelerata e la prima settimana.
+**B08 · 1:20-1:48 · 28 s** — perché non allucina
+> Perché non allucina? Il codice calcola prima cosa è sicuro: livello, dolori, impatto. Claude sceglie e spiega solo dentro quello spazio. Poi il codice ricontrolla tutto, con sette verifiche, prima di mostrarti la seduta. Con un dolore al petto, l'AI non viene nemmeno chiamata. Un chatbot generico, invece, fa piani completi nel 41% dei casi, e non ti chiede niente.
 
-**B08 · 1:11-1:25 · 14 s** — i dati del corpo
-> Ogni mattina il telefono manda sonno e battito, da Apple Salute o da Strava. Stanotte Giulia ha dormito poco, e la home se ne accorge: oggi si va leggeri.
+*Schermo:* il foglio "Perché questa seduta": esercizi esclusi con il motivo, i 7 controlli che si spuntano uno a uno, badge **"Seduta verificata 7/7"**, riga tecnica (modello, tempo, "valida al primo tentativo"). Poi il diagramma a tre strati del README (Prima: regole · Durante: scelta vincolata · Dopo: controlli). Per la frase sul petto, un lampo della schermata di blocco con il 112. Fonte in piccolo: *TIME 2024: ChatGPT completo al 41% sui criteri ACSM*.
 
-*Schermo:* ciak 2. Su iPhone, il Comando rapido "PassoPasso Salute" che parte (notifica "Dati inviati"). Stacco sulla home: card "Come stai oggi" con l'anello della prontezza, i segnali "Sonno 5h40 (meno del solito)" e "Battito a riposo +7%", il suggerimento "Oggi ti propongo una seduta leggera".
+**B09 · 1:48-2:01 · 13 s** — test e livello
+> Fine seduta: facile, giusto o duro, e la prossima si regola. Un test di trenta secondi, e Giulia passa al livello tre: l'omino nell'icona inizia a correre.
 
-**B09 · 1:25-1:33 · 8 s** — check-in
-> Nel check-in l'energia è già suggerita. Giulia ha quindici minuti, e le ginocchia che fanno male.
+*Schermo:* feedback "giusto"; test di prontezza accelerato (timer di 30 s, contatore grande); proposta del livello 3, "accetta", icona che passa dal livello 2 al 3.
 
-*Schermo:* ciak 3. Check-in con l'energia precompilata e la riga "Suggerito dai tuoi dati di sonno e battito: cambia pure". 15 minuti, tocco sulle ginocchia nella mappa del corpo.
+## Motivazione
 
-**B10 · 1:33-1:48 · 15 s** — seduta rigenerata e omino
-> La seduta si rigenera e ti dice perché: niente camminata, oggi marcia in casa. Gli esercizi vengono da un catalogo verificato, con l'omino che mostra il movimento. L'AI sceglie, non inventa.
+**B10 · 2:01-2:16 · 15 s** — ripartenza
+> Salti una seduta? Capita. La settimana si riorganizza, e chi riparte prende un bonus: premiare chi riprende funziona meglio che punire chi si ferma. Al posto della streak, un punteggio di costanza.
 
-*Schermo:* il riquadro "Perché questa seduta" con la `reason` dell'AI ben leggibile (zoom se serve). Poi il player con l'omino animato grande sopra le istruzioni.
+*Schermo:* ciak 4. "Oggi non ce la faccio" → "Capita. Riprendiamo da qui, con calma." e la ripartenza con **+10**. Poi l'anello della costanza. In sovrimpressione: *Milkman et al., Nature 2021*.
 
-**B11 · 1:48-2:01 · 13 s** — feedback, test e livello
-> Fine seduta: facile, giusto o duro, e la prossima si regola. Un test di trenta secondi, e Giulia passa al livello tre. L'omino nell'icona inizia a correre.
+## Alimentazione
 
-*Schermo:* feedback "giusto", anello della costanza. Test di prontezza accelerato (timer di 30 s e contatore grande del sit-to-stand). Proposta del livello 3 (Costruzione), "accetta", icona che passa dal livello 2 al 3.
+**B11 · 2:16-2:29 · 13 s** — abitudini e piatto
+> Per mangiare meglio, niente calorie: un'abitudine a settimana, scelta per te, e la foto del piatto. Verdura, proteine, cereali: ti dice cosa va bene e cosa aggiungere.
 
-**B12 · 2:01-2:16 · 15 s** — coach e calendario
-> Quando la vita cambia, parli col coach. "Questa settimana lavoro di sera." Il piano si sistema e ti dice cosa ha cambiato. Con il calendario collegato, trova anche gli spazi liberi.
+*Schermo:* ciak 6. Abitudine della settimana, foto caricata, il piatto in tre parti che si riempie, feedback senza numeri.
 
-*Schermo:* ciak 4. Tab Coach, il messaggio, la risposta con i chip verdi (`applied`), poi il foglio del calendario con gli spazi liberi e "Sì, sposta".
+## E cresce con te
 
-**B13 · 2:16-2:28 · 12 s** — seduta saltata
-> Salti una seduta? Capita. La settimana si riorganizza, e chi riparte prende un bonus: premiare chi riprende funziona meglio che punire chi si ferma.
+**B12 · 2:29-2:50 · 21 s** — percorsi e dati
+> E cresce con te. Tre percorsi: corsa, forza o mobilità, e chi corre già parte dal livello quattro. Il coach cambia il piano quando cambia la tua vita, il calendario trova gli spazi liberi, e sonno e battito arrivano da Apple Salute o Strava.
 
-*Schermo:* ciak 5. "Oggi non ce la faccio" → motivo → "Capita. Riprendiamo da qui, con calma." e la ripartenza con **+10**. In sovrimpressione: *Milkman et al., Nature 2021*.
+*Schermo:* montaggio veloce, 3-4 secondi a scena: Percorso con le tre etichette; `demo-runner` con il player a segmenti; coach con i chip verdi; calendario con gli spazi liberi; Comando rapido che invia i dati; Salute e dispositivi.
 
-**B14 · 2:28-2:36 · 8 s** — bandiera rossa
-> Ma se scrivi "ho un dolore al petto", niente allenamento. Prima la salute: chiama il 112.
+**B13 · 2:50-3:00 · 10 s** — visione
+> Oggi è una PWA, la provi da un link. Lo stesso backend serve l'app nativa, con un abbonamento senza trappole.
 
-*Schermo:* ciak 6. Nel coach, il messaggio sul dolore al petto e la risposta immediata con il 112 e il chip "Seduta di oggi in pausa".
-
-**B15 · 2:36-2:44 · 8 s** — alimentazione
-> Per mangiare meglio, un'abitudine a settimana e la foto del piatto: verdura, proteine, cereali. Zero calorie.
-
-*Schermo:* ciak 7. Abitudine della settimana, foto caricata, il piatto in tre parti che si riempie, feedback senza numeri.
-
-## Tecnologia e visione
-
-**B16 · 2:44-2:59 · 15 s**
-> Sotto, Claude lavora dal server e risponde in JSON verificato campo per campo. Le bandiere rosse passano prima da regole fisse. E se l'AI è lenta, la seduta si fa a regole.
-
-*Schermo:* il diagramma dell'architettura del README. Si accendono in sequenza: Motore (bandiere rosse, filtri, riserva) → Claude → JSON validato.
-
-**B17 · 2:59-3:13 · 14 s**
-> Oggi è una PWA, la provi da un link. Lo stesso backend serve l'app nativa: login, notifiche, e i dati di Apple Salute, Health Connect, Garmin, dentro il check-in.
-
-*Schermo:* a sinistra la PWA nel browser, a destra un iPhone con l'app nativa (mockup dichiarato: "App nativa · in arrivo"); al centro la stessa API. Sotto, i loghi testuali delle sorgenti: Apple Salute · Strava (attivi oggi) · Health Connect · Garmin · Fitbit · Oura (in arrivo).
-
-**B18 · 3:13-3:24 · 11 s**
-> Con un abbonamento gentile: piano gratuito vero, prezzo chiaro, disdetta in un tocco. Il contrario di chi ha pagato milioni per le trappole.
-
-*Schermo:* la schermata Piani (Free / Plus) con le promesse anti-dark-pattern in evidenza. Fonte in piccolo: *Noom ha pagato 56 milioni di dollari per una class action sugli abbonamenti, Athletech News*.
-
-**B19 · 3:24-3:30 · 6 s**
-> Poi: altre lingue, una community, e fisioterapisti che seguono i pazienti.
-
-*Schermo:* la Roadmap in tre righe.
-
-**B20 · 3:30-3:41 · 11 s**
-> E l'abbiamo costruita con Claude Code: cinque agenti in parallelo, più uno di regia che custodisce il contratto. In poche ore.
-
-*Schermo:* `docs/agenti/` (tabella delle chat nel README), poi `git log --oneline` che scorre con i prefissi `[chat-1]`…`[regia]`, poi `docs/agenti/richieste.md` con le ondate.
+*Schermo:* PWA nel browser e un iPhone con l'app nativa (mockup dichiarato: "in arrivo"); poi la schermata Piani con le promesse anti-dark-pattern.
 
 ## Chiusura
 
-**B21 · 3:41-3:52 · 11 s**
+**B14 · 3:00-3:09 · 9 s** — agenti
+> E l'abbiamo costruita con Claude Code: sei agenti in parallelo, più una regia che custodisce il contratto.
+
+*Schermo:* la tabella delle chat nel README, `git log --oneline` che scorre con i prefissi `[chat-1]`…`[chat-6]`, `[regia]`, poi `docs/agenti/richieste.md` con le ondate.
+
+**B15 · 3:09-3:20 · 11 s** — saluto
 > Il principiante è la porta d'ingresso. Ma PassoPasso cresce con te. Un passo alla volta: da zero a dove vuoi arrivare.
 
-*Schermo:* le 5 icone, poi logotipo e `passopasso.andreavallieri.com` con il QR (la colonna sinistra di `pitch/screens/desktop-home.png`).
+*Schermo:* le 5 icone dal camminare allo sprint, poi logotipo e `passopasso.andreavallieri.com` con il QR.
 
 ---
 
@@ -139,22 +113,23 @@ Come si usa:
 La tabella completa, con dove mostrarlo nell'app, è in [consegna.md](consegna.md) e nel README.
 - **Solo per chi cammina?** No: tre percorsi, corsa, forza e mobilità, sugli stessi 5 livelli.
 - **E se sono già allenato?** Parti dal livello 4 o 5 con una settimana da podista. Mostra `demo-runner` (Luca).
-- **Progressi senza bilancia?** Costanza, livelli, test di prontezza, minuti e vittorie. Il peso non si rivede mai.
-- **Alimentazione?** Un'abitudine a settimana, quando mangiare rispetto alla seduta, il piatto in tre parti. Mai calorie.
+- **Progressi senza bilancia?** "Allora / Adesso" nei Progressi, costanza, livelli, test di prontezza. Il peso non si rivede mai.
+- **Alimentazione?** Un percorso in tre fasi: prima togli, poi aggiungi, poi impari come mangi. Mai calorie.
 - **Attrezzatura?** Basta una sedia. Elastici e manubri sbloccano esercizi in più.
 - **Dati?** Niente account, niente pubblicità, export e cancellazione in un tocco. Dal calendario solo gli spazi liberi.
+- **Smartwatch?** Apple Salute (Comando rapido) e Strava oggi; Health Connect, Garmin, Fitbit e Oura con l'app nativa.
 - **Perché funziona?** Ogni scelta ha una fonte: è nella schermata "Perché funziona".
-- **E se l'AI sbaglia?** Catalogo verificato, bandiere rosse con regole fisse prima dell'AI, regole di riserva.
+- **E se l'AI sbaglia?** Il codice decide lo spazio sicuro, Claude sceglie lì dentro, 7 invarianti ricontrollano tutto. Costanza, prontezza e livelli non passano dall'AI.
 - **Minorenni?** Sotto i 16 anni niente piano; a 16-17 al massimo livello 3.
 
 ## Se il video è troppo lungo
 Taglia in quest'ordine:
-1. B19 (roadmap): resta nel README e nella consegna.
-2. La seconda frase di B12 (calendario).
-3. B06 (icona che cresce): l'icona si vede già in B11.
+1. La frase sul calendario in "E cresce con te".
+2. La frase sul chatbot generico in "Perché non allucina" (resta nel README).
+3. La guida vocale diventa mezza frase nella seduta zero: "…con una voce che ti guida."
 
 ## Prima di registrare
-- Controlla in `docs/agenti/stato.md` che ogni funzione citata sia online: scheda, prontezza dai dati di salute, test di prontezza, piatto in tre parti, Piani. Se una manca, togli la sua battuta: niente mockup spacciati per funzioni vere. L'unica eccezione è l'app nativa in B17, che va dichiarata "in arrivo" a schermo.
+- Controlla in `docs/agenti/stato.md` che ogni funzione citata sia online. Se una manca, togli la sua battuta: niente mockup spacciati per funzioni vere. L'unica eccezione è l'app nativa, che va scritta "in arrivo" a schermo.
 - Testi a schermo: Archivo corsivo extrabold per i titoli, Plus Jakarta Sans per le fonti. Colori `#2C6975`, `#68B2A0`, `#CDE0C9`.
 - Sottotitoli sempre attivi: molti guardano senza audio.
 - Le attese dell'AI vanno accelerate, non tagliate del tutto: un secondo di caricamento fa capire che è tutto vero.
