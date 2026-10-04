@@ -4,6 +4,7 @@ import { db } from '../db.js';
 import { addDays, diffDays, today, weekday, weekStart } from '../dates.js';
 import { buildRuleItems, ruleReason, ruleTitle } from './builder.js';
 import { derive } from './person.js';
+import { enforce } from './invariants.js';
 import { activeDays } from './health.js';
 import { planRunWeek, runDraft, runLevel, runSessionsPerWeek, typeForDate } from './run.js';
 import type { DraftSession, Item, Profile, Session, SessionRow, UserRow } from './types.js';
@@ -58,7 +59,13 @@ export function updateSession(id: string, fields: Partial<Record<keyof SessionRo
 }
 
 /** Seduta pianificata a regole (nessuna chiamata all'AI: il check-in la rigenera). */
-export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean; pain?: BodyZone[] } = {}): DraftSession & { bonus_points: number; kind: 'normale' | 'ripartenza' } {
+/** Seduta a regole, passata dagli invarianti come tutte le altre. */
+export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean; pain?: BodyZone[] } = {}) {
+  const d = ruleDraftRaw(user, profile, date, opts);
+  return enforce(d, { minutes: d.minutes, pain: opts.pain ?? [], impactAllowed: derive(profile).impactAllowed, redFlags: [] }, { safeReason: d.reason }).draft;
+}
+
+function ruleDraftRaw(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean; pain?: BodyZone[] } = {}): DraftSession & { bonus_points: number; kind: 'normale' | 'ripartenza' } {
   const level = opts.level ?? user.level;
   const lvl = content.level(level, profile.track);
   if (opts.restart) {

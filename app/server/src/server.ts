@@ -12,6 +12,8 @@ import { acceptLevel, checkin, complete, completeShort, shortSession, skip, SHOR
 import { mealFeedback } from './engine/meals.js';
 import { submitTest, testsFor } from './engine/tests.js';
 import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncStravaIfStale, verifyState } from './engine/strava.js';
+import { lastExplain, stats as aiStats } from './engine/ailog.js';
+import { explainRow } from './engine/explain.js';
 import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
 import { applyAction, inbox, markRead, recordOpen, simulate, TRIGGERS, type Trigger } from './engine/proactive.js';
 import { IngestSchema, healthToken, ingest, readiness, summary, userByHealthToken } from './engine/health.js';
@@ -231,6 +233,14 @@ export async function buildServer() {
     const row = requireSession(user, id);
     return id.endsWith(SHORT_SUFFIX) && row.status === 'planned' ? shortSession(user, profileOf(user)!, row) : toSession(row, user);
   });
+
+  // Trasparenza: "Perché questa seduta"
+  app.get('/api/sessions/:id/explain', async (req) => {
+    const user = requireUser(req);
+    const row = requireSession(user, (req.params as { id: string }).id);
+    return (row.checkin ? lastExplain(row.id) : null) ?? explainRow(user, profileOf(user)!, row);
+  });
+  app.get('/api/ai/stats', async () => aiStats());
 
   // Prima di saltare: il tuo perché e la seduta da 10 minuti
   app.get('/api/sessions/:id/alternatives', async (req) => {

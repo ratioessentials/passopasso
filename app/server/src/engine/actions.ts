@@ -1,7 +1,11 @@
 import { content, type BodyZone, type RedFlag } from '../content.js';
 import { db } from '../db.js';
 import { addDays, today, weekStart } from '../dates.js';
-import { buildRuleItems, clampIntensity, generateSession } from './builder.js';
+import { buildRuleItems, clampIntensity, generateSession, ruleReason } from './builder.js';
+import { aiMode, type AiMeta } from '../ai/claude.js';
+import { logCall } from './ailog.js';
+import { buildExplain } from './explain.js';
+import { enforce } from './invariants.js';
 import { derive } from './person.js';
 import { adaptRun, segmentsMinutes } from './run.js';
 import { testPassed, testSnoozed } from './tests.js';
@@ -9,7 +13,7 @@ import { readinessLine } from './health.js';
 import {
   consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, replanFrom, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
 } from './store.js';
-import type { Feedback, Profile, Segment, SessionRow, UserRow } from './types.js';
+import type { DraftSession, Feedback, Profile, Segment, SessionRow, UserRow } from './types.js';
 
 // ---------- Check-in ----------
 
@@ -25,21 +29,31 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
       message: 'Oggi niente allenamento. Se il sintomo continua, sentiamo prima il medico.',
     };
     updateSession(row.id, { status: 'blocked', checkin: JSON.stringify(input) });
+    logCall({ userId: user.id, sessionId: row.id, kind: 'blocco', fallback: false });
     return { status: 'blocked', redFlag };
   }
-  // 2a. Corsa a segmenti: l'AI adatta i segmenti (10% e scarico restano deterministici)
+  const ctx = { minutes: input.minutes, pain: input.pain, impactAllowed: derive(profile).impactAllowed, redFlags: [] as string[] };
+  const meta: AiMeta = {};
+
+  // 2a. Corsa a segmenti: l'AI adatta i segmenti (10% e scarico restano deterministici), poi gli invarianti
   if (row.segments && row.kind === 'normale') {
-    const run = await adaptRun(row, profile, input, user.intensity, readinessLine(user.id));
+    const run = await adaptRun(row, profile, input, user.intensity, readinessLine(user.id), meta);
+    const items = JSON.parse(row.items) as DraftSession['items'];
+    const enf = enforce({ minutes: input.minutes, intensity: run.intensity, title: run.title, reason: run.reason, items, segments: run.segments, source: run.source }, ctx,
+      { safeReason: 'Seduta adattata a come stai oggi.' });
+    const fallback = run.source === 'rules' && aiMode() !== 'off';
     updateSession(row.id, {
-      status: 'planned', minutes: Math.round(segmentsMinutes(run.segments)), intensity: run.intensity, title: run.title,
-      reason: run.reason, segments: run.segments, source: run.source, checkin: JSON.stringify(input),
+      status: 'planned', minutes: Math.round(segmentsMinutes(enf.draft.segments!)), intensity: run.intensity, title: run.title,
+      reason: enf.draft.reason, items: enf.draft.items, segments: enf.draft.segments, source: run.source, checkin: JSON.stringify(input),
     });
+    const explain = buildExplain({ user, profile, level: row.level, input, checks: enf.checks, meta, fallback, repaired: enf.repaired, violationsBefore: enf.before });
+    logCall({ userId: user.id, sessionId: row.id, kind: 'corsa', meta, fallback, before: enf.before, after: enf.after, explain });
     return { status: 'ok', session: toSession(db.prepare('SELECT * FROM sessions WHERE id = ?').get(row.id) as SessionRow, user) };
   }
-  // 2b. Seduta su misura (AI con esercizi filtrati, o regole)
+  // 2b. Seduta su misura: l'AI sceglie solo tra gli esercizi già filtrati, poi gli invarianti; se non tornano, riserva a regole
   const restart = row.kind === 'ripartenza';
   const r = content.program().restartSession;
-  const draft = await generateSession({
+  const genOpts = {
     level: row.level,
     profile,
     intensity: restart ? Math.min(r.intensity ?? 0.8, user.intensity) : user.intensity,
@@ -49,11 +63,25 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
     kindNote: restart ? `È una seduta di ripartenza dopo una seduta saltata: più corta e leggera, preferisci le versioni facili. Vale +${row.bonus_points} punti di costanza: ricordalo nella reason con calore, senza colpa.` : undefined,
     easy: restart,
     context: readinessLine(user.id),
-  });
+  };
+  const draft = await generateSession({ ...genOpts, meta });
+  const safeReason = ruleReason({ level: row.level, minutes: input.minutes, templateMinutes: (genOpts.template ?? content.level(row.level, profile.track).sessionTemplate).minutes, energy: input.energy, pain: input.pain, caution: derive(profile).caution, track: profile.track });
+  let enf = enforce(draft, ctx, { safeReason });
+  let fallback = draft.source === 'rules' && aiMode() !== 'off';
+  const before = enf.before;
+  if (enf.after.length) {
+    // una violazione non correggibile: seduta di riserva a regole, ricontrollata
+    console.warn(`[invarianti] ${enf.after.join(', ')} → seduta di riserva`);
+    enf = enforce(await generateSession({ ...genOpts, rulesOnly: true }), ctx, { safeReason });
+    fallback = true;
+  }
+  const final = enf.draft;
   updateSession(row.id, {
-    status: 'planned', minutes: draft.minutes, intensity: draft.intensity, title: restart ? (r.title ?? draft.title) : draft.title,
-    reason: draft.reason, items: draft.items, source: draft.source, checkin: JSON.stringify(input),
+    status: 'planned', minutes: final.minutes, intensity: final.intensity, title: restart ? (r.title ?? final.title) : final.title,
+    reason: final.reason, items: final.items, source: fallback ? 'rules' : final.source, checkin: JSON.stringify(input),
   });
+  const explain = buildExplain({ user, profile, level: row.level, input, checks: enf.checks, meta, fallback, repaired: enf.repaired || before.length > 0, violationsBefore: before });
+  logCall({ userId: user.id, sessionId: row.id, kind: 'seduta', meta, fallback, before, after: enf.after, explain });
   const updated = db.prepare('SELECT * FROM sessions WHERE id = ?').get(row.id) as SessionRow;
   return { status: 'ok', session: toSession(updated, user) };
 }

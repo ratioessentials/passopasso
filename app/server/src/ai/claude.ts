@@ -33,7 +33,11 @@ export interface AskOpts {
   label?: string;
   timeoutMs?: number;
   maxTokens?: number;
+  /** riempito con l'esito della chiamata (per ai_calls e /explain) */
+  meta?: AiMeta;
 }
+
+export interface AiMeta { model?: string; latencyMs?: number; validFirstTry?: boolean; repaired?: boolean; error?: string }
 
 let anthropic: Anthropic | null = null;
 
@@ -138,7 +142,7 @@ async function askWithTurns<T>(system: string, first: UserContent, schema: z.Zod
       let problem: string;
       try {
         const parsed = schema.safeParse(extractJson(text));
-        if (parsed.success) return parsed.data;
+        if (parsed.success) { if (opts.meta) { opts.meta.validFirstTry = true; opts.meta.repaired = false; } return parsed.data; }
         problem = z.prettifyError(parsed.error);
       } catch (e) {
         problem = (e as Error).message;
@@ -147,10 +151,15 @@ async function askWithTurns<T>(system: string, first: UserContent, schema: z.Zod
       console.warn(`[${label}] JSON non valido, ritento: ${problem.slice(0, 300)}`);
       turns.push({ role: 'assistant', content: text || '(vuoto)' });
       turns.push({ role: 'user', content: `La risposta non è valida:\n${problem}\nRiscrivila correggendo il problema. Solo il JSON.` });
+      if (opts.meta) { opts.meta.validFirstTry = false; opts.meta.repaired = true; }
       const retry = await call(sys, turns, opts, signal);
       return schema.parse(extractJson(retry));
     });
+  } catch (err) {
+    if (opts.meta) opts.meta.error = (err as Error).message;
+    throw err;
   } finally {
+    if (opts.meta) { opts.meta.model = config.aiModel; opts.meta.latencyMs = Date.now() - t0; }
     console.log(`[${label}] ${aiMode()} ${config.aiModel} ${Date.now() - t0} ms`);
   }
 }

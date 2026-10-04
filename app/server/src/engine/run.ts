@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { askJson } from '../ai/claude.js';
+import { askJson, type AiMeta } from '../ai/claude.js';
 import { SEDUTA_SYSTEM } from '../ai/prompts/seduta.js';
 import { content, type BodyZone, type Level } from '../content.js';
 import { addDays, diffDays, weekStart } from '../dates.js';
@@ -183,7 +183,7 @@ function shortEasy(minutes: number): Segment[] {
   ];
 }
 
-export async function adaptRun(row: SessionRow, profile: Profile, checkin: { minutes: number; energy: number; pain: BodyZone[] }, intensity: number, context?: string | null) {
+export async function adaptRun(row: SessionRow, profile: Profile, checkin: { minutes: number; energy: number; pain: BodyZone[] }, intensity: number, context?: string | null, meta?: AiMeta) {
   const planned: Segment[] = JSON.parse(row.segments!);
   const plannedMin = segmentsMinutes(planned);
   const legPain = checkin.pain.filter((z) => LEG_ZONES.includes(z));
@@ -213,7 +213,7 @@ REGOLE: adatta i SEGMENTI (non gli esercizi). Durata totale al massimo ${Math.ro
 Tieni riscaldamento e defaticamento. "motion" tra: ${MOTIONS.join(', ')}. "repeat" con "recovery" per le ripetute.
 Rispondi con { "title", "reason", "segments" } (reason: una frase, massimo 20 parole, senza numeri del check-in).`;
   try {
-    const ai = await askJson(SEDUTA_SYSTEM, user, AiRun, { label: 'corsa' });
+    const ai = await askJson(SEDUTA_SYSTEM, user, AiRun, { label: 'corsa', meta });
     let segs = ai.segments.map((s) => ({ ...s, repeat: s.repeat ?? undefined, recovery: s.recovery ?? undefined }) as Segment)
       .map((s) => (s.recovery ? s : (({ recovery: _r, ...rest }) => rest)(s) as Segment))
       .map((s) => (s.repeat ? s : (({ repeat: _r, ...rest }) => rest)(s) as Segment));

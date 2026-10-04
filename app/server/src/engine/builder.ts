@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { askJson } from '../ai/claude.js';
+import { askJson, type AiMeta } from '../ai/claude.js';
 import { SEDUTA_SYSTEM } from '../ai/prompts/seduta.js';
 import { content, type BodyZone, type Category, type Exercise, type SessionTemplate } from '../content.js';
 import type { DraftSession, Item, Profile } from './types.js';
@@ -228,7 +228,7 @@ export interface CheckinInput { minutes: number; energy: number; pain: BodyZone[
  * Se l'AI non risponde o fallisce: seduta a regole.
  */
 export async function generateSession(opts: {
-  level: number; profile: Profile; intensity: number; checkin: CheckinInput; seed: string; template?: SessionTemplate; kindNote?: string; easy?: boolean; context?: string | null;
+  level: number; profile: Profile; intensity: number; checkin: CheckinInput; seed: string; template?: SessionTemplate; kindNote?: string; easy?: boolean; context?: string | null; meta?: AiMeta; rulesOnly?: boolean;
 }): Promise<DraftSession> {
   const lvl = content.level(opts.level, opts.profile.track);
   const template = opts.template ?? lvl.sessionTemplate;
@@ -259,7 +259,8 @@ ESERCIZI CONSENTITI (id | nome | categoria | livello minimo | zone | prescrizion
 ${list}`;
 
   try {
-    const ai = await askJson(SEDUTA_SYSTEM, user, AiSession, { label: 'seduta' });
+    if (opts.rulesOnly) return fallback();
+    const ai = await askJson(SEDUTA_SYSTEM, user, AiSession, { label: 'seduta', meta: opts.meta });
     const byId = new Map(allowed.map((e) => [e.id, e]));
     const items: Item[] = [];
     const seen = new Set<string>();

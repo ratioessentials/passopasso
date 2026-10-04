@@ -76,6 +76,12 @@ const migrations: string[] = [
      trigger TEXT NOT NULL, key TEXT NOT NULL, text TEXT NOT NULL, because TEXT NOT NULL, read INTEGER NOT NULL DEFAULT 0, actions TEXT);
    CREATE INDEX coach_messages_user ON coach_messages(user_id, day);
    CREATE TABLE app_opens (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, date TEXT NOT NULL, PRIMARY KEY (user_id, date));`,
+  // 8: log delle chiamate all'AI e degli invarianti (trasparenza e statistiche)
+  `CREATE TABLE ai_calls (
+     id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, user_id TEXT, session_id TEXT, kind TEXT NOT NULL,
+     mode TEXT NOT NULL, model TEXT, latency_ms INTEGER, valid_first_try INTEGER, repaired INTEGER NOT NULL DEFAULT 0,
+     fallback INTEGER NOT NULL DEFAULT 0, violations_before TEXT NOT NULL DEFAULT '[]', violations_after TEXT NOT NULL DEFAULT '[]', explain TEXT);
+   CREATE INDEX ai_calls_session ON ai_calls(session_id);`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');
