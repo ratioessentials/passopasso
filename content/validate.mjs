@@ -257,6 +257,8 @@ if (habits) {
       for (const k of ['title', 'why', 'photoPrompt']) if (!isStr(h[k])) err(w, `${k} mancante`);
       if (!strArr(h.tips, 2)) err(w, 'servono almeno 2 tips');
       if (FORBIDDEN_FOOD_WORDS.test(JSON.stringify(h))) err(w, 'niente calorie, peso o bilancia');
+      const ph = h.week <= 3 ? 'sostituire' : h.week <= 7 ? 'aggiungere' : 'come_mangi';
+      if (h.phase !== ph) err(w, `phase deve essere ${ph} (settimana ${h.week})`);
       if (!Array.isArray(h.signals)) err(w, 'signals deve essere un array (anche vuoto)');
       else for (const sg of h.signals) {
         if (!(sg.field in FOOD_FIELDS)) err(w, `signal: campo sconosciuto ${sg.field}`);
@@ -266,6 +268,7 @@ if (habits) {
           if (!Array.isArray(vals) || !vals.every((v) => FOOD_FIELDS[sg.field](v))) err(w, `signal ${sg.field}: valore non valido ${JSON.stringify(sg.value)}`);
         }
         if (!isStr(sg.why)) err(w, 'signal senza why');
+        if (!['advance', 'skip'].includes(sg.effect)) err(w, 'signal: effect advance | skip');
       }
     });
   }
@@ -276,15 +279,16 @@ const fuel = load('fuel.json');
 if (fuel) {
   const slots = Object.keys(fuel.slots ?? {});
   const types = Object.keys(fuel.types ?? {});
-  if (slots.join() !== 'mattina,pranzo,sera') err('fuel.json', 'slots: mattina, pranzo, sera');
+  if (slots.join() !== 'mattina,pranzo,sera,tardi') err('fuel.json', 'slots: mattina, pranzo, sera, tardi');
   if (!['leggera', 'forza', 'corsa', 'corsa_lunga'].every((t) => types.includes(t))) err('fuel.json', 'types: leggera, forza, corsa, corsa_lunga');
-  for (const sl of slots) for (const t of types) {
+  for (const sl of slots.filter((x) => !fuel.slots[x].onlyFor)) for (const t of types) {
     const a = (fuel.advice ?? []).filter((x) => x.slot === sl && x.type === t);
     if (a.length !== 1) err('fuel.json', `serve un consiglio per ${sl}/${t}`);
     else if (!isStr(a[0].before) || !isStr(a[0].after)) err('fuel.json', `${sl}/${t}: before e after obbligatori`);
   }
   for (const k of ['corsa', 'forza', 'mobilita']) if (!isStr(fuel.trackNotes?.[k])) err('fuel.json', `trackNotes.${k} mancante`);
   if (!isStr(fuel.safety)) err('fuel.json', 'safety mancante');
+  for (const sl of ['mattina', 'pranzo', 'sera', 'tardi']) if (!isStr(fuel.afterFood?.[sl])) err('fuel.json', `afterFood.${sl} mancante`);
   const txt = JSON.stringify(fuel.advice) + JSON.stringify(fuel.trackNotes);
   if (FORBIDDEN_FOOD_WORDS.test(txt) || /\d+\s*(g|gr|grammi|ml|kcal)\b/i.test(txt)) err('fuel.json', 'niente quantità, calorie o peso');
 }
@@ -442,6 +446,15 @@ if (copy) {
   else {
     const required = ['onboarding.hello', 'skip.title', 'restart.title', 'blocked.title', 'levelup.title', 'feedback.facile', 'feedback.giusto', 'feedback.duro', 'empty.wins'];
     for (const k of required) if (!isStr(copy[k])) err('copy.json', `chiave mancante: ${k}`);
+    const TRIGGERS = ['ripartenza_fatta', 'assenza_3_giorni', 'pattern_giorno_saltato', 'due_duro', 'prontezza_bassa_2gg', 'record_personale', 'fine_settimana_1', 'inizio_settimana_2', 'livello_nuovo'];
+    const WHY_OK = ['assenza_3_giorni', 'livello_nuovo', 'inizio_settimana_2'];
+    for (const t of TRIGGERS) {
+      for (const f of ['because', 'text']) if (!isStr(copy[`trigger.${t}.${f}`])) err('copy.json', `testo di riserva mancante: trigger.${t}.${f}`);
+      const txt = copy[`trigger.${t}.text`] ?? '';
+      if (txt.includes('{why}') && !WHY_OK.includes(t)) err('copy.json', `trigger.${t}: {why} solo in ${WHY_OK.join(', ')}`);
+      if (txt.includes('{why}') && !isStr(copy[`trigger.${t}.text_no_why`])) err('copy.json', `trigger.${t}: serve text_no_why`);
+      if (!/^Ti scrivo perché/.test(copy[`trigger.${t}.because`] ?? '')) err('copy.json', `trigger.${t}.because deve iniziare con "Ti scrivo perché"`);
+    }
     for (const [k, v] of Object.entries(copy)) {
       if (!/^[a-z]+(\.[a-zA-Z0-9_]+)+$/.test(k)) err('copy.json', `chiave non valida: ${k}`);
       if (!isStr(v)) err('copy.json', `${k}: testo vuoto`);

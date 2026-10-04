@@ -51,6 +51,8 @@ node content/validate.mjs
 
 ## Alimentazione
 - `habits.json` → `signals`: condizioni sul mini-onboarding (`profile.food`) che rendono prioritaria l'abitudine, ognuna con `why` già pronto per la risposta. `op`: `eq`, `in`, `lte`, `gte`. Valori attesi: `breakfast` booleano, `veggiesPerDay` 0-10, `sugaryDrinks` `mai|a_volte|spesso`, `mealsOut` 0-21 a settimana, `cooks` `mai|raramente|a_volte|spesso`. Senza segnali che scattano si segue `week`.
+- `habits.json` → `phase`: `sostituire` (settimane 1-3), `aggiungere` (4-7), `come_mangi` (8-12). Ogni `signal` ha `effect`: `skip` (la tappa è già acquisita: si salta, `why` diventa `skippedWhy`) oppure `advance` (la tappa sale **dentro la sua fase**: l'ordine delle fasi resta "prima togli, poi aggiungi, poi impari come mangi"). Tappe nuove: `merendine_frutta_yogurt`, `pasti_di_festa`; rimosse `acqua_pasti` (ora nei consigli di `bevande_senza_zucchero`) e `frutta_spuntino` (dentro `merendine_frutta_yogurt`).
+- `fuel.json` → `afterFood`: la frase "fame dopo la seduta" per `mattina`, `pranzo`, `sera` e `tardi` (dopo le 21:30), da mettere in `afterFood` di `complete`.
 - `fuel.json`: il server sceglie lo slot dall'orario della seduta e il tipo dalla seduta; `trackNotes` e `safety` si possono aggiungere sotto.
 
 ## Prontezza (`readiness.json`)
@@ -58,6 +60,9 @@ node content/validate.mjs
 - Punteggio = `score.start` − `penalty` dei segnali attivi (minimo `score.min`); livello = primo di `levels` con `minScore` ≤ punteggio. `suggestedEnergy` = `energyBySignals[numero di segnali]`. Esempio di api.md: sonno corto + battito alto → 62, media, energia 2.
 - `restAdvised` con almeno `minSignals` segnali per `consecutiveDays` giorni di fila; testi pronti in `restAdvised.text` e `medicalText`.
 - Segnaposto nei testi: `{hours}` (es. "5h40"), `{pct}`, `{steps}`.
+
+## Coach proattivo (testi di riserva in `copy.json`)
+Per ogni trigger di schema.md: `trigger.<trigger>.because` (inizia sempre con "Ti scrivo perché") e `trigger.<trigger>.text`. Solo `assenza_3_giorni`, `inizio_settimana_2` e `livello_nuovo` usano `{why}`: per loro c'è anche `text_no_why`, da usare se il profilo non ha `why`. `pattern_giorno_saltato` usa `{day}` (es. "venerdì": "di venerdì la seduta salta spesso").
 
 ## Tipi di condizione delle vittorie (`wins.json` → `rule`)
 Ogni vittoria ha `condition` (testo per l'utente) e `rule` (per il calcolo). Si assegna una volta sola, quando la regola diventa vera.

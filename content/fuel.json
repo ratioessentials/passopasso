@@ -12,6 +12,11 @@
     "sera": {
       "from": "15:00",
       "to": "23:30"
+    },
+    "tardi": {
+      "from": "21:30",
+      "to": "05:00",
+      "onlyFor": "afterFood"
     }
   },
   "types": {
@@ -99,5 +104,12 @@
     "forza": "Per la forza conta distribuire le proteine nei pasti della giornata, non solo dopo la seduta.",
     "mobilita": "Per la mobilità non servono accorgimenti speciali: bevi con regolarità e mangia come al solito."
   },
-  "safety": "Se hai una condizione medica, un disturbo alimentare o segui una dieta prescritta, valgono le indicazioni del tuo medico o del tuo dietista."
+  "safety": "Se hai una condizione medica, un disturbo alimentare o segui una dieta prescritta, valgono le indicazioni del tuo medico o del tuo dietista.",
+  "afterFood": {
+    "note": "Frase per 'fame dopo la seduta', scelta dall'orario di fine seduta (stessi slot). Tono rassicurante: avere fame è normale.",
+    "mattina": "Avere fame adesso è normale: fai colazione come sempre, con un po' di frutta e qualcosa di proteico.",
+    "pranzo": "Avere fame adesso è normale: pranza come al solito, con verdura, proteine e cereali.",
+    "sera": "Avere fame adesso è normale: un frutto o uno yogurt, poi cena come sempre.",
+    "tardi": "Avere fame adesso è normale: se la cena è già passata, uno yogurt o un bicchiere di latte vanno benissimo."
+  }
 }

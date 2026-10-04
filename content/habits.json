@@ -1,56 +1,73 @@
 [
   {
-    "id": "acqua_pasti",
+    "id": "merendine_frutta_yogurt",
+    "phase": "sostituire",
     "week": 1,
-    "title": "Un bicchiere d'acqua a ogni pasto",
-    "why": "Bere con regolarità aiuta energia e sazietà. È il gesto più semplice da cui partire.",
+    "title": "Merendine e gelati → frutta o yogurt",
+    "why": "Non togliamo il momento dolce: lo cambiamo. Frutta e yogurt saziano di più e ti lasciano più energia.",
     "tips": [
-      "Tieni una bottiglia in vista sul tavolo",
-      "Riempi il bicchiere prima di sederti",
-      "Se l'acqua liscia ti annoia, prova con una fetta di limone"
+      "Tieni la frutta già lavata in vista, le merendine in un posto scomodo",
+      "Yogurt bianco con frutta o un filo di miele è un ottimo dolce",
+      "Non è vietato niente: se una sera vuoi il gelato, goditelo"
     ],
-    "photoPrompt": "Nella foto c'è un bicchiere o una bottiglia d'acqua vicino al piatto?",
+    "photoPrompt": "Lo spuntino o il dolce nella foto è frutta o yogurt?",
+    "signals": []
+  },
+  {
+    "id": "bevande_senza_zucchero",
+    "phase": "sostituire",
+    "week": 2,
+    "title": "Bibite → acqua",
+    "why": "Le bibite zuccherate non saziano. Sostituirle con acqua, anche frizzante o con agrumi, è un cambio piccolo con un grande effetto.",
+    "tips": [
+      "Un bicchiere d'acqua a ogni pasto, la bottiglia sempre in vista",
+      "Acqua frizzante con limone o arancia al posto della bibita",
+      "Tè o tisane fredde fatte in casa, senza zucchero"
+    ],
+    "photoPrompt": "La bevanda accanto al piatto è acqua, tè o un'altra bevanda senza zucchero?",
     "signals": [
       {
         "field": "sugaryDrinks",
-        "op": "in",
-        "value": [
-          "a_volte",
-          "spesso"
-        ],
-        "why": "Bevi spesso bibite: partiamo dall'acqua ai pasti, il gesto più semplice."
+        "op": "eq",
+        "value": "mai",
+        "effect": "skip",
+        "why": "Non bevi bibite zuccherate: questa tappa l'hai già fatta."
+      },
+      {
+        "field": "sugaryDrinks",
+        "op": "eq",
+        "value": "spesso",
+        "effect": "advance",
+        "why": "Le bibite zuccherate sono frequenti: cominciamo da qui, è il cambio con più effetto."
       }
     ]
   },
   {
-    "id": "frutta_spuntino",
-    "week": 2,
-    "title": "Un frutto come spuntino",
-    "why": "La frutta dà dolcezza, fibre e vitamine. Averla a portata di mano rende la scelta facile.",
+    "id": "spuntini_pianificati",
+    "phase": "sostituire",
+    "week": 3,
+    "title": "Lo spuntino lo scegli prima",
+    "why": "Decidere prima cosa mangerai quando avrai fame ti evita le scelte di fretta.",
     "tips": [
-      "Lascia un cesto di frutta in vista",
-      "Porta un frutto in borsa quando esci",
-      "Frutta di stagione: costa meno ed è più buona"
+      "Prepara la sera uno spuntino per il giorno dopo",
+      "Buone idee: frutta, yogurt, una manciata di frutta secca",
+      "Tieni qualcosa di semplice in borsa o in ufficio"
     ],
-    "photoPrompt": "Nella foto c'è della frutta fresca?",
+    "photoPrompt": "Lo spuntino nella foto è semplice e nutriente, come frutta, yogurt o frutta secca?",
     "signals": [
       {
-        "field": "veggiesPerDay",
-        "op": "lte",
-        "value": 1,
-        "why": "Frutta e verdura sono poche nella tua giornata: partiamo da un frutto come spuntino."
-      },
-      {
-        "field": "breakfast",
-        "op": "eq",
-        "value": false,
-        "why": "Salti spesso la colazione: un frutto è un modo facile per cominciare."
+        "field": "mealsOut",
+        "op": "gte",
+        "value": 4,
+        "effect": "advance",
+        "why": "Sei spesso fuori casa: avere uno spuntino pronto evita le scelte di fretta."
       }
     ]
   },
   {
     "id": "verdura_un_pasto",
-    "week": 3,
+    "phase": "aggiungere",
+    "week": 4,
     "title": "Verdura in un pasto al giorno",
     "why": "La verdura riempie, nutre e aggiunge colore. Basta iniziare da un pasto.",
     "tips": [
@@ -62,34 +79,23 @@
     "signals": [
       {
         "field": "veggiesPerDay",
+        "op": "gte",
+        "value": 3,
+        "effect": "skip",
+        "why": "Mangi già verdura più volte al giorno."
+      },
+      {
+        "field": "veggiesPerDay",
         "op": "lte",
         "value": 1,
+        "effect": "advance",
         "why": "La verdura è ancora poca: aggiungiamola a un pasto al giorno."
       }
     ]
   },
   {
-    "id": "mangiare_seduti",
-    "week": 4,
-    "title": "A tavola, senza schermi",
-    "why": "Quando mangi con calma senti meglio il gusto e capisci prima quando sei sazio.",
-    "tips": [
-      "Lascia il telefono in un'altra stanza",
-      "Appoggia la forchetta tra un boccone e l'altro",
-      "Inizia da un solo pasto al giorno"
-    ],
-    "photoPrompt": "Il pasto è servito in un piatto, a tavola, con calma?",
-    "signals": [
-      {
-        "field": "mealsOut",
-        "op": "gte",
-        "value": 5,
-        "why": "Mangi spesso fuori o di corsa: proviamo a goderci almeno un pasto con calma."
-      }
-    ]
-  },
-  {
     "id": "proteine_colazione",
+    "phase": "aggiungere",
     "week": 5,
     "title": "Una fonte di proteine a colazione",
     "why": "Le proteine al mattino aiutano a restare sazi più a lungo e sostengono i muscoli che stai allenando.",
@@ -104,36 +110,15 @@
         "field": "breakfast",
         "op": "eq",
         "value": false,
+        "effect": "advance",
         "why": "Salti spesso la colazione: partiamo da lì, con qualcosa che ti tenga sazio."
       }
     ]
   },
   {
-    "id": "cereali_integrali",
-    "week": 6,
-    "title": "Cereali integrali al posto dei raffinati",
-    "why": "Gli integrali danno energia più costante e più fibre.",
-    "tips": [
-      "Inizia mescolando pasta integrale e normale",
-      "Prova riso integrale, orzo o farro",
-      "Leggi l'etichetta: 'integrale' deve essere il primo ingrediente"
-    ],
-    "photoPrompt": "Nel piatto ci sono cereali integrali, come pasta o pane integrale, farro o orzo?",
-    "signals": [
-      {
-        "field": "cooks",
-        "op": "in",
-        "value": [
-          "a_volte",
-          "spesso"
-        ],
-        "why": "Cucini già: cambiare pasta o pane con quelli integrali è un passo facile."
-      }
-    ]
-  },
-  {
     "id": "legumi_settimana",
-    "week": 7,
+    "phase": "aggiungere",
+    "week": 6,
     "title": "Legumi almeno due volte a settimana",
     "why": "Ceci, lenticchie e fagioli sono proteine vegetali ricche di fibre, economiche e versatili.",
     "tips": [
@@ -150,33 +135,40 @@
           "a_volte",
           "spesso"
         ],
+        "effect": "advance",
         "why": "Visto che cucini, i legumi sono un'aggiunta semplice ed economica."
       }
     ]
   },
   {
-    "id": "bevande_senza_zucchero",
-    "week": 8,
-    "title": "Bevande senza zucchero",
-    "why": "Le bibite zuccherate non saziano. Sostituirle con acqua o tè è un cambio piccolo con un grande effetto.",
+    "id": "cereali_integrali",
+    "phase": "aggiungere",
+    "week": 7,
+    "title": "Cereali integrali al posto dei raffinati",
+    "why": "Gli integrali danno energia più costante e più fibre.",
     "tips": [
-      "Acqua frizzante con agrumi è un buon sostituto",
-      "Tè o tisane fredde fatte in casa, senza zucchero",
-      "Se ti va una bibita, scegli il formato piccolo"
+      "Inizia mescolando pasta integrale e normale",
+      "Prova riso integrale, orzo o farro",
+      "Leggi l'etichetta: 'integrale' deve essere il primo ingrediente"
     ],
-    "photoPrompt": "La bevanda accanto al piatto è acqua, tè o un'altra bevanda senza zucchero?",
+    "photoPrompt": "Nel piatto ci sono cereali integrali, come pasta o pane integrale, farro o orzo?",
     "signals": [
       {
-        "field": "sugaryDrinks",
-        "op": "eq",
-        "value": "spesso",
-        "why": "Le bibite zuccherate sono frequenti: sostituirle è il cambio con più effetto per te."
+        "field": "cooks",
+        "op": "in",
+        "value": [
+          "a_volte",
+          "spesso"
+        ],
+        "effect": "advance",
+        "why": "Cucini già: cambiare pasta o pane con quelli integrali è un passo facile."
       }
     ]
   },
   {
     "id": "piatto_bilanciato",
-    "week": 9,
+    "phase": "come_mangi",
+    "week": 8,
     "title": "Il piatto in tre parti",
     "why": "Metà verdura, un quarto proteine e un quarto cereali: una guida visiva semplice, senza pesare niente.",
     "tips": [
@@ -190,32 +182,50 @@
         "field": "veggiesPerDay",
         "op": "lte",
         "value": 2,
+        "effect": "advance",
         "why": "Il piatto in tre parti ti aiuta a dare spazio alla verdura senza contare niente."
       }
     ]
   },
   {
-    "id": "spuntini_pianificati",
-    "week": 10,
-    "title": "Spuntini scelti in anticipo",
-    "why": "Decidere prima cosa mangerai quando avrai fame ti evita scelte di fretta.",
+    "id": "mangiare_seduti",
+    "phase": "come_mangi",
+    "week": 9,
+    "title": "A tavola, senza schermi",
+    "why": "Quando mangi con calma senti meglio il gusto e capisci prima quando sei sazio.",
     "tips": [
-      "Prepara la sera uno spuntino per il giorno dopo",
-      "Buone idee: frutta, yogurt, una manciata di frutta secca",
-      "Tieni qualcosa di semplice in borsa o in ufficio"
+      "Lascia il telefono in un'altra stanza",
+      "Appoggia la forchetta tra un boccone e l'altro",
+      "Inizia da un solo pasto al giorno"
     ],
-    "photoPrompt": "Lo spuntino nella foto è semplice e nutriente, come frutta, yogurt o frutta secca?",
+    "photoPrompt": "Il pasto è servito in un piatto, a tavola, con calma?",
     "signals": [
       {
         "field": "mealsOut",
         "op": "gte",
-        "value": 4,
-        "why": "Sei spesso fuori casa: avere uno spuntino pronto evita le scelte di fretta."
+        "value": 5,
+        "effect": "advance",
+        "why": "Mangi spesso fuori o di corsa: proviamo a goderci almeno un pasto con calma."
       }
     ]
   },
   {
+    "id": "ascoltare_fame",
+    "phase": "come_mangi",
+    "week": 10,
+    "title": "Ascolta fame e sazietà",
+    "why": "Mangiare quando hai fame e fermarti quando ne hai abbastanza è un'abilità che si allena, come la corsa.",
+    "tips": [
+      "A metà pasto fermati un momento e chiediti come stai",
+      "Va bene lasciare qualcosa nel piatto",
+      "Prima di uno spuntino chiediti: è fame o noia?"
+    ],
+    "photoPrompt": "La porzione sembra adatta a un pasto normale, né troppo scarsa né esagerata?",
+    "signals": []
+  },
+  {
     "id": "cucinare_a_casa",
+    "phase": "come_mangi",
     "week": 11,
     "title": "Un pasto in più cucinato a casa",
     "why": "Cucinare ti fa scegliere gli ingredienti. Anche un piatto semplice conta.",
@@ -228,32 +238,35 @@
     "signals": [
       {
         "field": "cooks",
+        "op": "eq",
+        "value": "spesso",
+        "effect": "skip",
+        "why": "Cucini già spesso a casa."
+      },
+      {
+        "field": "cooks",
         "op": "in",
         "value": [
           "mai",
           "raramente"
         ],
+        "effect": "advance",
         "why": "Cucini poco: proviamo con un pasto semplice in più a casa."
-      },
-      {
-        "field": "mealsOut",
-        "op": "gte",
-        "value": 6,
-        "why": "Mangi spesso fuori: un pasto in più a casa ti dà più scelta."
       }
     ]
   },
   {
-    "id": "ascoltare_fame",
+    "id": "pasti_di_festa",
+    "phase": "come_mangi",
     "week": 12,
-    "title": "Ascolta fame e sazietà",
-    "why": "Mangiare quando hai fame e fermarti quando sei soddisfatto è un'abilità che si allena, come la corsa.",
+    "title": "I pasti di festa fanno parte della vita",
+    "why": "Una pizza con gli amici o una torta di compleanno non rovinano niente. Conta come mangi di solito, non il giorno speciale.",
     "tips": [
-      "A metà pasto fermati un momento e chiediti come stai",
-      "Va bene lasciare qualcosa nel piatto",
-      "Prima di uno spuntino chiediti: è fame o noia?"
+      "Goditi il pasto senza sensi di colpa",
+      "Il giorno dopo si riparte normale, senza compensare",
+      "Mangia con calma e fermati quando ne hai abbastanza"
     ],
-    "photoPrompt": "La porzione sembra adatta a un pasto normale, né troppo scarsa né esagerata?",
+    "photoPrompt": "È un pasto di festa o in compagnia? Allora conta solo goderselo.",
     "signals": []
   }
 ]
