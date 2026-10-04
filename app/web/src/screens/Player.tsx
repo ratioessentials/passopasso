@@ -128,7 +128,7 @@ function ExerciseView({ it, set, phase, onSetDone, onRestDone, nextName, resting
       {it.note && <p className="mt-1 text-sm font-semibold text-petrolio">{it.note}</p>}
 
       <div className="my-6 flex justify-center">
-        {it.seconds ? <Timer seconds={it.seconds} onDone={onSetDone} /> : <Reps reps={it.reps ?? ex.prescription.default} onDone={onSetDone} />}
+        {it.seconds ? <Timer seconds={it.seconds} onDone={onSetDone} /> : <Reps reps={it.reps ?? ex.prescription.default} progress={(set - 1) / it.sets} onDone={onSetDone} />}
       </div>
 
       {ex.formCheck && hasFormCheck && (
@@ -216,10 +216,10 @@ function Timer({ seconds, onDone }: { seconds: number; onDone: () => void }) {
   )
 }
 
-function Reps({ reps, onDone }: { reps: number; onDone: () => void }) {
+function Reps({ reps, progress, onDone }: { reps: number; progress: number; onDone: () => void }) {
   return (
     <div className="flex flex-col items-center gap-5">
-      <Ring progress={0}>
+      <Ring progress={progress}>
         <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={spring.bouncy} className="font-title text-[80px] leading-none text-inchiostro">{reps}</motion.div>
         <div className="mt-1 text-sm text-inchiostro/55">ripetizioni</div>
       </Ring>

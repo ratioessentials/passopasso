@@ -38,21 +38,25 @@ export default function Welcome() {
       <MeshBackground level={3} />
       <div className="safe-top relative flex flex-1 flex-col px-7 pb-10">
         <div className="flex flex-1 flex-col items-center justify-center text-center">
-          <div className="relative mb-8 h-[150px] w-[300px]">
-            {LEVELS.map((l, i) => (
-              <motion.div
-                key={l.n}
-                className="absolute top-1/2"
-                style={{ left: `${i * 20 + (i === 2 ? -3 : 0)}%`, marginTop: i === 2 ? -38 : -30 }}
-                initial={{ opacity: 0, y: 30, scale: 0.6 }}
-                animate={{ opacity: 1, y: i % 2 ? 14 : -10, scale: 1 }}
-                transition={stagger(i, 0.1)}
-              >
-                <div style={{ animation: `floaty ${4 + i * 0.6}s ease-in-out ${i * 0.3}s infinite` }}>
-                  <LevelIcon n={l.n} size={i === 2 ? 76 : 60} style={{ opacity: 0.55 + i * 0.1 }} />
-                </div>
-              </motion.div>
-            ))}
+          {/* i 5 livelli come una scala che sale */}
+          <div className="relative mb-10 h-[170px] w-[310px]">
+            {LEVELS.map((l, i) => {
+              const size = 46 + i * 8
+              return (
+                <motion.div
+                  key={l.n}
+                  className="absolute bottom-0"
+                  style={{ left: i * 58 + (4 - i) * 2, marginBottom: i * 22 }}
+                  initial={{ opacity: 0, y: 40, scale: 0.5 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ ...stagger(i, 0.12), delay: 0.1 + i * 0.12 }}
+                >
+                  <div style={{ animation: `floaty ${4 + i * 0.6}s ease-in-out ${i * 0.3}s infinite` }}>
+                    <LevelIcon n={l.n} size={size} style={{ opacity: 0.6 + i * 0.1 }} />
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.gentle, delay: 0.4 }} className="font-title text-[54px] leading-[0.95]">
             PassoPasso

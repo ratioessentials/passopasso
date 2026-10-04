@@ -41,7 +41,7 @@ export default function FeedbackScreen() {
   useEffect(() => {
     if (!result) return
     const t1 = setTimeout(() => void confetti({ particleCount: 70, spread: 70, origin: { y: 0.35 }, colors: ['#2C6975', '#68B2A0', '#CDE0C9', '#F6C76B'], disableForReducedMotion: true }), 500)
-    const t2 = result.levelUp ? setTimeout(() => showLevelUp(result.levelUp), 2600) : undefined
+    const t2 = result.levelUp ? setTimeout(() => showLevelUp(result.levelUp), 3400) : undefined
     return () => { clearTimeout(t1); if (t2) clearTimeout(t2) }
   }, [result, showLevelUp])
 

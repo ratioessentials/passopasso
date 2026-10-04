@@ -67,8 +67,17 @@ export default function Home() {
           <div className="glass-dark flex flex-col items-center rounded-[26px] px-3 py-4 text-white">
             <ConsistencyRing value={consistency} size={128} stroke={12} light>
               <div>
-                <AnimatedNumber value={consistency} className="font-title block text-[40px] leading-none" />
-                <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/80">costanza</div>
+                {consistency > 0 ? (
+                  <>
+                    <AnimatedNumber value={consistency} className="font-title block text-[40px] leading-none" />
+                    <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/80">costanza</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="font-title text-[20px] leading-tight">Si parte<br />oggi</div>
+                    <div className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-white/80">costanza</div>
+                  </>
+                )}
               </div>
             </ConsistencyRing>
           </div>
@@ -125,6 +134,14 @@ export function TodayCard({ s, onStart }: { s: Session; onStart: () => void }) {
           {s.bonusPoints > 0 && <BonusBadge points={s.bonusPoints} />}
         </div>
         <h2 className="font-title mt-1 text-[26px] leading-tight text-inchiostro">{s.title}</h2>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {[...new Set(s.items.map((it) => it.exercise.category))].map((c, i) => (
+            <motion.span key={c} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ ...spring.bouncy, delay: 0.35 + i * 0.05 }}
+              className="rounded-full bg-salvia-chiaro px-2.5 py-1 text-[11px] font-semibold capitalize text-petrolio">
+              {c === 'mobilita' ? 'mobilità' : c}
+            </motion.span>
+          ))}
+        </div>
         <div className="mt-3 flex items-end justify-between gap-3">
           <div className="flex gap-5">
             <div>
