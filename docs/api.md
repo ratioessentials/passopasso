@@ -208,6 +208,12 @@ Modello unificato dei dati del corpo. Ogni sorgente (Comando rapido di Apple Sal
   ```
 - `GET /api/ai/stats` → `{ "generations": 212, "validFirstTry": 0.96, "repaired": 0.03, "fallback": 0.01, "invariantViolationsBeforeValidation": 0.07, "invariantViolationsShown": 0, "p50LatencyMs": 9100 }` (dalla tabella `ai_calls`).
 
+### Seduta zero (senza onboarding)
+- `GET /api/session-zero` → una `Session` fissa di 5 minuti (marcia sul posto, squat alla sedia, ponte, respirazione) costruita a regole da `content/program.json` → `sessionZero`, senza utente. Il client la esegue nel player; al termine `POST /api/session-zero/done` (con `X-User-Id` se esiste, altrimenti crea l'utente) → `{ "userId": "...", "win": { "title": "Primi 5 minuti" } }`. Se l'utente completa poi l'onboarding, la vittoria resta.
+
+### Progressi: confronto con la settimana 1
+`GET /api/progress` aggiunge `"thenNow": [ { "label": "Alzate dalla sedia in 30 s", "then": 9, "now": 14, "unit": "" }, { "label": "Cammino continuo", "then": 8, "now": 20, "unit": "min" }, { "label": "Sedute a settimana", "then": 1, "now": 3, "unit": "" } ]` (valori dai test di prontezza e dalle sedute; `null` se non ancora misurati).
+
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 ```json
