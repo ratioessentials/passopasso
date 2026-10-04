@@ -31,6 +31,8 @@ export default function Food() {
   const [fb, setFb] = useState<MealFeedback | null>(null)
   const [loading, setLoading] = useState(false)
   const input = useRef<HTMLInputElement>(null)
+  const result = useRef<HTMLDivElement>(null)
+  useEffect(() => { if (fb) setTimeout(() => result.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }), 350) }, [fb])
 
   useEffect(() => { if (!me) void loadMe() }, [me, loadMe])
   useEffect(() => { if (habit) setDays(habit.doneDays) }, [habit])
@@ -102,7 +104,7 @@ export default function Food() {
 
           <AnimatePresence>
             {fb && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.gentle} className="mt-4 space-y-2">
+              <motion.div ref={result} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.gentle} className="mt-4 scroll-mb-28 space-y-2">
                 {fb.habitMatch && (
                   <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={spring.bouncy} className="inline-flex rounded-full bg-acqua px-3 py-1 text-xs font-bold text-white">✓ In linea con l'abitudine della settimana</motion.div>
                 )}
