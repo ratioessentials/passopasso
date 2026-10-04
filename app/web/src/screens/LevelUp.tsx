@@ -10,15 +10,23 @@ import { Button, LevelIcon } from '../ui/kit'
 import { spring } from '../ui/motion'
 
 export function LevelUpOverlay() {
-  const { levelUp, showLevelUp, setMe, loadMe, toast } = useStore()
+  const { me, levelUp, showLevelUp, setMe, loadMe, toast } = useStore()
+  const track = me?.profile?.track
   const [phase, setPhase] = useState<'ask' | 'celebrate'>('ask')
   const [lu, setLu] = useState<LevelUp | null>(null)
   const [busy, setBusy] = useState(false)
   const nav = useNavigate()
 
-  useEffect(() => { if (levelUp) { setLu(levelUp); setPhase('ask') } }, [levelUp])
+  useEffect(() => {
+    if (!levelUp) return
+    setLu(levelUp)
+    setPhase('ask')
+    if (levelUp.auto) void accept()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [levelUp])
 
   async function accept() {
+    if (busy) return
     setBusy(true)
     try {
       const me = await api.acceptLevel()
@@ -39,7 +47,7 @@ export function LevelUpOverlay() {
 
   return (
     <AnimatePresence>
-      {levelUp && lu && phase === 'ask' && (
+      {levelUp && lu && phase === 'ask' && !levelUp.auto && (
         <motion.div key="ask" className="fixed inset-0 z-50 flex items-end" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="absolute inset-0 bg-inchiostro/45 backdrop-blur-sm" onClick={close} />
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={spring.gentle}
@@ -52,24 +60,25 @@ export function LevelUpOverlay() {
               <LevelIcon n={lu.to} size={84} initial={{ scale: 0.6, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ ...spring.bouncy, delay: 0.2 }} />
             </div>
             <h2 className="font-title mt-6 text-[28px] leading-tight text-inchiostro">È il momento del livello {lu.to}, {lu.name}?</h2>
-            <p className="mt-2 text-inchiostro/70">Le ultime sedute dicono di sì. Il tuo corpo ti ha portato fin qui: ora si passa a {levelInfo(lu.to).verb.toLowerCase()}, sempre col tuo ritmo. Nessuna fretta, puoi anche restare qui ancora un po'.</p>
+            <p className="mt-2 text-inchiostro/70">Le ultime sedute dicono di sì. Il tuo corpo ti ha portato fin qui: ora si passa a {levelInfo(lu.to, track).verb.toLowerCase()}, sempre col tuo ritmo. Nessuna fretta, puoi anche restare qui ancora un po'.</p>
             <div className="mt-6 space-y-2 pb-4">
-              <Button className="w-full py-4 text-lg" onClick={accept} disabled={busy}>{busy ? 'Un attimo…' : 'Sì, andiamo!'}</Button>
-              <Button variant="ghost" className="w-full" onClick={close}>Resto ancora un po' qui</Button>
+              <Button className="w-full py-4 text-lg" onClick={() => { showLevelUp(null); nav('/test') }}>Facciamo il test, 2 minuti</Button>
+              <p className="px-2 text-xs text-inchiostro/55">Due prove brevi (gambe e fiato) per essere sicuri che il passo in più sia quello giusto.</p>
+              <Button variant="ghost" className="w-full" onClick={close}>Non oggi</Button>
             </div>
           </motion.div>
         </motion.div>
       )}
-      {levelUp && lu && phase === 'celebrate' && <Celebrate key="celebrate" lu={lu} onClose={close} />}
+      {levelUp && lu && phase === 'celebrate' && <Celebrate key="celebrate" lu={lu} track={track} onClose={close} />}
     </AnimatePresence>
   )
 }
 
-function Celebrate({ lu, onClose }: { lu: LevelUp; onClose: () => void }) {
+function Celebrate({ lu, track, onClose }: { lu: LevelUp; track?: string; onClose: () => void }) {
   const [step, setStep] = useState(0) // 0 vecchio, 1 trasformazione, 2 nuovo
   const [a1, a2] = LEVEL_COLORS[lu.from]
   const [b1, b2] = LEVEL_COLORS[lu.to]
-  const info = levelInfo(lu.to)
+  const info = levelInfo(lu.to, track)
 
   useEffect(() => {
     const t1 = setTimeout(() => setStep(1), 700)

@@ -57,7 +57,8 @@ export default function Path() {
         </div>
       </div>
       <div className="px-5">
-        <Button variant="light" className="mt-6 w-full" onClick={() => nav('/progressi')}>📈 Guarda i tuoi progressi</Button>
+        {me?.level.ready && <Button className="mt-6 w-full" onClick={() => nav('/test')}>✨ Fai il test di prontezza</Button>}
+        <Button variant="light" className="mt-3 w-full" onClick={() => nav('/progressi')}>📈 Guarda i tuoi progressi</Button>
       </div>
     </div>
   )

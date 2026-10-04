@@ -188,7 +188,7 @@ export type CheckinResponse =
   | { status: 'blocked'; redFlag: RedFlag }
 
 export type Feedback = 'facile' | 'giusto' | 'duro'
-export interface LevelUp { from: number; to: number; name: string }
+export interface LevelUp { from: number; to: number; name: string; /** true: test già superato, si passa subito alla celebrazione */ auto?: boolean }
 export interface CompleteResponse {
   consistency: number
   intensity: number

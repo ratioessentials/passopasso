@@ -19,6 +19,7 @@ import ProgressScreen from './screens/Progress'
 import Food from './screens/Food'
 import Coach from './screens/Coach'
 import Scheda from './screens/Scheda'
+import ReadinessTestScreen from './screens/ReadinessTest'
 import WidgetGallery from './screens/WidgetGallery'
 
 const MotionLab = lazy(() => import('./features/motion/MotionLab'))
@@ -59,6 +60,7 @@ export function AppRoutes() {
               <Route path="/benvenuto" element={<Welcome />} />
               <Route path="/scheda" element={r(<Scheda />)} />
               <Route path="/onboarding" element={r(<Onboarding />)} />
+              <Route path="/test" element={r(<ReadinessTestScreen />)} />
               <Route path="/coach/scheda" element={r(<Scheda mode="edit" />)} />
               <Route path="/" element={r(<Home />)} />
               <Route path="/checkin/:id" element={r(<Checkin />)} />
