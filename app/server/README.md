@@ -10,6 +10,7 @@ cp .env.example .env      # e inserisci la credenziale AI (vedi sotto)
 npm run dev               # sviluppo, porta 3210, ricarica a caldo
 npm run smoke             # prova onboarding, check-in (anche bandiera rossa), complete, skip, widget
 npm run ai:check          # verifica che l'autenticazione AI funzioni
+npm run prompt:lab        # 5 check-in diversi con l'AI: titolo, reason, esercizi, tempi
 ```
 Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/index.js`).
 `npm run smoke` accetta un URL: `node scripts/smoke.mjs https://passopasso.andreavallieri.com`. Alla fine riporta il demo allo stato iniziale.
@@ -46,7 +47,8 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 1. Bandiere rosse → `blocked`, senza chiamare l'AI.
 2. L'AI vede solo gli esercizi già filtrati e risponde con id: quelli sconosciuti vengono scartati, i dosaggi riportati nei limiti, riscaldamento e defaticamento garantiti. Con meno di 3 esercizi validi → seduta a regole.
 3. Zone doloranti → esercizio escluso, si risale la catena `regression`. Le `limitations` del profilo fanno solo preferire alternative.
-4. Foto del piatto: frasi con numeri, calorie, peso o diete vengono scartate.
+4. Testi brevi: `reason` di una frase (max 20 parole nel prompt, 160 caratteri tagliati dal server), dosaggi arrotondati, note di max 6 parole.
+5. Foto del piatto: frasi con numeri, calorie, peso o diete vengono scartate.
 
 ## Note sul contratto
 - `GET /api/levels` risponde `{ "levels": [...], "current": 2 }` (un array JSON non può avere la chiave `current`).

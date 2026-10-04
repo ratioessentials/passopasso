@@ -82,6 +82,25 @@ function pickMainCardio(f: Filter, easy: boolean, taken: Set<string>): Exercise 
 }
 
 const round5 = (x: number) => Math.max(5, Math.round(x / 5) * 5);
+/** Secondi "da telefono": multipli di 5 sotto i 2 minuti, di 30 sopra. */
+const roundSecs = (x: number) => (x < 120 ? round5(x) : Math.max(120, Math.round(x / 30) * 30));
+
+export const REASON_MAX = 160;
+/** Tiene la reason breve: se l'AI si dilunga, resta la prima frase; se anche quella è lunga, si taglia a una pausa. */
+export function tidyReason(text: string): string {
+  let r = text.replace(/\s+/g, ' ').trim();
+  if (r.length <= REASON_MAX) return r;
+  const first = r.match(/^.+?[.!?](\s|$)/)?.[0].trim();
+  if (first && first.length >= 30 && first.length <= REASON_MAX) return first;
+  const cut = r.slice(0, REASON_MAX);
+  const at = Math.max(cut.lastIndexOf(':'), cut.lastIndexOf(';'), cut.lastIndexOf(','));
+  r = (at > 60 ? cut.slice(0, at) : cut.slice(0, cut.lastIndexOf(' '))).trim();
+  return `${r.replace(/[,:;]$/, '')}.`;
+}
+const tidyNote = (n: string) => {
+  const t = n.replace(/\s+/g, ' ').trim().replace(/[.;,]+$/, '').slice(0, 60);
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
 
 export function dose(ex: Exercise, opts: { intensity: number; level: number; timeRatio: number; energy?: number; cardioSeconds?: number }): Item {
   const { intensity, level, timeRatio, energy = 3 } = opts;
@@ -153,13 +172,18 @@ export function ruleTitle(level: number): string {
 }
 
 export function ruleReason(input: { level: number; minutes: number; templateMinutes: number; energy?: number; pain?: string[] }): string {
-  const parts: string[] = [];
-  if (input.pain?.length) parts.push(`Oggi lasciamo tranquille ${zonesText(input.pain)}: ho tolto gli esercizi che le caricano e scelto versioni più gentili.`);
-  if (input.energy !== undefined && input.energy <= 2) parts.push('Energia bassa: ritmo tranquillo e più recupero.');
-  else if (input.energy !== undefined && input.energy >= 5) parts.push('Sei carico: oggi spingiamo un pelo di più.');
-  if (input.minutes < input.templateMinutes * 0.85) parts.push(`Hai ${input.minutes} minuti: seduta compatta, l'essenziale.`);
-  if (!parts.length) parts.push(`Seduta piena del livello ${input.level}: ${content.level(input.level).goal.charAt(0).toLowerCase()}${content.level(input.level).goal.slice(1)}.`);
-  return parts.join(' ');
+  const causes: string[] = [];
+  const effects: string[] = [];
+  if (input.pain?.length) { causes.push(`${zonesText(input.pain)} da proteggere`); effects.push(`niente esercizi su ${zonesText(input.pain)}`); }
+  if (input.minutes < input.templateMinutes * 0.85) { causes.push('poco tempo'); effects.push('seduta compatta'); }
+  if (input.energy !== undefined && input.energy <= 2) { causes.push('poca energia'); effects.push('ritmo tranquillo e pause più lunghe'); }
+  else if (input.energy !== undefined && input.energy >= 5) { causes.push('energia alta'); effects.push('spingiamo un pelo di più'); }
+  if (!causes.length) {
+    const goal = content.level(input.level).goal;
+    return `Seduta piena del livello ${input.level}: un passo verso "${goal.charAt(0).toLowerCase()}${goal.slice(1)}".`;
+  }
+  const c = causes.length > 1 ? `${causes.slice(0, -1).join(', ')} e ${causes[causes.length - 1]}` : causes[0];
+  return tidyReason(`${c.charAt(0).toUpperCase()}${c.slice(1)}: ${effects.join(', ')}.`);
 }
 
 // ---------- Generazione con Claude ----------
@@ -225,8 +249,10 @@ ${list}`;
       seen.add(ex.id);
       const item: Item = { exerciseId: ex.id, sets: it.sets, restSec: it.restSec };
       if (ex.prescription.type === 'reps') item.reps = Math.min(Math.max(1, it.reps ?? Math.round(ex.prescription.default * intensity)), Math.ceil(ex.prescription.default * 1.6));
-      else item.seconds = Math.min(Math.max(10, it.seconds ?? round5(ex.prescription.default * intensity)), Math.max(ex.prescription.default * 2, 60 * minutes));
-      if (it.note) item.note = it.note;
+      else item.seconds = roundSecs(Math.min(Math.max(10, it.seconds ?? ex.prescription.default * intensity), Math.max(ex.prescription.default * 2, 60 * minutes)));
+      item.sets = Math.min(item.sets, 4);
+      item.restSec = Math.min(120, round5(Math.max(15, item.restSec)));
+      if (it.note && tidyNote(it.note)) item.note = tidyNote(it.note);
       items.push(item);
     }
     if (dropped) console.warn(`[seduta] scartati ${dropped} esercizi non consentiti dalla risposta dell'AI`);
@@ -245,7 +271,7 @@ ${list}`;
     }
     const order: Category[] = ['riscaldamento', 'cardio', 'forza', 'mobilita', 'defaticamento'];
     items.sort((a, b) => order.indexOf(cat(a)) - order.indexOf(cat(b)));
-    return { minutes, intensity, title: ai.title, reason: ai.reason, items, source: 'ai' };
+    return { minutes, intensity, title: ai.title.trim().replace(/[.!]+$/, ''), reason: tidyReason(ai.reason), items, source: 'ai' };
   } catch (err) {
     console.warn(`[seduta] uso la seduta di riserva: ${(err as Error).message}`);
     return fallback();
