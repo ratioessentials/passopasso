@@ -1,0 +1,111 @@
+// Smoke test dell'API: node scripts/smoke.mjs [baseUrl]   (default http://localhost:3210 o $SMOKE_URL)
+const BASE = process.argv[2] || process.env.SMOKE_URL || `http://localhost:${process.env.PORT || 3210}`;
+let failures = 0;
+
+async function api(method, path, { user, body } = {}) {
+  const t0 = Date.now();
+  const res = await fetch(BASE + path, {
+    method,
+    headers: { ...(body ? { 'content-type': 'application/json' } : {}), ...(user ? { 'x-user-id': user } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const json = await res.json().catch(() => null);
+  return { status: res.status, json, ms: Date.now() - t0 };
+}
+
+function check(name, cond, extra = '') {
+  console.log(`${cond ? '✓' : '✗'} ${name}${extra ? `  ${extra}` : ''}`);
+  if (!cond) failures++;
+}
+
+const health = await api('GET', '/api/health');
+check('health', health.status === 200 && health.json?.ok, `ai=${health.json?.ai}`);
+
+// --- utente demo ---
+const me = await api('GET', '/api/me', { user: 'demo' });
+check('demo: /me', me.status === 200 && me.json.level.n === 2, `livello ${me.json?.level?.n}, costanza ${me.json?.consistency}, vittorie ${me.json?.wins?.length}`);
+const week = await api('GET', '/api/week', { user: 'demo' });
+check('demo: /week', week.status === 200 && Array.isArray(week.json.sessions), `${week.json?.sessions?.length} sedute`);
+const widget = await api('GET', '/api/widget/demo');
+check('widget pubblico', widget.status === 200 && widget.json.week.length === 7, JSON.stringify(widget.json?.week?.map((d) => d.status)));
+const progress = await api('GET', '/api/progress', { user: 'demo' });
+check('demo: /progress', progress.status === 200 && progress.json.sessionsDone > 0, `${progress.json?.sessionsDone} sedute, ${progress.json?.minutesTotal} min`);
+const levels = await api('GET', '/api/levels', { user: 'demo' });
+check('/levels', levels.status === 200 && levels.json.levels.length === 5 && levels.json.current === 2);
+
+// --- nuovo utente: onboarding (6 risposte) ---
+const created = await api('POST', '/api/users');
+const uid = created.json?.userId;
+check('nuovo utente', created.status === 201 && /^u_/.test(uid), uid);
+const answers = ['Marco', 'Quasi mai', 'Correre 20 minuti senza fermarmi', '3 giorni, 20 minuti', 'Una sedia', 'Ginocchia', 'Sera'];
+const messages = [{ role: 'assistant', content: 'Ciao! Come ti chiami?' }];
+let onboarding;
+for (const a of answers) {
+  messages.push({ role: 'user', content: a });
+  onboarding = await api('POST', '/api/onboarding/message', { user: uid, body: { messages } });
+  if (onboarding.status !== 200) break;
+  if (onboarding.json.done) break;
+  messages.push({ role: 'assistant', content: onboarding.json.reply });
+}
+// se l'AI vuole un'altra conferma, rispondiamo genericamente
+for (let i = 0; i < 4 && onboarding.json && !onboarding.json.done; i++) {
+  messages.push({ role: 'user', content: onboarding.json.quickReplies?.[0] || 'Va bene così' });
+  onboarding = await api('POST', '/api/onboarding/message', { user: uid, body: { messages } });
+  if (!onboarding.json.done) messages.push({ role: 'assistant', content: onboarding.json.reply });
+}
+check('onboarding completo', onboarding.status === 200 && onboarding.json.done && onboarding.json.profile?.startLevel >= 1,
+  `${onboarding.ms} ms, livello ${onboarding.json?.profile?.startLevel}: "${onboarding.json?.reply}"`);
+
+const meNew = await api('GET', '/api/me', { user: uid });
+const todayId = meNew.json?.today?.id;
+check('prima seduta oggi', !!todayId, meNew.json?.today?.title);
+
+// --- check-in con bandiera rossa ---
+const blocked = await api('POST', `/api/sessions/${todayId}/checkin`, { user: uid, body: { minutes: 20, energy: 3, pain: [], redFlags: ['dolore_petto'] } });
+check('check-in con bandiera rossa → blocked', blocked.json?.status === 'blocked' && !!blocked.json.redFlag?.message, `${blocked.ms} ms`);
+
+// --- check-in normale (AI o regole) ---
+const ck = await api('POST', `/api/sessions/${todayId}/checkin`, { user: uid, body: { minutes: 15, energy: 2, pain: ['ginocchia'], redFlags: [] } });
+const items = ck.json?.session?.items ?? [];
+check('check-in → seduta rigenerata', ck.json?.status === 'ok' && items.length >= 3, `${ck.ms} ms, ${items.length} esercizi, fonte ${ck.json?.session?.source}`);
+check('nessun esercizio sulle ginocchia', items.every((i) => !i.exercise.zones.includes('ginocchia')));
+console.log(`   reason: ${ck.json?.session?.reason}`);
+
+// --- complete ---
+const done = await api('POST', `/api/sessions/${todayId}/complete`, { user: uid, body: { feedback: 'facile' } });
+check('complete', done.status === 200 && done.json.intensity === 1.1, `costanza ${done.json?.consistency}, vittorie nuove ${done.json?.newWins?.map((w) => w.id).join(',')}`);
+
+// --- skip della prossima seduta ---
+const wk = await api('GET', '/api/week', { user: uid });
+const next = wk.json.sessions.find((s) => s.status === 'planned');
+if (next) {
+  const sk = await api('POST', `/api/sessions/${next.id}/skip`, { user: uid, body: { reason: 'tempo' } });
+  check('skip → ripartenza con bonus', sk.status === 200 && sk.json.restart?.kind === 'ripartenza' && sk.json.restart.bonusPoints > 0, `${sk.json?.message} → ${sk.json?.restart?.date}`);
+} else {
+  console.log('  (nessuna altra seduta questa settimana: skip provato sul demo)');
+}
+
+// --- demo: complete della seduta di oggi → proposta di livello ---
+const demoToday = me.json?.today;
+if (demoToday && demoToday.status === 'planned') {
+  const d = await api('POST', `/api/sessions/${demoToday.id}/complete`, { user: 'demo', body: { feedback: 'giusto' } });
+  check('demo: complete → levelUp', d.status === 200 && d.json.levelUp?.to === 3, JSON.stringify(d.json?.levelUp));
+  const acc = await api('POST', '/api/level/accept', { user: 'demo' });
+  check('demo: accetta livello 3', acc.status === 200 && acc.json.level.n === 3);
+}
+const demoWeek = await api('GET', '/api/week', { user: 'demo' });
+const demoNext = demoWeek.json.sessions.find((s) => s.status === 'planned');
+if (demoNext) {
+  const sk = await api('POST', `/api/sessions/${demoNext.id}/skip`, { user: 'demo', body: { reason: 'stanchezza' } });
+  check('demo: skip', sk.status === 200 && sk.json.restart?.bonusPoints > 0, sk.json?.message);
+}
+
+const hab = await api('POST', '/api/habit/checkin', { user: uid });
+check('habit checkin', hab.status === 200 && hab.json.doneDays >= 1);
+
+const err = await api('GET', '/api/me', { user: 'u_nonesiste' });
+check('errore nel formato del contratto', err.status === 404 && !!err.json?.error?.message, err.json?.error?.message);
+
+await api('POST', '/api/demo/reset');
+console.log(failures ? `\n${failures} controlli falliti` : '\nTutto ok');
+process.exit(failures ? 1 : 0);

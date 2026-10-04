@@ -1,0 +1,10 @@
+[
+  { "id": "prima_seduta", "title": "Prima seduta fatta", "condition": "Completi la prima seduta", "rule": { "type": "sessions_done", "value": 1 }, "icon": "spark" },
+  { "id": "cinque_sedute", "title": "Cinque sedute nelle gambe", "condition": "Completi 5 sedute", "rule": { "type": "sessions_done", "value": 5 }, "icon": "star" },
+  { "id": "dieci_sedute", "title": "Dieci sedute: è un'abitudine", "condition": "Completi 10 sedute", "rule": { "type": "sessions_done", "value": 10 }, "icon": "medal" },
+  { "id": "ripartenza", "title": "Sei ripartito", "condition": "Completi una seduta di ripartenza", "rule": { "type": "restart_done" }, "icon": "refresh" },
+  { "id": "livello_2", "title": "Livello 2 raggiunto", "condition": "Arrivi al livello 2", "rule": { "type": "level_reached", "value": 2 }, "icon": "trophy" },
+  { "id": "livello_3", "title": "Livello 3 raggiunto", "condition": "Arrivi al livello 3", "rule": { "type": "level_reached", "value": 3 }, "icon": "trophy" },
+  { "id": "cento_minuti", "title": "100 minuti di movimento", "condition": "Accumuli 100 minuti", "rule": { "type": "minutes_total", "value": 100 }, "icon": "clock" },
+  { "id": "abitudine_settimana", "title": "Settimana dell'abitudine riuscita", "condition": "Segni l'abitudine per 5 giorni in una settimana", "rule": { "type": "habit_week_done" }, "icon": "leaf" }
+]

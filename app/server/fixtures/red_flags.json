@@ -1,0 +1,8 @@
+[
+  { "id": "dolore_petto", "label": "Dolore o oppressione al petto", "message": "Oggi niente allenamento. Questo sintomo va sentito da un medico prima di riprendere. Se è forte o improvviso chiama il 112.", "urgent": true },
+  { "id": "svenimento_capogiri", "label": "Svenimento o capogiri forti", "message": "Oggi ci fermiamo. Parlane con il tuo medico prima di riprendere. Se succede di nuovo o è improvviso chiama il 112.", "urgent": true },
+  { "id": "fiato_corto_riposo", "label": "Fiato corto anche da fermo", "message": "Oggi niente allenamento. Il fiato corto a riposo va valutato da un medico. Se peggiora chiama il 112.", "urgent": true },
+  { "id": "palpitazioni", "label": "Battito irregolare o palpitazioni", "message": "Meglio fermarsi oggi. Fai controllare il battito dal tuo medico prima di riprendere.", "urgent": false },
+  { "id": "trauma_articolare", "label": "Dolore forte o gonfiore dopo una botta o una storta", "message": "Oggi riposo. Un dolore acuto con gonfiore va visto da un medico. Riprendiamo quando sarà passato.", "urgent": false },
+  { "id": "febbre", "label": "Febbre o sintomi influenzali", "message": "Oggi il tuo corpo ha già il suo da fare. Riposa e riprendi quando starai meglio.", "urgent": false }
+]

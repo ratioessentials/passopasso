@@ -1,0 +1,144 @@
+import { content, type BodyZone, type RedFlag } from '../content.js';
+import { db } from '../db.js';
+import { addDays, today, weekStart } from '../dates.js';
+import { clampIntensity, generateSession } from './builder.js';
+import {
+  consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
+} from './store.js';
+import type { Feedback, Profile, SessionRow, UserRow } from './types.js';
+
+// ---------- Check-in ----------
+
+export type CheckinResult = { status: 'ok'; session: ReturnType<typeof toSession> } | { status: 'blocked'; redFlag: RedFlag };
+
+export async function checkin(user: UserRow, profile: Profile, row: SessionRow, input: { minutes: number; energy: number; pain: BodyZone[]; redFlags: string[] }): Promise<CheckinResult> {
+  // 1. Bandiere rosse: deterministico, prima di qualsiasi AI
+  if (input.redFlags.length) {
+    const flags = content.redFlags();
+    const hit = input.redFlags.map((id) => flags.find((f) => f.id === id)).filter((f): f is RedFlag => !!f);
+    const redFlag = hit.find((f) => f.urgent) ?? hit[0] ?? {
+      id: input.redFlags[0], label: 'Sintomo da non sottovalutare', urgent: false,
+      message: 'Oggi niente allenamento. Se il sintomo continua, sentiamo prima il medico.',
+    };
+    updateSession(row.id, { status: 'blocked', checkin: JSON.stringify(input) });
+    return { status: 'blocked', redFlag };
+  }
+  // 2. Seduta su misura (AI con esercizi filtrati, o regole)
+  const restart = row.kind === 'ripartenza';
+  const r = content.program().restartSession;
+  const draft = await generateSession({
+    level: row.level,
+    profile,
+    intensity: restart ? Math.min(r.intensity ?? 0.8, user.intensity) : user.intensity,
+    checkin: { minutes: input.minutes, energy: input.energy, pain: input.pain },
+    seed: `${row.id}:${input.energy}:${input.pain.join(',')}`,
+    template: restart ? r.sessionTemplate : undefined,
+    kindNote: restart ? `È una seduta di ripartenza dopo una seduta saltata: più corta e leggera, preferisci le versioni facili. Vale +${row.bonus_points} punti di costanza: ricordalo nella reason con calore, senza colpa.` : undefined,
+    easy: restart,
+  });
+  updateSession(row.id, {
+    status: 'planned', minutes: draft.minutes, intensity: draft.intensity, title: restart ? (r.title ?? draft.title) : draft.title,
+    reason: draft.reason, items: draft.items, source: draft.source, checkin: JSON.stringify(input),
+  });
+  const updated = db.prepare('SELECT * FROM sessions WHERE id = ?').get(row.id) as SessionRow;
+  return { status: 'ok', session: toSession(updated, user) };
+}
+
+// ---------- Skip ----------
+
+const SKIP_MESSAGES: Record<string, string> = {
+  tempo: 'Capita. Riprendiamo da qui, con calma.',
+  stanchezza: 'Ascoltarsi è parte dell\'allenamento. Riprendiamo da qui, con calma.',
+  malessere: 'Prima stai bene, poi si riparte. Ti ho lasciato un giorno in più di riposo.',
+  altro: 'Capita. Riprendiamo da qui, con calma.',
+};
+
+export function skip(user: UserRow, profile: Profile, row: SessionRow, reason: string) {
+  const t = today();
+  updateSession(row.id, { status: 'skipped', skip_reason: reason });
+  const base = row.date > t ? row.date : t;
+  const gap = reason === 'malessere' ? 2 : 1;
+  const draft = ruleDraft(user, profile, addDays(base, gap), { restart: true });
+  // Niente carico in più: la ripartenza prende il posto della prossima seduta vicina, oppure va nel primo giorno libero.
+  const upcoming = sessionsBetween(user.id, addDays(base, gap), addDays(base, gap + 1)).find((s) => s.status === 'planned' && s.kind === 'normale');
+  let restartId: string;
+  if (upcoming) {
+    updateSession(upcoming.id, {
+      kind: 'ripartenza', bonus_points: draft.bonus_points, minutes: draft.minutes, intensity: draft.intensity,
+      title: draft.title, reason: draft.reason, items: draft.items, source: 'rules', recovers: row.id, checkin: null,
+    });
+    restartId = upcoming.id;
+  } else {
+    let date = addDays(base, gap);
+    const busy = new Set(sessionsBetween(user.id, date, addDays(date, 14)).map((s) => s.date));
+    while (busy.has(date)) date = addDays(date, 1);
+    restartId = insertSession(user.id, { ...draft, date, level: user.level, recovers: row.id });
+  }
+  // Se nella settimana restano due sedute in giorni consecutivi dopo la ripartenza, sposta la seconda di un giorno (se libero).
+  const ws = weekStart(t);
+  const rest = sessionsBetween(user.id, t, addDays(ws, 6)).filter((s) => s.status === 'planned');
+  for (let i = 1; i < rest.length; i++) {
+    const prev = rest[i - 1];
+    const cur = rest[i];
+    const next = addDays(cur.date, 1);
+    if (addDays(prev.date, 1) === cur.date && next <= addDays(ws, 6) && !rest.some((s) => s.date === next)) {
+      updateSession(cur.id, { date: next });
+      cur.date = next;
+    }
+  }
+  const restart = db.prepare('SELECT * FROM sessions WHERE id = ?').get(restartId) as SessionRow;
+  return {
+    message: reason === 'tempo' || reason === 'altro' ? content.text('skip.title', SKIP_MESSAGES.tempo) : SKIP_MESSAGES[reason] ?? SKIP_MESSAGES.tempo,
+    restart: toSession(restart, user),
+  };
+}
+
+// ---------- Complete ----------
+
+const COMPLETE_MESSAGES: Record<Feedback, string> = {
+  facile: 'Bel lavoro. La prossima la alziamo un pelo.',
+  giusto: 'Perfetto così. Continuiamo su questo passo.',
+  duro: 'Grazie di avermelo detto. La prossima la facciamo più leggera.',
+};
+
+export function complete(user: UserRow, row: SessionRow, feedback: Feedback) {
+  const delta = feedback === 'facile' ? 0.1 : feedback === 'duro' ? -0.1 : 0;
+  const intensity = clampIntensity(user.intensity + delta);
+  db.transaction(() => {
+    updateSession(row.id, { status: 'done', feedback, done_at: new Date().toISOString() });
+    db.prepare('UPDATE users SET intensity = ? WHERE id = ?').run(intensity, user.id);
+    // le prossime sedute ancora da fare seguono la nuova intensità
+    db.prepare("UPDATE sessions SET intensity = ? WHERE user_id = ? AND status = 'planned' AND kind = 'normale' AND date > ?").run(intensity, user.id, row.date);
+  })();
+  const fresh = getUser(user.id)!;
+  const newWins: Win[] = evaluateWins(fresh);
+  const info = levelInfo(fresh);
+  const levelUp = info.ready ? { from: fresh.level, to: fresh.level + 1, name: content.level(fresh.level + 1).name } : null;
+  let message = content.text(`feedback.${feedback}_reply`, COMPLETE_MESSAGES[feedback]);
+  if (row.kind === 'ripartenza') message = `${content.text('restart.done', 'Ripartenza fatta.')} +${row.bonus_points} punti di costanza.`;
+  return { consistency: consistencyAt(user.id), intensity, newWins, levelUp, message };
+}
+
+// ---------- Cambio di livello ----------
+
+export function acceptLevel(user: UserRow): boolean {
+  const info = levelInfo(user);
+  if (!info.ready) return false;
+  const t = today();
+  const next = user.level + 1;
+  const profile = profileOf(user)!;
+  db.transaction(() => {
+    db.prepare('UPDATE level_history SET to_date = ? WHERE user_id = ? AND to_date IS NULL').run(t, user.id);
+    db.prepare('INSERT INTO level_history (user_id, n, from_date) VALUES (?, ?, ?)').run(user.id, next, t);
+    db.prepare('UPDATE users SET level = ?, level_since = ?, intensity = 1.0 WHERE id = ?').run(next, t, user.id);
+  })();
+  const fresh = getUser(user.id)!;
+  // ripianifica le sedute ancora da fare al nuovo livello (oggi compreso, se non è già stata fatta)
+  const pending = (db.prepare("SELECT * FROM sessions WHERE user_id = ? AND status = 'planned' AND date >= ?").all(user.id, t) as SessionRow[]);
+  for (const s of pending) {
+    const d = ruleDraft(fresh, profile, s.date, { restart: s.kind === 'ripartenza' });
+    updateSession(s.id, { level: next, minutes: d.minutes, intensity: d.intensity, title: d.title, reason: d.reason, items: d.items, source: 'rules', checkin: null });
+  }
+  evaluateWins(fresh);
+  return true;
+}
