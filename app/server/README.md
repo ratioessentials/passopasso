@@ -11,6 +11,8 @@ npm run dev               # sviluppo, porta 3210, ricarica a caldo
 npm run smoke             # prova onboarding, check-in (anche bandiera rossa), complete, skip, widget
 npm run ai:check          # verifica che l'autenticazione AI funzioni
 npm run prompt:lab        # 5 check-in diversi con l'AI: titolo, reason, esercizi, tempi
+npm test                  # test unitari (node:test): filtro, invarianti, costanza, prontezza, livello, 10%, bandiere rosse
+npm run eval              # laboratorio: 30 scenari × 3 con l'AI accesa → eval/REPORT.md
 ```
 Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/index.js`).
 `npm run smoke` accetta un URL: `node scripts/smoke.mjs https://passopasso.andreavallieri.com`. Alla fine riporta il demo allo stato iniziale.
@@ -55,6 +57,11 @@ Produzione: `npm run build && npm start` (compila in `dist/`, avvia `node dist/i
 - `src/engine/strava.ts`: OAuth Strava e import delle attività. `src/engine/push.ts`: Web Push e scheduler dei promemoria.
 - `src/engine/proactive.ts`: coach proattivo (9 trigger deterministici, anti-spam, testo dall'AI con filtro di tono e del genere, testi di riserva da `copy.json` → `trigger.<id>.text`, azione `move_day`, scheduler ogni 15 minuti).
 - `src/engine/seed.ts`: profilo e prima settimana dopo l'onboarding, utente demo `demo`.
+
+## Architettura dell'AI (tre strati)
+1. **Prima, le regole**: il codice calcola lo spazio delle soluzioni sicure (livello, attrezzatura, dolori, impatto, prudenza, bandiere rosse).
+2. **Durante, la scelta vincolata**: Claude sceglie e spiega solo dentro quell'elenco; la risposta è JSON validato da zod (un tentativo di correzione). Il testo della persona entra nei prompt come dati delimitati.
+3. **Dopo, i controlli**: 7 invarianti (`src/engine/invariants.ts`) su ogni seduta, AI o riserva; correzione automatica o seduta di riserva; tutto in `ai_calls` (`GET /api/sessions/:id/explain`, `GET /api/ai/stats`). Risultati misurati in [eval/REPORT.md](eval/REPORT.md).
 
 ## Regole del motore (sicurezza)
 1. Bandiere rosse → `blocked`, senza chiamare l'AI.
