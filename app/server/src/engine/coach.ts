@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { aiMode, askJson } from '../ai/claude.js';
+import { aiMode, askJson, asData } from '../ai/claude.js';
 import { COACH_SYSTEM } from '../ai/prompts/coach.js';
 import { BODY_ZONES, type BodyZone, type RedFlag } from '../content.js';
 import { addDays, today, weekday, weekStart } from '../dates.js';
@@ -231,7 +231,7 @@ export async function coachMessage(user: UserRow, messages: CoachMessage[]): Pro
   if (aiMode() === 'off') {
     result = ruleCoach(last, profile, slots);
   } else {
-    const transcript = messages.slice(-20).map((m) => `${m.role === 'user' ? 'PERSONA' : 'COACH'}: ${m.content}`).join('\n');
+    const transcript = asData(messages.slice(-20));
     try {
       const ai = await askJson(COACH_SYSTEM, `${context(user, profile, slots)}\n\nCONVERSAZIONE:\n${transcript}\n\nScrivi la risposta del COACH all'ultimo messaggio.`, AiCoach, { label: 'coach', maxTokens: 1500 });
       result = { reply: ai.reply.trim(), quickReplies: (ai.quickReplies ?? []).slice(0, 3), changes: ai.changes ?? {} };

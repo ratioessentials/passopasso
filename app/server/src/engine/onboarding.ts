@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { askJson, aiMode } from '../ai/claude.js';
+import { askJson, aiMode, asData } from '../ai/claude.js';
 import { ONBOARDING_SYSTEM } from '../ai/prompts/onboarding.js';
 import { BODY_ZONES, content, type BodyZone } from '../content.js';
 import { derive, personSummary, type Card } from './person.js';
@@ -205,7 +205,7 @@ export async function onboardingStep(messages: ChatMessage[], card: Partial<Card
   const userTurns = messages.filter((m) => m.role === 'user').length;
   if (userTurns > 14) return scripted(messages.slice(0, 22), card);
   if (aiMode() === 'off') return scripted(messages, card);
-  const transcript = messages.map((m) => `${m.role === 'user' ? 'PERSONA' : 'COACH'}: ${m.content}`).join('\n');
+  const transcript = asData(messages);
   const scheda = card.name
     ? `SCHEDA GIÀ COMPILATA: nome ${card.name}. ${personSummary({ ...(card as Profile), limitations: [], equipment: [], experience: 'poca' })}${(card.age ?? 30) < 18 ? '\nMINORENNE (16-17 anni): tono adatto, nessuna corsa a ritmo alto.' : ''}`
     : 'SCHEDA non compilata: chiedi prima il nome.';

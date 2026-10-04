@@ -164,6 +164,12 @@ async function askWithTurns<T>(system: string, first: UserContent, schema: z.Zod
   }
 }
 
+/** Il testo della persona va nel prompt come DATI: delimitato e senza tag che possano chiudere il delimitatore. */
+export function asData(messages: { role: 'user' | 'assistant'; content: string }[], who = { user: 'PERSONA', assistant: 'COACH' }): string {
+  const clean = (t: string) => t.replace(/[<>]/g, (c) => (c === '<' ? '‹' : '›')).slice(0, 2000);
+  return `<conversazione>\n${messages.map((m) => `${m.role === 'user' ? who.user : who.assistant}: ${clean(m.content)}`).join('\n')}\n</conversazione>`;
+}
+
 /** Chiede a Claude una risposta JSON validata con zod. Lancia un errore se fallisce: chi chiama usa le regole di riserva. */
 export function askJson<T>(system: string, user: string, schema: z.ZodType<T>, opts: AskOpts = {}): Promise<T> {
   return askWithTurns(system, user, schema, opts);
