@@ -111,7 +111,7 @@
         "op": "eq",
         "value": false,
         "effect": "advance",
-        "why": "Salti spesso la colazione: partiamo da lì, con qualcosa che ti tenga sazio."
+        "why": "Salti spesso la colazione: partiamo da lì, con qualcosa che ti sazi a lungo."
       }
     ]
   },
@@ -192,7 +192,7 @@
     "phase": "come_mangi",
     "week": 9,
     "title": "A tavola, senza schermi",
-    "why": "Quando mangi con calma senti meglio il gusto e capisci prima quando sei sazio.",
+    "why": "Quando mangi con calma senti meglio il gusto e capisci prima quando hai mangiato abbastanza.",
     "tips": [
       "Lascia il telefono in un'altra stanza",
       "Appoggia la forchetta tra un boccone e l'altro",
