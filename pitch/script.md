@@ -1,6 +1,6 @@
 # Script del video pitch
 
-Durata: **3:20** (massimo 4:00). 405 parole di voce, a 2.3 parole al secondo con un secondo di respiro tra le battute.
+Durata: **3:40** (massimo 4:00). 442 parole di voce, a 2.3 parole al secondo con un secondo di respiro tra le battute.
 
 Il video segue il brief della challenge: *"Starting a fitness journey can be overwhelming without guidance."* Si apre con la frase del brief e con la seduta zero. Poi ogni blocco risponde a una delle tre richieste (piani, alimentazione, motivazione). Tutto il resto sta in 30 secondi, "e cresce con te".
 
@@ -13,10 +13,10 @@ Come si usa:
 |---|---|---|---|
 | Apertura | il brief: *"overwhelming without guidance"* | B01-B04 | 0:00-0:44 |
 | Piani | **piani** personalizzati e sicuri | B05-B09 | 0:44-2:01 |
-| Motivazione | **motivazione** che regge nelle settimane difficili | B10 | 2:01-2:16 |
-| Alimentazione | **alimentazione** semplice, senza calorie | B11 | 2:16-2:29 |
-| E cresce con te | tutto il resto, in 30 secondi | B12-B13 | 2:29-3:00 |
-| Chiusura | come l'abbiamo costruita, e il saluto | B14-B15 | 3:00-3:20 |
+| Motivazione | **motivazione** che regge nelle settimane difficili | B10-B12 | 2:01-2:35 |
+| Alimentazione | **alimentazione** semplice, senza calorie | B13 | 2:35-2:49 |
+| E cresce con te | tutto il resto, in 30 secondi | B14-B15 | 2:49-3:20 |
+| Chiusura | come l'abbiamo costruita, e il saluto | B16-B17 | 3:20-3:40 |
 
 ---
 
@@ -71,38 +71,48 @@ Come si usa:
 
 ## Motivazione
 
-**B10 · 2:01-2:16 · 15 s** — ripartenza
-> Salti una seduta? Capita. La settimana si riorganizza, e chi riparte prende un bonus: premiare chi riprende funziona meglio che punire chi si ferma. Al posto della streak, un punteggio di costanza.
+**B10 · 2:01-2:12 · 11 s** — il tuo perché
+> Vuoi saltare? Prima l'app ti ricorda perché hai iniziato, con le tue parole, e ti propone dieci minuti invece di niente.
 
-*Schermo:* ciak 4. "Oggi non ce la faccio" → "Capita. Riprendiamo da qui, con calma." e la ripartenza con **+10**. Poi l'anello della costanza. In sovrimpressione: *Milkman et al., Nature 2021*.
+*Schermo:* ciak 4. "Oggi non ce la faccio" → SkipGate: la frase di Giulia in Archivo corsivo ("Per giocare con mio figlio senza fiatone"), il pulsante grande "10 minuti invece di niente?" e, piccolo, "Oggi salto davvero".
+
+**B11 · 2:12-2:24 · 12 s** — ripartenza
+> E se salti davvero? Capita. La settimana si riorganizza, e chi riparte prende un bonus: premiare chi riprende funziona meglio che punire chi si ferma.
+
+*Schermo:* "Oggi salto davvero" → "Capita. Riprendiamo da qui, con calma." e la ripartenza con **+10**. Poi l'anello della costanza (niente streak). In sovrimpressione: *Milkman et al., Nature 2021*.
+
+**B12 · 2:24-2:35 · 11 s** — il coach ti scrive
+> E il coach ti scrive da solo. Non a calendario: ti scrive perché sei tornata, e tornare è la cosa più difficile.
+
+*Schermo:* ciak 5. Tab Coach con il pallino dei non letti; il messaggio entra con una molla: "Ti scrivo perché sei tornata dopo una pausa" in piccolo, sopra "Sei tornata. È la cosa più difficile, ed è fatta."
 
 ## Alimentazione
 
-**B11 · 2:16-2:29 · 13 s** — abitudini e piatto
-> Per mangiare meglio, niente calorie: un'abitudine a settimana, scelta per te, e la foto del piatto. Verdura, proteine, cereali: ti dice cosa va bene e cosa aggiungere.
+**B13 · 2:35-2:49 · 14 s** — percorso alimentare
+> Per mangiare meglio, niente calorie. Un percorso: prima togli, poi aggiungi, poi impari come mangi. Una cosa alla volta, e la foto del piatto ti dice come va.
 
-*Schermo:* ciak 6. Abitudine della settimana, foto caricata, il piatto in tre parti che si riempie, feedback senza numeri.
+*Schermo:* ciak 6. Percorso alimentare: tre fasi (Sostituire · Aggiungere · Come mangi), "sei qui" sulla tappa 4, una tappa saltata con il motivo. Poi la foto di un piatto e il piatto in tre parti che si riempie, senza numeri.
 
 ## E cresce con te
 
-**B12 · 2:29-2:50 · 21 s** — percorsi e dati
+**B14 · 2:49-3:10 · 21 s** — percorsi e dati
 > E cresce con te. Tre percorsi: corsa, forza o mobilità, e chi corre già parte dal livello quattro. Il coach cambia il piano quando cambia la tua vita, il calendario trova gli spazi liberi, e sonno e battito arrivano da Apple Salute o Strava.
 
 *Schermo:* montaggio veloce, 3-4 secondi a scena: Percorso con le tre etichette; `demo-runner` con il player a segmenti; coach con i chip verdi; calendario con gli spazi liberi; Comando rapido che invia i dati; Salute e dispositivi.
 
-**B13 · 2:50-3:00 · 10 s** — visione
+**B15 · 3:10-3:20 · 10 s** — visione
 > Oggi è una PWA, la provi da un link. Lo stesso backend serve l'app nativa, con un abbonamento senza trappole.
 
 *Schermo:* PWA nel browser e un iPhone con l'app nativa (mockup dichiarato: "in arrivo"); poi la schermata Piani con le promesse anti-dark-pattern.
 
 ## Chiusura
 
-**B14 · 3:00-3:09 · 9 s** — agenti
+**B16 · 3:20-3:29 · 9 s** — agenti
 > E l'abbiamo costruita con Claude Code: sei agenti in parallelo, più una regia che custodisce il contratto.
 
 *Schermo:* la tabella delle chat nel README, `git log --oneline` che scorre con i prefissi `[chat-1]`…`[chat-6]`, `[regia]`, poi `docs/agenti/richieste.md` con le ondate.
 
-**B15 · 3:09-3:20 · 11 s** — saluto
+**B17 · 3:29-3:40 · 11 s** — saluto
 > Il principiante è la porta d'ingresso. Ma PassoPasso cresce con te. Un passo alla volta: da zero a dove vuoi arrivare.
 
 *Schermo:* le 5 icone dal camminare allo sprint, poi logotipo e `passopasso.andreavallieri.com` con il QR.

@@ -32,6 +32,8 @@ Il piano si adatta grazie a Claude:
 - **Coach sempre disponibile:** gli scrivi cosa è cambiato e il piano si aggiorna, dicendoti cosa ha cambiato.
 - **Calendario collegato** con un link iCal: le sedute vanno negli spazi liberi.
 - **I dati del corpo nel check-in:** sonno e battito da Apple Salute (con un Comando rapido) o da Strava diventano la prontezza del giorno. "Hai dormito poco: oggi leggero."
+- **Il tuo perché:** prima di saltare una seduta, l'app ti ricorda con le tue parole perché hai iniziato e ti propone 10 minuti invece di niente.
+- **Un coach che ti scrive da solo**, nei momenti giusti e non a calendario: dopo una ripartenza, un record, qualche giorno di assenza.
 - **Seduta saltata?** La settimana si riorganizza e arriva una ripartenza con 10 punti di bonus, perché premiare chi riprende funziona meglio che punire chi si ferma (Milkman, Nature 2021).
 - **Feedback dopo la seduta** (facile / giusto / duro) che regola l'intensità.
 - **Test di prontezza** (sit-to-stand 30 s e marcia di 1 minuto) per salire di livello.
@@ -39,7 +41,7 @@ Il piano si adatta grazie a Claude:
 
 Un'AI che non allucina: il codice calcola lo spazio delle soluzioni sicure (bandiere rosse prima dell'AI, filtri su livello, dolori, impatto e attrezzatura), Claude sceglie e spiega dentro quello spazio, e il codice ricontrolla ogni seduta con 7 invarianti prima di mostrarla. Ogni seduta ha il suo foglio "Perché questa seduta" con il badge "verificata 7/7". Costanza, prontezza e passaggi di livello non passano dall'AI. Per i sintomi urgenti l'app indica il 112. Il catalogo ha 79 esercizi verificati.
 
-Niente calorie: un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta e la foto del piatto con il piatto in tre parti. Niente colpa: punteggio di costanza al posto della streak, vittorie che non dipendono dalla bilancia, widget sul telefono, promemoria push gentili (mai più di uno al giorno). Niente account né pubblicità: esporti o cancelli i tuoi dati in un tocco.
+Niente calorie: un percorso alimentare in tre fasi (prima togli, poi aggiungi, poi impari come mangi), un'abitudine alla volta scelta per te, consigli su quando mangiare rispetto alla seduta e la foto del piatto con il piatto in tre parti. Niente colpa: punteggio di costanza al posto della streak, vittorie che non dipendono dalla bilancia, widget sul telefono, promemoria push gentili (mai più di uno al giorno). Niente account né pubblicità: esporti o cancelli i tuoi dati in un tocco.
 
 Oggi è una PWA, così la provi da un link. Il prodotto è un'app nativa sullo stesso backend e contratto, con login, abbonamento Free/Plus senza dark pattern, push native e HealthKit/Health Connect.
 
@@ -84,17 +86,19 @@ Sì, nella radice del repository, con `docker-compose.yml`. Avvio: `cp .env.exam
 
 | Domanda | Risposta | Dove vederlo |
 |---|---|---|
+| Un principiante non si sente sopraffatto? | Seduta zero senza domande, guida vocale, omino animato, "Cosa aspettarti" nelle prime due settimane, glossario al tocco. | Benvenuto → "Prova 5 minuti adesso" |
 | È solo per chi cammina? | No. Tre percorsi (corsa, forza, mobilità) sugli stessi 5 livelli, scelti dall'obiettivo. | Percorso, onboarding |
 | E se sono già allenato? | Con 3 domande da corridore parti dal livello 4 o 5, con una settimana da podista: facile, ripetute, lungo. I km reali da Strava aggiustano il volume. | Utente `demo-runner` (Luca, 43 anni, 25 km a settimana) |
-| Come vedo i progressi senza bilancia? | Punteggio di costanza, livelli, test di prontezza (sit-to-stand), minuti e sedute, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Home, Progressi, test di prontezza |
-| E l'alimentazione? | Un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo |
+| Come mi tenete motivato nelle settimane 3-12? | Il tuo perché rimostrato quando stai per saltare, 10 minuti invece di niente, ripartenza con bonus, un coach che ti scrive nei momenti giusti (non a calendario), costanza invece della streak. | Settimana → "Oggi non ce la faccio"; Coach |
+| Come vedo i progressi senza bilancia? | "Allora / Adesso" (alzate in 30 secondi, minuti di cardio di fila, sedute a settimana), costanza, livelli, test di prontezza, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Progressi, test di prontezza |
+| E l'alimentazione? | Un percorso in tre fasi: prima togli, poi aggiungi, poi impari come mangi, un'abitudine alla volta e su misura. Consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo → Percorso alimentare |
 | Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 15 esercizi in più. | La tua scheda, Coach |
 | Si collega allo smartwatch? | Sì: Apple Salute (con un Comando rapido) e Strava sono attivi oggi. Sonno e battito calcolano la prontezza del giorno e precompilano il check-in. Health Connect, Garmin, Fitbit e Oura arrivano con l'app nativa. | Home → Come stai oggi; Coach → Salute e dispositivi |
 | Come guadagnate? | Free e Plus, con promesse precise: niente rinnovi a tradimento, prezzo visibile prima, disdetta in un tocco. | Coach → Il tuo piano |
 | Che cosa fate con i miei dati? | Niente account e niente pubblicità. Server in Europa, export in un tocco, cancellazione immediata. Dal calendario leggiamo solo gli spazi liberi. | Coach → I miei dati |
 | Si adatta ai miei impegni? | Colleghi il calendario con un link iCal e le sedute vanno negli spazi liberi. La settimana pianificata si aggiunge al tuo calendario. | Coach → Collega il calendario |
 | Perché dovrebbe funzionare? | Ogni scelta ha una fonte: ripartenza premiata (Milkman), costanza invece della streak (Lally), PAR-Q+, progressione graduale, niente calorie. | Percorso → Perché funziona |
-| E se l'AI sbaglia? | L'AI sceglie solo da un catalogo verificato, le bandiere rosse sono controllate prima da regole fisse e ogni risposta è validata. Se l'AI non risponde, la seduta si fa a regole. | Sezione Sicurezza |
+| E se l'AI sbaglia? | Il codice calcola lo spazio sicuro, Claude sceglie lì dentro, 7 invarianti ricontrollano ogni seduta prima di mostrarla (correzione o seduta a regole). Costanza, prontezza e livelli non passano dall'AI. | Foglio "Perché questa seduta" (7/7); sezione Architettura dell'AI |
 | E i minorenni? | Sotto i 16 anni niente piano: l'app invita a usarla con un adulto. A 16-17 anni massimo livello 3. | Onboarding |
 
 ## Visione

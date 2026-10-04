@@ -57,6 +57,7 @@ Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, r
 - **Check-in prima di ogni seduta:** tempo, energia e mappa del corpo per i dolori. La seduta si rigenera e l'AI spiega in una frase perché è cambiata. Con le ginocchia doloranti, per esempio, la camminata lascia il posto alla marcia in casa.
 - **Coach sempre disponibile:** scrivi cosa è cambiato ("questa settimana lavoro di sera") e il piano si aggiorna, con l'elenco di cosa è cambiato davvero.
 - **Calendario:** colleghi il tuo calendario con un link iCal e PassoPasso sposta le sedute negli spazi liberi. Gli eventi non vengono salvati né passati all'AI: solo gli spazi liberi.
+- **Prima di saltare, il tuo perché:** nell'onboarding scrivi con parole tue perché vuoi iniziare ("Per giocare con mio figlio senza fiatone"). Quando tocchi "Oggi non ce la faccio", l'app ti mostra quella frase e ti propone 10 minuti invece di niente. La seduta ridotta conta come fatta.
 - **Seduta saltata:** la settimana si riorganizza e arriva una seduta di ripartenza con 10 punti di bonus. Premiare chi riprende funziona meglio che punire chi si ferma [7].
 - **Feedback dopo la seduta** (facile / giusto / duro): l'intensità della prossima si regola.
 - **Test di prontezza:** per salire di livello non basta il calendario. Alzati e siediti per 30 secondi (con i valori di riferimento per età e sesso di Rikli & Jones [12]) e un minuto di marcia con la scala dello sforzo. Se oggi non va, "Non oggi" e si riprova la settimana dopo.
@@ -65,15 +66,19 @@ Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, r
 
 ### Motivazione senza colpa
 - **Punteggio di costanza** sugli ultimi 28 giorni al posto della streak: saltare un giorno non compromette un'abitudine [8].
+- **Il coach ti scrive da solo**, non a calendario: dopo una ripartenza, un record personale, tre giorni di assenza, un livello nuovo. Ogni messaggio dice perché arriva ("Ti scrivo perché…") e può proporre un'azione ("Sposta il venerdì al sabato"). I momenti sono decisi da regole fisse, con limiti contro lo spam; l'AI scrive solo il testo, che passa da un filtro di tono.
 - Vittorie che non dipendono dalla bilancia.
 - Tono sempre gentile: "Capita. Riprendiamo da qui, con calma."
 - Widget per la schermata del telefono (galleria su `/widget`, script per Scriptable su iPhone).
 - **Promemoria gentili** con le notifiche push: mai più di una al giorno, mai di sera tardi, mai colpe ("Capita. Oggi c'è una ripartenza da 15 minuti, se ti va").
 
 ### Alimentazione senza calorie
-- **Mini-onboarding** di 5 domande: l'AI sceglie la prima abitudine tra 12, ispirate alle linee guida CREA [9], e spiega perché ("Bevi già abbastanza: partiamo dalla colazione").
+- **Un percorso in tre fasi, un'abitudine alla volta:** prima **togli** (merendine e bibite → frutta, yogurt, acqua; spuntino scelto prima), poi **aggiungi** (verdura, proteine a colazione, legumi, integrali), poi **impari come mangi** (piatto in tre parti, senza schermi, fame e sazietà). "Ora che ti alleni non devi mangiare perfetto. Cambiamo una cosa sola alla volta."
+- **Mini-onboarding** di 5 domande: riordina il percorso e salta le tappe che hai già ("Non bevi bibite zuccherate"). L'AI sceglie l'abitudine di partenza tra quelle del catalogo, ispirate alle linee guida CREA [9], e spiega perché ("Bevi già abbastanza: partiamo dalla colazione").
 - **Prima e dopo:** nei giorni di seduta, quando mangiare rispetto all'allenamento, in base all'orario e al tipo di seduta. Mai quantità.
 - **Foto del piatto:** il feedback dice cosa va bene e cosa aggiungere, e disegna il piatto in tre parti (verdura, proteine, cereali) come nell'Healthy Eating Plate di Harvard [11]. Mai calorie né numeri; l'immagine non viene salvata.
+- **Fame dopo la seduta:** "Avere fame adesso è normale: un frutto o uno yogurt, poi cena come sempre."
+- **Pasti di festa:** se la foto è una pizza con gli amici o una torta di compleanno, la risposta è "Bella serata". Nessun consiglio.
 - **Riepilogo della settimana:** punti forti, cosa manca e l'abitudine della settimana dopo.
 - Se dici di avere una condizione medica, il coach ti indirizza a un dietista. Davanti a segnali di restrizione, risponde con cura e consiglia un professionista. Niente diete.
 
@@ -87,17 +92,19 @@ Niente account, niente pubblicità. I dati stanno su un server in Europa e li ca
 
 | Domanda | Risposta | Dove vederlo |
 |---|---|---|
+| Un principiante non si sente sopraffatto? | Seduta zero senza domande, guida vocale, omino animato, "Cosa aspettarti" nelle prime due settimane, glossario al tocco. | Benvenuto → "Prova 5 minuti adesso" |
 | È solo per chi cammina? | No. Tre percorsi (corsa, forza, mobilità) sugli stessi 5 livelli, scelti dall'obiettivo. | Percorso, onboarding |
 | E se sono già allenato? | Con 3 domande da corridore parti dal livello 4 o 5, con una settimana da podista: facile, ripetute, lungo. I km reali da Strava aggiustano il volume. | Utente `demo-runner` (Luca, 43 anni, 25 km a settimana) |
-| Come vedo i progressi senza bilancia? | Punteggio di costanza, livelli, test di prontezza (sit-to-stand), minuti e sedute, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Home, Progressi, test di prontezza |
-| E l'alimentazione? | Un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo |
+| Come mi tenete motivato nelle settimane 3-12? | Il tuo perché rimostrato quando stai per saltare, 10 minuti invece di niente, ripartenza con bonus, un coach che ti scrive nei momenti giusti (non a calendario), costanza invece della streak. | Settimana → "Oggi non ce la faccio"; Coach |
+| Come vedo i progressi senza bilancia? | "Allora / Adesso" (alzate in 30 secondi, minuti di cardio di fila, sedute a settimana), costanza, livelli, test di prontezza, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Progressi, test di prontezza |
+| E l'alimentazione? | Un percorso in tre fasi: prima togli, poi aggiungi, poi impari come mangi, un'abitudine alla volta e su misura. Consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo → Percorso alimentare |
 | Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 15 esercizi in più. | La tua scheda, Coach |
 | Si collega allo smartwatch? | Sì: Apple Salute (con un Comando rapido) e Strava sono attivi oggi. Sonno e battito calcolano la prontezza del giorno e precompilano il check-in. Health Connect, Garmin, Fitbit e Oura arrivano con l'app nativa. | Home → Come stai oggi; Coach → Salute e dispositivi |
 | Come guadagnate? | Free e Plus, con promesse precise: niente rinnovi a tradimento, prezzo visibile prima, disdetta in un tocco. | Coach → Il tuo piano |
 | Che cosa fate con i miei dati? | Niente account e niente pubblicità. Server in Europa, export in un tocco, cancellazione immediata. Dal calendario leggiamo solo gli spazi liberi. | Coach → I miei dati |
 | Si adatta ai miei impegni? | Colleghi il calendario con un link iCal e le sedute vanno negli spazi liberi. La settimana pianificata si aggiunge al tuo calendario. | Coach → Collega il calendario |
 | Perché dovrebbe funzionare? | Ogni scelta ha una fonte: ripartenza premiata (Milkman), costanza invece della streak (Lally), PAR-Q+, progressione graduale, niente calorie. | Percorso → Perché funziona |
-| E se l'AI sbaglia? | L'AI sceglie solo da un catalogo verificato, le bandiere rosse sono controllate prima da regole fisse e ogni risposta è validata. Se l'AI non risponde, la seduta si fa a regole. | Sezione Sicurezza |
+| E se l'AI sbaglia? | Il codice calcola lo spazio sicuro, Claude sceglie lì dentro, 7 invarianti ricontrollano ogni seduta prima di mostrarla (correzione o seduta a regole). Costanza, prontezza e livelli non passano dall'AI. | Foglio "Perché questa seduta" (7/7); sezione Architettura dell'AI |
 | E i minorenni? | Sotto i 16 anni niente piano: l'app invita a usarla con un adulto. A 16-17 anni massimo livello 3. | Onboarding |
 
 ## Sicurezza
