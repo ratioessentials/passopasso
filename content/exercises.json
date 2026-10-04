@@ -1991,5 +1991,490 @@
     "progression": null,
     "formCheck": false,
     "motion": "squat"
+  },
+  {
+    "id": "superman_braccia",
+    "name": "Braccia a Y a pancia in giù",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "schiena_alta",
+      "spalle"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Sdraiati a pancia in giù, fronte su un asciugamano",
+      "Braccia avanti a forma di Y, pollici in su",
+      "Solleva piano le braccia stringendo le scapole",
+      "Tieni un secondo e scendi"
+    ],
+    "commonMistakes": [
+      "Alzare la testa e piegare il collo",
+      "Inarcare la zona lombare"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": "remata_elastico",
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "remata_elastico",
+    "name": "Remata con elastico",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "schiena_alta",
+      "spalle",
+      "braccia"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 12
+    },
+    "instructions": [
+      "Fissa l'elastico a una maniglia chiusa o passalo sotto i piedi da seduto",
+      "Braccia tese davanti, schiena dritta",
+      "Tira i gomiti indietro vicino ai fianchi",
+      "Torna piano senza lasciare andare l'elastico"
+    ],
+    "commonMistakes": [
+      "Alzare le spalle verso le orecchie",
+      "Usare lo slancio del busto"
+    ],
+    "impact": false,
+    "regression": "superman_braccia",
+    "progression": "remata_manubrio",
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "remata_manubrio",
+    "name": "Remata con manubrio",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "schiena_alta",
+      "spalle",
+      "braccia",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "manubri",
+      "sedia"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Una mano e un ginocchio sulla sedia, schiena piatta",
+      "Manubrio nell'altra mano, braccio teso",
+      "Porta il gomito verso il soffitto, vicino al fianco",
+      "Scendi piano, fai le ripetizioni, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Ruotare il busto per tirare su",
+      "Schiena arrotondata"
+    ],
+    "impact": false,
+    "regression": "remata_elastico",
+    "progression": null,
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "apertura_elastico",
+    "name": "Apertura delle braccia con elastico",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "schiena_alta"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 12
+    },
+    "instructions": [
+      "In piedi, elastico tra le mani davanti al petto, braccia tese",
+      "Apri le braccia di lato tirando l'elastico",
+      "Stringi le scapole, poi torna piano",
+      "Spalle basse per tutto il tempo"
+    ],
+    "commonMistakes": [
+      "Piegare troppo i gomiti",
+      "Inarcare la schiena"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "rotazioni_braccia"
+  },
+  {
+    "id": "pressa_elastico",
+    "name": "Spinta sopra la testa con elastico",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Metti l'elastico sotto i piedi, mani all'altezza delle spalle",
+      "Pancia attiva, sguardo avanti",
+      "Spingi le mani in alto fino a stendere le braccia",
+      "Scendi piano fino alle spalle"
+    ],
+    "commonMistakes": [
+      "Inarcare la schiena per spingere",
+      "Bloccare di colpo i gomiti"
+    ],
+    "impact": false,
+    "regression": "piegamenti_muro",
+    "progression": "pressa_manubri",
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "pressa_manubri",
+    "name": "Spinta sopra la testa con manubri",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "spalle",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "manubri"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "In piedi o seduto, manubri all'altezza delle spalle",
+      "Pancia attiva, glutei stretti",
+      "Spingi in alto fino a stendere le braccia",
+      "Scendi piano"
+    ],
+    "commonMistakes": [
+      "Inarcare la zona lombare",
+      "Peso troppo alto: devi finire le ripetizioni con controllo"
+    ],
+    "impact": false,
+    "regression": "pressa_elastico",
+    "progression": null,
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "curl_elastico",
+    "name": "Piegamento delle braccia con elastico",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 12
+    },
+    "instructions": [
+      "Elastico sotto i piedi, palmi in avanti",
+      "Gomiti fermi vicino ai fianchi",
+      "Porta le mani verso le spalle",
+      "Scendi piano"
+    ],
+    "commonMistakes": [
+      "Muovere i gomiti in avanti",
+      "Dondolare con il busto"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": "curl_manubri",
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "curl_manubri",
+    "name": "Piegamento delle braccia con manubri",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "manubri"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "In piedi, un manubrio per mano, palmi in avanti",
+      "Gomiti fermi vicino ai fianchi",
+      "Porta i manubri verso le spalle",
+      "Scendi piano, senza lasciar cadere"
+    ],
+    "commonMistakes": [
+      "Slancio con la schiena",
+      "Polsi piegati all'indietro"
+    ],
+    "impact": false,
+    "regression": "curl_elastico",
+    "progression": null,
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "inchino_anche",
+    "name": "Inchino dalle anche",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "schiena_bassa",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "In piedi, mani sui fianchi, ginocchia morbide",
+      "Porta il bacino indietro e inclina il busto in avanti, schiena dritta",
+      "Scendi finché senti tirare dietro le cosce",
+      "Torna su spingendo il bacino in avanti"
+    ],
+    "commonMistakes": [
+      "Arrotondare la schiena",
+      "Piegare troppo le ginocchia: non è uno squat"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": "stacco_rumeno_manubri",
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "stacco_rumeno_manubri",
+    "name": "Stacco rumeno con manubri",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "schiena_bassa",
+      "anche"
+    ],
+    "equipment": [
+      "manubri"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Manubri davanti alle cosce, ginocchia morbide",
+      "Porta il bacino indietro e fai scivolare i manubri lungo le gambe",
+      "Scendi a metà tibia con la schiena dritta",
+      "Risali spingendo il bacino in avanti"
+    ],
+    "commonMistakes": [
+      "Schiena arrotondata",
+      "Manubri lontani dalle gambe"
+    ],
+    "impact": false,
+    "regression": "inchino_anche",
+    "progression": null,
+    "formCheck": false,
+    "motion": null
+  },
+  {
+    "id": "ponte_manubrio",
+    "name": "Ponte con manubrio",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "anche",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "manubri",
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Sdraiati sulla schiena, ginocchia piegate",
+      "Appoggia un manubrio sul bacino e tienilo con le mani",
+      "Solleva il bacino stringendo i glutei",
+      "Fermati un attimo in alto e scendi piano"
+    ],
+    "commonMistakes": [
+      "Spingere con la schiena invece che coi glutei",
+      "Manubrio che scivola: tienilo fermo"
+    ],
+    "impact": false,
+    "regression": "ponte_glutei",
+    "progression": null,
+    "formCheck": false,
+    "motion": "ponte"
+  },
+  {
+    "id": "squat_goblet",
+    "name": "Squat con manubrio al petto",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [
+      "manubri"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Tieni un manubrio in verticale contro il petto",
+      "Piedi alla larghezza delle spalle, punte un po' aperte",
+      "Scendi come per sederti, gomiti tra le ginocchia",
+      "Risali spingendo coi talloni"
+    ],
+    "commonMistakes": [
+      "Ginocchia che cadono verso l'interno",
+      "Busto che crolla in avanti"
+    ],
+    "impact": false,
+    "regression": "squat_libero",
+    "progression": null,
+    "formCheck": true,
+    "motion": "squat"
+  },
+  {
+    "id": "affondo_manubri",
+    "name": "Affondo indietro con manubri",
+    "category": "forza",
+    "minLevel": 5,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [
+      "manubri"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Un manubrio per mano, braccia lungo i fianchi",
+      "Fai un passo indietro e scendi",
+      "Il ginocchio dietro si avvicina al pavimento",
+      "Spingi col piede davanti per tornare su, poi alterna"
+    ],
+    "commonMistakes": [
+      "Ginocchio davanti che crolla verso l'interno",
+      "Busto inclinato in avanti"
+    ],
+    "impact": false,
+    "regression": "affondo_indietro",
+    "progression": null,
+    "formCheck": false,
+    "motion": "affondo"
+  },
+  {
+    "id": "passi_laterali_elastico",
+    "name": "Passi laterali con elastico",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "anche",
+      "ginocchia"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Elastico ad anello sopra le ginocchia",
+      "Piega un po' le gambe, bacino indietro",
+      "Fai passi di lato tenendo l'elastico teso",
+      "Fai le ripetizioni, poi torna dall'altra parte"
+    ],
+    "commonMistakes": [
+      "Ginocchia che si chiudono verso l'interno",
+      "Raddrizzarsi a ogni passo"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "marcia"
+  },
+  {
+    "id": "antirotazione_elastico",
+    "name": "Tenuta contro la rotazione con elastico",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "schiena_bassa",
+      "spalle"
+    ],
+    "equipment": [
+      "elastico"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Fissa l'elastico di lato all'altezza del petto",
+      "Tienilo con due mani contro lo sterno, di fianco all'aggancio",
+      "Spingi le mani in avanti senza farti ruotare",
+      "Torna al petto, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Lasciarsi tirare di lato",
+      "Trattenere il fiato"
+    ],
+    "impact": false,
+    "regression": "dead_bug",
+    "progression": null,
+    "formCheck": false,
+    "motion": null
   }
 ]

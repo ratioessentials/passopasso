@@ -85,7 +85,9 @@ if (exercises) {
         if (k === 'regression' && y.minLevel > x.minLevel) err(w, `regression "${t}" ha minLevel più alto`);
         if (k === 'progression' && y.minLevel < x.minLevel) err(w, `progression "${t}" ha minLevel più basso`);
         const back = k === 'regression' ? 'progression' : 'regression';
-        if (y[back] !== x.id) warn(w, `${k} "${t}" non punta indietro (${back} = ${y[back]})`);
+        // i rami con elastico o manubri regrediscono a corpo libero senza togliere la catena principale
+        const loaded = (z) => z.equipment.some((q) => q === 'elastico' || q === 'manubri');
+        if (y[back] !== x.id && loaded(x) === loaded(y)) warn(w, `${k} "${t}" non punta indietro (${back} = ${y[back]})`);
       }
       // niente cicli lungo le progressioni
       const seen = new Set([x.id]);
