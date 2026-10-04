@@ -99,6 +99,32 @@ function patchProfile(user: UserRow, patch: Partial<Omit<Card, 'health'>> & { he
   return { ok: true, caution: !!next.caution, cautionMessage: next.caution ? cautionMessage(health) : null, profile: publicProfile(next) };
 }
 
+const tableExists = (name: string) => !!db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(name);
+
+const SESSION_TIME: Record<string, [number, number]> = { mattina: [7, 30], pausa_pranzo: [13, 0], sera: [19, 0] };
+
+/** Le sedute della settimana (da oggi) in iCalendar: 30 minuti all'orario preferito, con il link all'app. */
+function weekIcs(user: UserRow, origin: string): string {
+  const profile = profileOf(user)!;
+  const [h, m] = SESSION_TIME[profile.preferredTime] ?? [19, 0];
+  const t = today();
+  const rows = sessionsBetween(user.id, t, addDays(weekStart(t), 13)).filter((s) => s.status === 'planned');
+  const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const local = (date: string, hh: number, mm: number) => `${date.replaceAll('-', '')}T${String(hh).padStart(2, '0')}${String(mm).padStart(2, '0')}00`;
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//PassoPasso//Settimana//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:PassoPasso', 'X-WR-TIMEZONE:Europe/Rome'];
+  for (const s of rows) {
+    const endM = m + 30;
+    lines.push('BEGIN:VEVENT', `UID:${s.id}@passopasso`, `DTSTAMP:${stamp}`,
+      `DTSTART;TZID=Europe/Rome:${local(s.date, h, m)}`, `DTEND;TZID=Europe/Rome:${local(s.date, h + Math.floor(endM / 60), endM % 60)}`,
+      `SUMMARY:${esc(`PassoPasso · ${s.title}`)}`,
+      `DESCRIPTION:${esc(`${s.minutes} minuti. ${s.reason ?? ''}\nApri la seduta: ${origin}/`)}`,
+      `URL:${origin}/`, 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Tra poco la tua seduta', 'TRIGGER:-PT30M', 'END:VALARM', 'END:VEVENT');
+  }
+  lines.push('END:VCALENDAR');
+  return lines.map((l) => (l.length > 74 ? l.match(/.{1,73}/g)!.join('\r\n ') : l)).join('\r\n');
+}
+
 export async function buildServer() {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL || 'info' }, bodyLimit: 10 * 1024 * 1024 });
 
@@ -215,6 +241,55 @@ export async function buildServer() {
     if (res === 'not_ready') throw fail(409, 'not_ready', 'Ancora qualche seduta e ci siamo. Il prossimo livello ti aspetta.');
     if (res === 'test_required') throw fail(409, 'test_required', 'Prima un piccolo test di prontezza: due prove brevi, e si sale.');
     return mePayload(getUser(user.id)!);
+  });
+
+  // ---------- I miei dati ----------
+  app.get('/api/me/export', async (req, reply) => {
+    const user = requireUser(req, { profile: false });
+    const all = (sql: string) => db.prepare(sql).all(user.id);
+    const data = {
+      exportedAt: new Date().toISOString(),
+      note: 'I tuoi dati di PassoPasso. Le foto dei piatti non vengono salvate: qui trovi solo le valutazioni.',
+      user: { id: user.id, createdAt: user.created_at, level: user.level, intensity: user.intensity, startDate: user.start_date },
+      profile: profileOf(user) ?? (user.draft ? JSON.parse(user.draft) : null),
+      sessions: allSessions(user.id).map((s) => ({ ...toSession(s, user), feedback: s.feedback, skipReason: s.skip_reason, checkin: s.checkin ? JSON.parse(s.checkin) : null })),
+      wins: listWins(user.id),
+      levelHistory: all('SELECT n, from_date AS "from", to_date AS "to" FROM level_history WHERE user_id = ? ORDER BY rowid'),
+      habitCheckins: all('SELECT date, habit_id AS habitId FROM habit_checkins WHERE user_id = ? ORDER BY date'),
+      meals: (all('SELECT date, habit_id AS habitId, feedback FROM meals WHERE user_id = ? ORDER BY id') as { date: string; habitId: string; feedback: string }[]).map((m) => ({ ...m, feedback: JSON.parse(m.feedback) })),
+      levelTests: all('SELECT date, to_level AS toLevel, results, passed, skipped FROM level_tests WHERE user_id = ? ORDER BY rowid'),
+      health: tableExists('health_days') ? all('SELECT * FROM health_days WHERE user_id = ? ORDER BY date') : [],
+    };
+    return reply
+      .header('Content-Disposition', `attachment; filename="passopasso-dati-${today()}.json"`)
+      .type('application/json; charset=utf-8')
+      .send(JSON.stringify(data, null, 2));
+  });
+
+  app.delete('/api/me', async (req, reply) => {
+    const user = requireUser(req, { profile: false });
+    if (user.id === DEMO_ID) seedDemo(true); // il demo non si cancella: torna allo stato iniziale
+    else db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
+    return reply.status(204).send();
+  });
+
+  // La settimana nel calendario: header X-User-Id oppure ?u= (un link dal browser non manda header)
+  app.get('/api/week.ics', async (req, reply) => {
+    const q = req.query as { u?: string };
+    if (q.u && !req.headers['x-user-id']) req.headers['x-user-id'] = q.u;
+    const user = requireUser(req);
+    ensureCurrentWeek(user);
+    const origin = `${(req.headers['x-forwarded-proto'] as string) ?? req.protocol}://${req.headers['x-forwarded-host'] ?? req.headers.host}`;
+    const ics = weekIcs(user, origin);
+    return reply
+      .header('Content-Disposition', 'attachment; filename="passopasso-settimana.ics"')
+      .type('text/calendar; charset=utf-8')
+      .send(ics);
+  });
+
+  // ---------- Perché funziona ----------
+  app.get('/api/science', async () => {
+    try { return content.science(); } catch { return []; }
   });
 
   // ---------- Test di prontezza ----------
