@@ -40,8 +40,17 @@ Tagline: *"Da zero a dove vuoi arrivare."*
 - Font: Archivo (titoli e logotipo, corsivo extrabold), Plus Jakarta Sans (testi).
 - Tono: dare del tu, frasi brevi, mai colpa ("Capita. Riprendiamo da qui, con calma.").
 
+## Repository
+- GitHub: https://github.com/ratioessentials/passopasso (branch `main`, remote SSH `git@github.com:ratioessentials/passopasso.git`)
+- Link pubblico della demo: https://passopasso.andreavallieri.com
+
 ## Struttura
-- `app/`: codice della PWA (da creare)
+- `app/web/`: PWA (React + Vite + Tailwind), porta di sviluppo 5180
+- `app/server/`: API Node + SQLite + Claude, porta 3210
+- `content/`: catalogo esercizi, programma dei livelli, abitudini, bandiere rosse, testi (dati verificati)
+- `deploy/`, `Dockerfile`, `docker-compose.yml`: deploy sul server Contabo
 - `brand/`: icone, favicon, scheda del brand (`brand.html`, generata da `gen_icons.py` + `build_page.py`)
 - `docs/ricerca.md`: pain point e dati con le fonti, da usare nel pitch
+- `docs/api.md`, `docs/schema.md`: **contratto condiviso** tra le chat (si modifica solo dalla chat di regia)
+- `docs/agenti/`: squadra di 5 chat in parallelo, prompt, regole git, richieste e stato
 - `pitch/`: script e materiali del video
