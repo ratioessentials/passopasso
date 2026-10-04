@@ -45,12 +45,14 @@ Senza nessuna delle due il server parte lo stesso e usa le risposte di riserva (
 
 ## Cloudflare Tunnel
 
+**Stato: configurato il 2026-10-04.** Route `passopasso.andreavallieri.com` → `http://127.0.0.1:3210` sul tunnel **`dev-server`** (ID `989fe717-…`), accanto a `productivity.andreavallieri.com`. Il tunnel `passopasso` che compare nella dashboard è vuoto e senza connettore: non è usato.
+
 Sul server il tunnel gira come servizio systemd (`cloudflared.service`, `tunnel run --token-file /etc/cloudflared/token`). È un tunnel **gestito da remoto**: le route stanno nella dashboard di Cloudflare, non in un file locale. Non serve toccare nulla sul server.
 
 **Passaggi (una volta sola, dalla dashboard):**
 1. Vai su https://one.dash.cloudflare.com → **Networks → Tunnels** (in alcune versioni: *Access → Tunnels*).
-2. Apri il tunnel che gira su questo server (stato *Healthy*; è quello che già serve gli altri siti, ad esempio quello su `localhost:8787`). Clic su **Edit** (o *Configure*).
-3. Scheda **Public Hostname** → **Add a public hostname**:
+2. Apri il tunnel che gira su questo server (`dev-server`, IP di origine 164.68.107.194).
+3. Scheda **Percorsi applicazioni pubblicate** (*Public Hostname*) → **Aggiungi**:
    - **Subdomain**: `passopasso`
    - **Domain**: `andreavallieri.com`
    - **Path**: vuoto
