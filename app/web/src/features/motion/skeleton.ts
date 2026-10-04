@@ -78,7 +78,7 @@ export function solve(p: Pose, anchorX = 60, anchor: 'hip' | 'foot' = 'hip'): Ri
   const elbowF = down(neck, aF, L.upper)
   const elbowB = down(neck, aB, L.upper)
   return {
-    torso: { x: hip[0], y: hip[1], a: 180 + p.torso }, // il segmento del busto punta verso l'alto
+    torso: { x: hip[0], y: hip[1], a: 180 - p.torso }, // il segmento del busto punta verso l'alto (rotate inverte il segno)
     head,
     thighF: { x: hip[0], y: hip[1], a: hF },
     shinF: { x: kneeF[0], y: kneeF[1], a: hF - kF },

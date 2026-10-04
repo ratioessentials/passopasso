@@ -52,7 +52,7 @@ const LUNGE_DOWN = P({ hF: 80, kF: 90, hB: -10, kB: 90, aF: -8, eF: 20, aB: 8, e
 // Ponte: sdraiato sulla schiena, testa a sinistra, piedi a terra
 const BRIDGE_ARMS = { aF: 88, eF: 0, aB: 86, eB: 0 }
 const BRIDGE_DOWN = P({ hip: [62, 95], torso: -90, head: -90, footF: [80, 101], footB: [77, 101], ...BRIDGE_ARMS })
-const BRIDGE_UP = P({ hip: [62, 81], torso: -118, head: -95, footF: [80, 101], footB: [77, 101], ...BRIDGE_ARMS })
+const BRIDGE_UP = P({ hip: [62, 78], torso: -125, head: -96, footF: [80, 101], footB: [77, 101], ...BRIDGE_ARMS })
 
 // Plank sugli avambracci, testa a destra
 const PLANK = (dy: number, tilt: number) =>
@@ -115,8 +115,8 @@ export const CLIPS: Record<Archetype, Clip> = {
     label: 'Polpacci', duration: 2000, interp: 'ease', still: 0.5,
     keys: [
       P({ t: 0, ...HANDS_ON_HIPS }),
-      P({ t: 0.4, ...HANDS_ON_HIPS, lift: 5 }),
-      P({ t: 0.6, ...HANDS_ON_HIPS, lift: 5 }),
+      P({ t: 0.4, ...HANDS_ON_HIPS, lift: 7 }),
+      P({ t: 0.6, ...HANDS_ON_HIPS, lift: 7 }),
       P({ t: 0.95, ...HANDS_ON_HIPS }),
     ],
   },
@@ -138,10 +138,10 @@ export const CLIPS: Record<Archetype, Clip> = {
   allungamento: {
     label: 'Allungamento', duration: 3600, interp: 'ease', anchor: 'foot', anchorX: 54, still: 0.15,
     keys: [
-      P({ t: 0, torso: -4, head: -8, aF: 172, eF: 0, aB: 168, eB: 0, lift: 2 }),
-      P({ t: 0.3, torso: -4, head: -8, aF: 172, eF: 0, aB: 168, eB: 0, lift: 2 }),
-      P({ t: 0.5, torso: 80, head: 100, hF: 10, kF: 12, hB: 8, kB: 12, aF: 5, eF: 0, aB: 2, eB: 0 }),
-      P({ t: 0.8, torso: 80, head: 100, hF: 10, kF: 12, hB: 8, kB: 12, aF: 5, eF: 0, aB: 2, eB: 0 }),
+      P({ t: 0, torso: -4, head: -8, aF: 158, eF: 0, aB: 152, eB: 0, lift: 2 }),
+      P({ t: 0.3, torso: -4, head: -8, aF: 158, eF: 0, aB: 152, eB: 0, lift: 2 }),
+      P({ t: 0.5, torso: 62, head: 80, hF: 8, kF: 10, hB: 6, kB: 10, aF: 22, eF: 0, aB: 18, eB: 0 }),
+      P({ t: 0.8, torso: 62, head: 80, hF: 8, kF: 10, hB: 6, kB: 10, aF: 22, eF: 0, aB: 18, eB: 0 }),
     ],
   },
   respirazione: {

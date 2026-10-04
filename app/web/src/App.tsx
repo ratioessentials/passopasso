@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { Suspense, type ReactNode } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { getUserId } from './api/client'
 import { StoreProvider } from './lib/store'
 import { FormCheck } from './lib/formcheck'
+
+const MotionLab = lazy(() => import('./features/motion/MotionLab'))
 import { TabBar, TAB_PATHS, TABBAR_PATHS } from './ui/TabBar'
 import { spring } from './ui/motion'
 import { LevelUpOverlay } from './screens/LevelUp'
@@ -68,6 +70,7 @@ export function AppRoutes() {
               <Route path="/coach" element={r(<Coach />)} />
               <Route path="/widget" element={<WidgetGallery />} />
               <Route path="/formcheck" element={FormCheck ? <Suspense fallback={null}><FormCheck /></Suspense> : <Navigate to="/" replace />} />
+              <Route path="/motion-lab" element={<Suspense fallback={null}><MotionLab /></Suspense>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Page>
