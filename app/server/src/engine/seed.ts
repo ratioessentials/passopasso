@@ -46,6 +46,7 @@ const DEMO_PROFILE: Profile = {
   runner: null,
   food: null,
   goal: 'Riuscire a correre 20 minuti senza fermarmi',
+  why: 'Per giocare a pallone con mio figlio senza fermarmi dopo cinque minuti',
   experience: 'poca',
   daysPerWeek: 3,
   minutesPerSession: 25,
@@ -88,7 +89,7 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v8`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v9`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
   if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID) && getUser(RUNNER_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();
@@ -181,6 +182,7 @@ const RUNNER_PROFILE: Profile = {
   runner: { kmPerWeek: 25, longestRunMin: 50, easyPaceMinKm: 5.8, runGoal: '10 km sotto i 55 minuti' },
   food: { breakfast: true, veggiesPerDay: 2, sugaryDrinks: 'mai', mealsOut: 4, cooks: 'a_volte' },
   goal: 'Correre una 10 km sotto i 55 minuti',
+  why: 'Per tornare a correre la Stramilano con mio fratello',
   experience: 'qualche_volta',
   daysPerWeek: 4,
   minutesPerSession: 50,

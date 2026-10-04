@@ -192,7 +192,7 @@ export function consistencyAt(userId: string, at = today()): number {
   const recovered = new Set(all.filter((s) => s.kind === 'ripartenza' && s.status === 'done' && s.recovers).map((s) => s.recovers));
   // conta: sedute normali già passate (o fatte), escluse quelle saltate e recuperate e quelle bloccate per sicurezza
   // le sedute importate che hanno completato una seduta pianificata (Strava, Apple Salute) contano come fatte
-  const counted = rows.filter((s) => (s.kind === 'normale' || (s.kind === 'importata' && s.was_planned)) && s.status !== 'blocked' && !recovered.has(s.id) && (s.date < at || s.status === 'done'));
+  const counted = rows.filter((s) => (s.kind === 'normale' || s.kind === 'ridotta' || (s.kind === 'importata' && s.was_planned)) && s.status !== 'blocked' && !recovered.has(s.id) && (s.date < at || s.status === 'done'));
   // giorni attivi dai passi (livelli 1-2, max 2 a settimana): un giorno "fatto" in più
   const user = getUser(userId);
   const active = user ? activeDays(user, from, at).length : 0;

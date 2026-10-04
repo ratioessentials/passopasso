@@ -106,6 +106,34 @@ export function trainingFuel(user: UserRow): { sessionAt: string; before: string
   return { sessionAt: SESSION_AT[profile.preferredTime], before: advice.before, after: advice.after, note: fuel.trackNotes?.[profile.track ?? 'corsa'], safety: fuel.safety };
 }
 
+// ---------- Fame dopo la seduta ----------
+
+const AFTER_FOOD: Record<string, string> = {
+  mattina: 'Avere fame adesso è normale: fai colazione come sempre, con qualcosa di proteico come yogurt o latte.',
+  pranzo: 'Avere fame adesso è normale: pranza come sempre, con verdura, proteine e cereali.',
+  pomeriggio: 'Avere fame adesso è normale: un frutto o uno yogurt, e poi cena come sempre.',
+  sera: 'Avere fame adesso è normale: cena come sempre, con una fonte di proteine. Niente da recuperare.',
+};
+
+/** Una riga sulla fame dopo la seduta, per orario (content/fuel.json → afterFood, altrimenti riserva). */
+export function afterFood(now = new Date()): string {
+  const h = now.getHours();
+  const slot = h < 11 ? 'mattina' : h < 15 ? 'pranzo' : h < 18 ? 'pomeriggio' : 'sera';
+  let fromContent: unknown;
+  try { fromContent = (content.fuel() as Record<string, unknown>).afterFood; } catch { /* niente fuel.json */ }
+  if (fromContent && typeof fromContent === 'object') {
+    if (Array.isArray(fromContent)) {
+      const hit = (fromContent as { slot?: string; text?: string }[]).find((x) => x.slot === slot) ?? (fromContent as { slot?: string; text?: string }[]).find((x) => slot === 'pomeriggio' && x.slot === 'sera');
+      if (hit?.text) return hit.text;
+    } else {
+      const map = fromContent as Record<string, string>;
+      const v = map[slot] ?? (slot === 'pomeriggio' ? map.sera : undefined);
+      if (typeof v === 'string') return v;
+    }
+  } else if (typeof fromContent === 'string') return fromContent;
+  return AFTER_FOOD[slot];
+}
+
 // ---------- Riepilogo della settimana ----------
 
 interface MealRow { date: string; feedback: string }

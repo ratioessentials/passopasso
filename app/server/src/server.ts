@@ -8,13 +8,13 @@ import { config } from './config.js';
 import { BODY_ZONES, content, type BodyZone } from './content.js';
 import { addDays, DAY_LETTERS, diffDays, today, weekStart } from './dates.js';
 import { db } from './db.js';
-import { acceptLevel, checkin, complete, skip } from './engine/actions.js';
+import { acceptLevel, checkin, complete, completeShort, shortSession, skip, SHORT_SUFFIX } from './engine/actions.js';
 import { mealFeedback } from './engine/meals.js';
 import { submitTest, testsFor } from './engine/tests.js';
 import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncStravaIfStale, verifyState } from './engine/strava.js';
 import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
 import { IngestSchema, healthToken, ingest, readiness, summary, userByHealthToken } from './engine/health.js';
-import { FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
+import { afterFood, FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
@@ -49,7 +49,7 @@ function requireUser(req: FastifyRequest, opts: { profile?: boolean } = { profil
 }
 
 function requireSession(user: UserRow, id: string): SessionRow {
-  const row = getSessionRow(user.id, id);
+  const row = getSessionRow(user.id, id.endsWith(SHORT_SUFFIX) ? id.slice(0, -SHORT_SUFFIX.length) : id);
   if (!row) throw fail(404, 'session_not_found', 'Questa seduta non la trovo. Torna alla settimana e riprova.');
   return row;
 }
@@ -170,7 +170,7 @@ export async function buildServer() {
       saveProfile(user, step.profile);
       return { reply: step.reply, done: true, profile: publicProfile(step.profile) };
     }
-    return { reply: step.reply, done: false, quickReplies: step.quickReplies ?? [] };
+    return { reply: step.reply, done: false, quickReplies: step.quickReplies ?? [], askWhy: !!step.askWhy };
   });
 
   // La scheda (chi sei + PAR-Q+) prima della conversazione
@@ -202,7 +202,18 @@ export async function buildServer() {
 
   app.get('/api/sessions/:id', async (req) => {
     const user = requireUser(req);
-    return toSession(requireSession(user, (req.params as { id: string }).id), user);
+    const id = (req.params as { id: string }).id;
+    const row = requireSession(user, id);
+    return id.endsWith(SHORT_SUFFIX) && row.status === 'planned' ? shortSession(user, profileOf(user)!, row) : toSession(row, user);
+  });
+
+  // Prima di saltare: il tuo perché e la seduta da 10 minuti
+  app.get('/api/sessions/:id/alternatives', async (req) => {
+    const user = requireUser(req);
+    const row = requireSession(user, (req.params as { id: string }).id);
+    if (row.status !== 'planned') throw fail(409, 'not_planned', 'Questa seduta non è più da fare.');
+    const profile = profileOf(user)!;
+    return { why: profile.why ?? null, short: shortSession(user, profile, row) };
   });
 
   app.post('/api/sessions/:id/checkin', async (req) => {
@@ -226,7 +237,9 @@ export async function buildServer() {
     if (row.status === 'done') throw fail(409, 'already_done', 'Questa seduta risulta già fatta. Bel colpo!');
     if (row.status === 'blocked') throw fail(409, 'blocked', 'Oggi la seduta è in pausa per sicurezza. Riprendiamo quando stai bene.');
     const { feedback } = parse(z.object({ feedback: z.enum(['facile', 'giusto', 'duro']) }), req.body);
-    return complete(user, row, feedback);
+    const short = (req.params as { id: string }).id.endsWith(SHORT_SUFFIX);
+    const res = short ? completeShort(user, profileOf(user)!, row, feedback) : complete(user, row, feedback);
+    return { ...res, afterFood: afterFood() };
   });
 
   app.post('/api/sessions/:id/skip', async (req) => {

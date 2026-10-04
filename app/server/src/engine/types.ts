@@ -26,6 +26,7 @@ export interface Profile {
   runner?: Runner | null;
   food?: FoodProfile | null;
   goal: string;
+  why?: string | null;
   experience: Experience;
   daysPerWeek: number;
   minutesPerSession: number;
@@ -45,7 +46,7 @@ export interface Item {
 }
 
 export type SessionStatus = 'planned' | 'done' | 'skipped' | 'blocked';
-export type SessionKind = 'normale' | 'ripartenza' | 'importata';
+export type SessionKind = 'normale' | 'ripartenza' | 'importata' | 'ridotta';
 export type Feedback = 'facile' | 'giusto' | 'duro';
 
 export interface SessionRow {

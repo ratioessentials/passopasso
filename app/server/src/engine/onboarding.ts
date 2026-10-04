@@ -6,7 +6,7 @@ import { derive, personSummary, type Card } from './person.js';
 import type { Experience, PreferredTime, Profile, Runner, Track } from './types.js';
 
 export interface ChatMessage { role: 'user' | 'assistant'; content: string }
-export interface OnboardingReply { reply: string; done: boolean; quickReplies?: string[]; profile?: Profile; minor?: boolean }
+export interface OnboardingReply { reply: string; done: boolean; quickReplies?: string[]; profile?: Profile; minor?: boolean; askWhy?: boolean }
 
 export const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino', 'elastico', 'manubri'];
 const TRACK_NAME: Record<Track, string> = { corsa: 'Corsa', forza: 'Forza', mobilita: 'Mobilità' };
@@ -67,6 +67,7 @@ export function normalizeProfile(card: Partial<Card> & { caution?: boolean }, p:
     runner,
     food: null,
     goal,
+    why: typeof p.why === 'string' && p.why.trim() ? p.why.trim().slice(0, 200) : null,
     experience: runner ? 'qualche_volta' : experience,
     daysPerWeek: clamp(p.daysPerWeek, 2, 6, 3),
     minutesPerSession: clamp(p.minutesPerSession, 10, runner ? 90 : 60, 20),
@@ -89,7 +90,7 @@ export function minorReply(): OnboardingReply {
 
 // ---------- Copione di riserva (AI spenta o in errore) ----------
 
-type Step = 'goal' | 'experience' | 'km' | 'longest' | 'pace' | 'daysMinutes' | 'equipment' | 'pain' | 'time';
+type Step = 'goal' | 'experience' | 'km' | 'longest' | 'pace' | 'daysMinutes' | 'equipment' | 'pain' | 'time' | 'why';
 const QUESTIONS: Record<Step, { q: (name: string) => string; quick: string[] }> = {
   goal: { q: (n) => `Piacere, ${n}! Cosa ti piacerebbe riuscire a fare tra qualche mese?`, quick: ['Correre 20 minuti', 'Sentirmi più forte', 'Meno rigidità alla schiena'] },
   experience: { q: () => 'Bello. Quanto ti muovi oggi, in una settimana normale?', quick: ['Quasi mai', "Cammino un po'", 'Qualche volta', 'Corro già'] },
@@ -99,7 +100,8 @@ const QUESTIONS: Record<Step, { q: (name: string) => string; quick: string[] }> 
   daysMinutes: { q: () => 'Quanti giorni a settimana puoi dedicarci, e per quanti minuti?', quick: ['2 giorni, 15 minuti', '3 giorni, 20 minuti', '4 giorni, 30 minuti'] },
   equipment: { q: () => 'Cosa hai in casa che possiamo usare?', quick: ['Niente', 'Una sedia', 'Sedia e tappetino', 'Elastico o manubri'] },
   pain: { q: () => "C'è qualche zona del corpo che ti dà fastidio o che vuoi tenere d'occhio?", quick: ['Nessuna', 'Ginocchia', 'Schiena bassa', 'Spalle'] },
-  time: { q: () => 'Ultima cosa: quando preferisci allenarti?', quick: ['Mattina', 'Pausa pranzo', 'Sera'] },
+  time: { q: () => 'Quando preferisci allenarti?', quick: ['Mattina', 'Pausa pranzo', 'Sera'] },
+  why: { q: () => 'Ultima cosa, la più importante: perché vuoi iniziare? Scrivilo a parole tue.', quick: ['Per avere più energia', 'Per stare dietro ai miei figli', 'Preferisco non dirlo'] },
 };
 
 function parseExperience(s: string): Experience {
@@ -149,10 +151,10 @@ function scripted(messages: ChatMessage[], card: Partial<Card> & { caution?: boo
   } else if (answers[0] && card.name && answers[0].toLowerCase().replace(/[^a-zà-ù ]/g, '').includes(card.name.toLowerCase()) && answers[0].split(/\s+/).length <= 4) answers = answers.slice(1);
   const steps: Step[] = ['goal', 'experience'];
   if (answers[1] && runsAlready(answers[1])) steps.push('km', 'longest', 'pace');
-  steps.push('daysMinutes', 'equipment', 'pain', 'time');
+  steps.push('daysMinutes', 'equipment', 'pain', 'time', 'why');
   if (answers.length < steps.length) {
     const s = QUESTIONS[steps[answers.length]];
-    return { reply: s.q(card.name ?? ''), done: false, quickReplies: s.quick };
+    return { reply: s.q(card.name ?? ''), done: false, quickReplies: s.quick, askWhy: steps[answers.length] === 'why' };
   }
   const a = Object.fromEntries(steps.map((s, i) => [s, answers[i] ?? ''])) as Record<Step, string>;
   const km = nums(a.km ?? '');
@@ -165,6 +167,7 @@ function scripted(messages: ChatMessage[], card: Partial<Card> & { caution?: boo
   const profile = normalizeProfile(card, {
     goal: a.goal, experience: parseExperience(a.experience), runner, ...parseDaysMinutes(a.daysMinutes),
     equipment: parseEquipment(a.equipment), limitations: parseZones(a.pain), preferredTime: parseTime(a.time),
+    why: /preferisco non|non (lo )?so|nessun/i.test(a.why ?? '') ? null : a.why,
   });
   return { reply: finalReply(profile), done: true, profile };
 }
@@ -187,11 +190,13 @@ const AiProfile = z.object({
   equipment: z.array(z.string()),
   limitations: z.array(z.string()),
   preferredTime: z.enum(['mattina', 'pausa_pranzo', 'sera']),
+  why: z.string().max(300).nullish(),
 });
 const AiReply = z.object({
   reply: z.string().min(1).max(600),
   done: z.boolean(),
   quickReplies: z.array(z.string().max(40)).max(4).nullish(),
+  askWhy: z.boolean().nullish(),
   profile: AiProfile.nullish(),
 });
 
@@ -211,7 +216,7 @@ export async function onboardingStep(messages: ChatMessage[], card: Partial<Card
       return { reply: ai.reply, done: true, profile };
     }
     if (ai.done) return scripted(messages, card);
-    return { reply: ai.reply, done: false, quickReplies: (ai.quickReplies ?? []).slice(0, 4) };
+    return { reply: ai.reply, done: false, quickReplies: (ai.quickReplies ?? []).slice(0, 4), askWhy: !!ai.askWhy };
   } catch (err) {
     console.warn(`[onboarding] copione di riserva: ${(err as Error).message}`);
     return scripted(messages, card);

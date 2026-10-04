@@ -25,10 +25,11 @@ export const CardSchema = z.object({
   sleepHours: z.coerce.number().min(2).max(14).default(7),
   health: HealthSchema.default({} as never),
 });
+
 export type Card = z.infer<typeof CardSchema>;
 
 /** Per PATCH: tutti i campi facoltativi (il peso vuoto non cambia il peso salvato). */
-export const CardPatchSchema = CardSchema.partial().extend({ health: HealthSchema.partial().optional() });
+export const CardPatchSchema = CardSchema.partial().extend({ health: HealthSchema.partial().optional(), why: z.string().trim().max(200).nullish() });
 
 const CAUTION_KEYS = ['heartCondition', 'chestPain', 'dizziness', 'medication', 'pregnancy', 'otherCondition'] as const;
 

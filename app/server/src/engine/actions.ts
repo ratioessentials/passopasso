@@ -1,14 +1,15 @@
 import { content, type BodyZone, type RedFlag } from '../content.js';
 import { db } from '../db.js';
 import { addDays, today, weekStart } from '../dates.js';
-import { clampIntensity, generateSession } from './builder.js';
+import { buildRuleItems, clampIntensity, generateSession } from './builder.js';
+import { derive } from './person.js';
 import { adaptRun, segmentsMinutes } from './run.js';
 import { testPassed, testSnoozed } from './tests.js';
 import { readinessLine } from './health.js';
 import {
   consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, replanFrom, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
 } from './store.js';
-import type { Feedback, Profile, SessionRow, UserRow } from './types.js';
+import type { Feedback, Profile, Segment, SessionRow, UserRow } from './types.js';
 
 // ---------- Check-in ----------
 
@@ -55,6 +56,44 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
   });
   const updated = db.prepare('SELECT * FROM sessions WHERE id = ?').get(row.id) as SessionRow;
   return { status: 'ok', session: toSession(updated, user) };
+}
+
+// ---------- Dieci minuti invece di niente ----------
+
+export const SHORT_SUFFIX = '~ridotta';
+
+/** La seduta ridotta da 10 minuti (a regole, mai AI): virtuale finché non viene completata. */
+export function shortSession(user: UserRow, profile: Profile, row: SessionRow) {
+  const base = toSession(row, user);
+  const items = buildRuleItems({
+    level: row.level, profile, minutes: 10, intensity: Math.min(user.intensity, 0.9), seed: `${row.id}:ridotta`, easy: true,
+    template: { minutes: 10, blocks: [{ category: 'riscaldamento', count: 1 }, { category: 'forza', count: 2 }, { category: 'defaticamento', count: 1 }] },
+  });
+  const segments: Segment[] | null = row.segments ? [
+    { label: 'Riscaldamento', minutes: 2, motion: 'marcia', rpe: 2 },
+    { label: 'Facile', minutes: 6, motion: derive(profile).impactAllowed ? 'corsetta' : 'camminata_veloce', rpe: 3 },
+    { label: 'Defaticamento', minutes: 2, motion: 'marcia', rpe: 2 },
+  ] : null;
+  return {
+    ...base,
+    id: `${row.id}${SHORT_SUFFIX}`,
+    kind: 'ridotta' as const,
+    status: 'planned' as const,
+    minutes: 10,
+    intensity: Math.min(user.intensity, 0.9),
+    title: '10 minuti invece di niente',
+    reason: 'Bastano dieci minuti per non perdere il filo. Conta come una seduta fatta.',
+    items: segments ? [] : items.filter((i) => content.exercise(i.exerciseId)).map((i) => ({ ...i, exercise: content.exercise(i.exerciseId)! })),
+    segments,
+    bonusPoints: 0,
+  };
+}
+
+/** Completare la ridotta: la seduta originale diventa "ridotta" e fatta (conta per la costanza). */
+export function completeShort(user: UserRow, profile: Profile, row: SessionRow, feedback: Feedback) {
+  const s = shortSession(user, profile, row);
+  updateSession(row.id, { kind: 'ridotta', minutes: 10, title: s.title, reason: s.reason, items: s.items.map(({ exercise: _e, ...i }) => i), segments: s.segments, checkin: null });
+  return complete(getUser(user.id)!, { ...row, kind: 'ridotta' }, feedback);
 }
 
 // ---------- Skip ----------

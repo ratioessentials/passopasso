@@ -30,6 +30,7 @@ const Changes = z.object({
   equipmentAdd: z.array(z.string()).nullish(),
   equipmentRemove: z.array(z.string()).nullish(),
   goal: z.string().max(160).nullish(),
+  why: z.string().max(200).nullish(),
   healthAdd: z.array(z.string()).nullish(),
   healthRemove: z.array(z.string()).nullish(),
   healthNote: z.string().max(200).nullish(),
@@ -78,6 +79,8 @@ export function applyChanges(user: UserRow, ch: Changes, slots: FreeSlot[] | nul
   if (eqRemove.length) { next.equipment = next.equipment.filter((e) => !eqRemove.includes(e)); applied.push(`Attrezzatura: − ${joinIt(eqRemove)}`); }
   const goal = ch.goal?.trim();
   if (goal && goal.length >= 3 && normalize(goal) !== normalize(profile.goal)) { next.goal = goal; applied.push(`Nuovo obiettivo: ${goal}`); }
+  const why = ch.why?.trim();
+  if (why && why.length >= 3 && normalize(why) !== normalize(profile.why ?? '')) { next.why = why; applied.push('Il tuo perché è aggiornato'); }
 
   // scheda: salute, sonno, lavoro
   const H_LABEL: Record<string, string> = {

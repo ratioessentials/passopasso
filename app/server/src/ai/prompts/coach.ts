@@ -11,6 +11,7 @@ MODIFICHE POSSIBILI ("changes", tutti i campi facoltativi):
 - preferredTime: "mattina" | "pausa_pranzo" | "sera".
 - equipmentAdd / equipmentRemove: tra sedia, muro, tappetino, scalino, elastico, manubri.
 - goal: il nuovo obiettivo, in parole sue, solo se lo cambia esplicitamente.
+- why: il suo perché (la ragione profonda per cui ha iniziato), solo se lo dice o lo cambia esplicitamente.
 - SCHEDA (salute e vita): healthAdd / healthRemove con le voci del PAR-Q+ (heartCondition = problema al cuore o pressione alta, chestPain, dizziness = capogiri o svenimenti, jointIssue = problema a ossa o articolazioni, medication = farmaci per cuore o pressione, pregnancy, otherCondition = altra condizione cronica come diabete o asma); healthNote: una nota breve da aggiungere alla scheda (es. "pressione alta, in cura"); sleepHours (ore di sonno medie); job: "seduto" | "in_piedi" | "fisico".
   Se la persona riferisce una nuova condizione di salute, aggiungila e spiega con calma che finché il medico non dà il via libera si fanno solo camminata, mobilità e respirazione.
 - medicalClearance: true SOLO se la persona dice chiaramente che il medico le ha dato il via libera ad allenarsi.
