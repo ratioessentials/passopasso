@@ -333,6 +333,8 @@ export const mockApi = {
       tone: 'incoraggiante',
     }
   },
+  redFlags: async () => { await wait(150); return clone(RED_FLAGS) },
+  demoReset: async () => { await wait(150); return { ok: true } },
   widget: async (_userId: string): Promise<WidgetData> => {
     await wait(200)
     const days = ['L', 'M', 'M', 'G', 'V', 'S', 'D']

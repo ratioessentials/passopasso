@@ -93,11 +93,12 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  overflow: clip;
   transform: translateZ(0);
 }
 
-.safe-top { padding-top: max(env(safe-area-inset-top), 12px); }
-.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 10px); }
+.safe-top { padding-top: max(env(safe-area-inset-top), var(--frame-top, 12px)); }
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), var(--frame-bottom, 10px)); }
 
 @media (prefers-reduced-motion: reduce) {
   .shimmer { animation: none; }

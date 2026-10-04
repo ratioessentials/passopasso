@@ -56,7 +56,7 @@ export default function FeedbackScreen() {
             <motion.div key="ask" exit={{ opacity: 0, y: -20 }} className="flex flex-1 flex-col pt-10">
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring.bouncy} className="text-6xl">🎉</motion.div>
               <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.gentle, delay: 0.1 }} className="font-title mt-4 text-[38px] leading-[1.05]">Seduta finita.<br />Bel lavoro{me?.profile?.name ? `, ${me.profile.name}` : ''}.</motion.h1>
-              {minutes && <p className="mt-2 text-white/85">{minutes} minuti di movimento in più.</p>}
+              {minutes && <p className="mt-2 text-white/85">{minutes === 1 ? 'Un minuto' : `${minutes} minuti`} di movimento in più.</p>}
               <p className="mt-8 text-lg font-semibold">Com'è andata?</p>
               <p className="text-sm text-white/75">Mi serve per regolare la prossima.</p>
               <div className="mt-5 space-y-3">

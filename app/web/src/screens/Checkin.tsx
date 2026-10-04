@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { api } from '../api/client'
 import type { BodyZone, RedFlag, Session } from '../api/types'
@@ -32,6 +32,8 @@ export default function Checkin() {
   const [pain, setPain] = useState<BodyZone[]>([])
   const [flags, setFlags] = useState<string[]>([])
   const [phase, setPhase] = useState<Phase>({ k: 'form' })
+  const [redFlags, setRedFlags] = useState<RedFlag[]>(RED_FLAGS)
+  useEffect(() => { api.redFlags().then((r) => { if (Array.isArray(r) && r.length) setRedFlags(r) }).catch(() => {}) }, [])
 
   const mins = minutes ?? nearest(session?.minutes ?? me?.profile?.minutesPerSession ?? 20)
 
@@ -105,7 +107,7 @@ export default function Checkin() {
               <h3 className="font-title mb-1 text-lg">Oggi hai…?</h3>
               <p className="mb-3 text-sm text-inchiostro/60">Spunta solo se ti riguarda. La tua sicurezza viene prima.</p>
               <div className="space-y-2">
-                {RED_FLAGS.map((f) => {
+                {redFlags.map((f) => {
                   const on = flags.includes(f.id)
                   return (
                     <motion.button key={f.id} whileTap={press} onClick={() => setFlags(on ? flags.filter((x) => x !== f.id) : [...flags, f.id])}

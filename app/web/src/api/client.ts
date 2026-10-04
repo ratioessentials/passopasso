@@ -1,6 +1,6 @@
 import type {
   ChatMessage, CheckinRequest, CheckinResponse, CompleteResponse, Feedback, Level, LevelsResponse,
-  MealFeedback, Me, OnboardingReply, Progress, Session, SkipReason, SkipResponse, Week, WidgetData,
+  MealFeedback, Me, OnboardingReply, Progress, RedFlag, Session, SkipReason, SkipResponse, Week, WidgetData,
 } from './types'
 import { mockApi } from './mock'
 
@@ -72,6 +72,8 @@ const realApi = {
   progress: () => request<Progress>('GET', '/progress'),
   habitCheckin: () => request<{ doneDays: number }>('POST', '/habit/checkin'),
   mealPhoto: (imageBase64: string, mimeType: string) => request<MealFeedback>('POST', '/meals/photo', { imageBase64, mimeType }),
+  redFlags: () => request<RedFlag[]>('GET', '/red-flags'),
+  demoReset: () => request<unknown>('POST', '/demo/reset'),
   widget: (userId: string) => request<WidgetData>('GET', `/widget/${encodeURIComponent(userId)}`),
 }
 

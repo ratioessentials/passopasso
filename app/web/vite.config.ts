@@ -11,7 +11,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['icons/*.svg'],
+      includeAssets: ['icons/*.svg', 'pwa/*.png'],
       manifest: {
         name: 'PassoPasso',
         short_name: 'PassoPasso',
@@ -24,6 +24,9 @@ export default defineConfig({
         theme_color: '#2C6975',
         background_color: '#E0ECDE',
         icons: [
+          { src: '/pwa/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/pwa/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/pwa/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           { src: '/icons/level-1.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
         ],
       },
@@ -37,7 +40,7 @@ export default defineConfig({
     port: 5180,
     host: true,
     allowedHosts: true,
-    proxy: { '/api': 'http://localhost:3210' },
+    proxy: { '/api': process.env.API_TARGET ?? 'http://localhost:3210' },
   },
   preview: { port: 5180 },
   build: { outDir: 'dist' },

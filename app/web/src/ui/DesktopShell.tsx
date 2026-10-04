@@ -42,7 +42,7 @@ export function DesktopShell({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="relative flex h-full w-full items-center justify-center overflow-hidden"
+      className="relative flex h-full w-full items-center justify-center overflow-clip"
       style={{ background: 'linear-gradient(170deg, #1D4A5A 0%, #2C6975 30%, #68B2A0 72%, #CDE0C9 100%)' }}
       onMouseMove={(e) => {
         mx.set((e.clientX / window.innerWidth) * 2 - 1)
@@ -91,7 +91,7 @@ export function DesktopShell({ children }: { children: ReactNode }) {
             style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}
             className="relative rounded-[62px] bg-[#0e1a1f] p-[13px] shadow-[0_60px_120px_-30px_rgb(10_30_36/.75),0_0_0_2px_#33464d,inset_0_0_0_2px_#1a2a30]"
           >
-            <div className="relative h-[844px] w-[390px] overflow-hidden rounded-[50px] bg-salvia-chiaro" style={{ transform: 'translateZ(0)' }}>
+            <div className="relative h-[844px] w-[390px] overflow-clip rounded-[50px] bg-salvia-chiaro" style={{ transform: 'translateZ(0)', ['--frame-top' as string]: '54px', ['--frame-bottom' as string]: '22px' }}>
               {children}
               {/* Dynamic Island */}
               <div className="pointer-events-none absolute left-1/2 top-[11px] z-[100] h-[35px] w-[124px] -translate-x-1/2 rounded-full bg-black" />

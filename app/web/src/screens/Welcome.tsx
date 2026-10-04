@@ -27,6 +27,8 @@ export default function Welcome() {
   async function demo() {
     setBusy('demo')
     setUserId('demo')
+    // ?reset nell'indirizzo riporta il demo allo stato iniziale (prima di registrare o presentare)
+    if (new URLSearchParams(window.location.search).has('reset')) await api.demoReset().catch(() => {})
     await loadMe()
     nav('/', { replace: true })
   }

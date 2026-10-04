@@ -70,7 +70,6 @@ function Celebrate({ lu, onClose }: { lu: LevelUp; onClose: () => void }) {
   const [a1, a2] = LEVEL_COLORS[lu.from]
   const [b1, b2] = LEVEL_COLORS[lu.to]
   const info = levelInfo(lu.to)
-  const title = `Livello ${lu.to}: ${info.name}`
 
   useEffect(() => {
     const t1 = setTimeout(() => setStep(1), 700)
@@ -116,12 +115,15 @@ function Celebrate({ lu, onClose }: { lu: LevelUp; onClose: () => void }) {
       </div>
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: step >= 2 ? 1 : 0 }} className="relative text-sm font-bold uppercase tracking-[0.2em] text-white/85">Nuovo livello</motion.div>
-      <h1 className="font-title relative mt-2 text-[40px] leading-[1.05]">
-        {title.split('').map((ch, i) => (
-          <motion.span key={i} className="inline-block whitespace-pre" initial={{ opacity: 0, y: 24, rotate: 10 }} animate={step >= 2 ? { opacity: 1, y: 0, rotate: 0 } : {}} transition={{ ...spring.bouncy, delay: 0.3 + i * 0.03 }}>
-            {ch}
-          </motion.span>
-        ))}
+      <h1 className="font-title relative mt-2 leading-[1.05]">
+        <motion.span className="block text-[26px] text-white/90" initial={{ opacity: 0, y: 16 }} animate={step >= 2 ? { opacity: 1, y: 0 } : {}} transition={{ ...spring.gentle, delay: 0.2 }}>Livello {lu.to}</motion.span>
+        <span className="block text-[46px]">
+          {info.name.split('').map((ch, i) => (
+            <motion.span key={i} className="inline-block" initial={{ opacity: 0, y: 24, rotate: 10 }} animate={step >= 2 ? { opacity: 1, y: 0, rotate: 0 } : {}} transition={{ ...spring.bouncy, delay: 0.35 + i * 0.04 }}>
+              {ch}
+            </motion.span>
+          ))}
+        </span>
       </h1>
       <motion.p initial={{ opacity: 0, y: 10 }} animate={step >= 2 ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.1 }} className="relative mt-3 text-lg text-white/90">
         Adesso si va di {info.verb.toLowerCase()}. Te lo sei guadagnato, passo dopo passo.
