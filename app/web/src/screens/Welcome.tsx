@@ -38,7 +38,8 @@ export default function Welcome() {
 
   async function demo() {
     setBusy('demo')
-    setUserId('demo')
+    // ?user=demo-runner carica Luca, il corridore (per la domanda "e se sono già allenato?")
+    setUserId(new URLSearchParams(window.location.search).get('user') || 'demo')
     // ?reset nell'indirizzo riporta il demo allo stato iniziale (prima di registrare o presentare)
     if (new URLSearchParams(window.location.search).has('reset')) await api.demoReset().catch(() => {})
     await loadMe()
