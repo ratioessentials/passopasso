@@ -117,6 +117,31 @@ Accetta il passaggio al livello proposto. → `GET /api/me` aggiornato.
 ### `POST /api/demo/reset`
 Riporta l'utente `demo` allo stato iniziale (da usare prima di registrare o presentare). Il demo si resetta anche da solo dopo 30 minuti senza modifiche.
 
+### `POST /api/coach/message`
+Chat libera con il coach **dopo** l'onboarding (aggiornamenti su salute, lavoro, tempo, obiettivi). Stateless come l'onboarding: il client manda la cronologia (ultimi 20 messaggi). Il server passa all'AI anche profilo, livello, settimana e, se collegato, gli spazi liberi del calendario.
+```json
+// richiesta
+{ "messages": [ { "role": "user", "content": "Questa settimana lavoro di sera e ho il ginocchio un po' gonfio" } ] }
+// risposta
+{
+  "reply": "Capito. Sposto le sedute al mattino e per questa settimana tolgo gli esercizi sulle ginocchia.",
+  "quickReplies": ["Va bene", "Preferisco la pausa pranzo"],
+  "applied": [ "Momento preferito: mattina", "Da tenere d'occhio: ginocchia", "Settimana riorganizzata" ],   // cosa è cambiato davvero, in parole; [] se niente
+  "redFlag": null | { /* RedFlag, se il messaggio descrive un sintomo da bandiera rossa: l'AI non viene chiamata per il piano */ }
+}
+```
+Le modifiche possibili (decise dall'AI, applicate dal server con validazione zod): `limitations`, `daysPerWeek`, `minutesPerSession`, `preferredTime`, `equipment`, `goal`, ripianificazione della settimana. Il controllo delle bandiere rosse sul testo è deterministico (parole chiave di `red_flags.json`) e avviene prima dell'AI.
+
+### `POST /api/calendar/connect`
+Collega un calendario tramite il suo **link iCal** (Google Calendar: Impostazioni → il calendario → "Indirizzo segreto in formato iCal"; Apple/Outlook: link di condivisione pubblica .ics).
+```json
+// richiesta
+{ "icsUrl": "https://calendar.google.com/calendar/ical/.../basic.ics" }
+// risposta
+{ "ok": true, "eventsNext7Days": 14, "freeSlots": [ { "date": "2026-10-05", "start": "07:00", "end": "08:30" }, ... ], "suggestion": "Vedo spazio lunedì, mercoledì e venerdì mattina: sposto lì le sedute?" }
+```
+Il server salva l'URL nel profilo (`calendarUrl`), lo rilegge a ogni pianificazione (cache 15 min) e cerca spazi liberi di almeno `minutesPerSession + 15` tra le 6:30 e le 22:00. `DELETE /api/calendar` scollega. Gli eventi non vengono salvati né mandati all'AI per intero: solo gli spazi liberi.
+
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 ```json

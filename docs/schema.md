@@ -24,8 +24,16 @@ collo | spalle | schiena_alta | schiena_bassa | petto | braccia | polsi | anche 
   "commonMistakes": ["Ginocchia che cadono verso l'interno"],
   "regression": "squat_sedia_assistito",   // id oppure null
   "progression": "squat_libero",           // id oppure null
-  "formCheck": false                       // true solo per gli esercizi supportati da MediaPipe (squat)
+  "formCheck": false,                      // true solo per gli esercizi supportati da MediaPipe (squat)
+  "motion": "squat"                        // archetipo di movimento per l'omino animato (vedi sotto); null se nessuno
 }
+```
+
+### Archetipi di movimento (`motion`)
+L'omino del brand viene animato in SVG per questi movimenti; ogni esercizio ne indica uno (o `null` → pittogramma fermo).
+```
+marcia | camminata_veloce | corsetta | corsa | scatto | squat | affondo | ponte | plank | flessioni_muro |
+polpacci | rotazioni_braccia | rotazioni_anche | allungamento | respirazione | jumping_jack | step
 ```
 
 ## Livello (`content/program.json` → `levels[]`)
