@@ -299,6 +299,20 @@ if (tests) {
   if (m1 && (!Array.isArray(m1.scale) || m1.scale.length !== 11 || !isInt(m1.target, 1, 10))) err('tests.json[marcia_1min]', 'scala 0-10 e target obbligatori');
 }
 
+// --- science.json ---
+const science = load('science.json');
+if (science) {
+  if (!Array.isArray(science) || science.length < 8) err('science.json', 'servono almeno 8 voci');
+  else {
+    uniqueIds('science.json', science);
+    for (const x of science) {
+      const w = `science.json[${x.id}]`;
+      for (const k of ['claim', 'source', 'inApp']) if (!isStr(x[k])) err(w, `${k} mancante`);
+      if (!/^https:\/\//.test(x.url ?? '')) err(w, 'url https obbligatorio');
+    }
+  }
+}
+
 // --- red_flags.json ---
 const flags = load('red_flags.json');
 const allKeywords = [];

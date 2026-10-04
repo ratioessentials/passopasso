@@ -1,0 +1,79 @@
+[
+  {
+    "id": "ripartenza",
+    "claim": "Premiare chi riprende dopo una pausa funziona più che pretendere di non saltare mai",
+    "source": "Milkman et al., Nature 2021 (megastudio su oltre 60.000 iscritti in palestra)",
+    "url": "https://www.nature.com/articles/s41586-021-04128-4",
+    "inApp": "La seduta di ripartenza con +10 punti dopo una seduta saltata"
+  },
+  {
+    "id": "costanza_non_streak",
+    "claim": "Saltare un giorno non rompe un'abitudine: conta la regolarità nel tempo, non la serie perfetta",
+    "source": "Lally et al., European Journal of Social Psychology 2010",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674",
+    "inApp": "Il punteggio di costanza su 4 settimane al posto della streak che si azzera"
+  },
+  {
+    "id": "abitudini_66_giorni",
+    "claim": "Un'abitudine nuova diventa automatica in circa 66 giorni, con grandi differenze tra persone",
+    "source": "Lally et al., European Journal of Social Psychology 2010",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674",
+    "inApp": "Un percorso di circa 12 settimane e un'abitudine alimentare alla volta"
+  },
+  {
+    "id": "parq",
+    "claim": "Prima di aumentare l'attività fisica servono poche domande di salute, le stesse dei professionisti",
+    "source": "PAR-Q+ (Physical Activity Readiness Questionnaire for Everyone)",
+    "url": "https://eparmedx.com/",
+    "inApp": "La scheda della salute nell'onboarding e la modalità prudenza"
+  },
+  {
+    "id": "bandiere_rosse",
+    "claim": "Alcuni sintomi richiedono un medico prima di qualsiasi allenamento: lì l'AI non decide",
+    "source": "ACSM, screening prima dell'attività fisica (Riebe et al., 2015)",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/26473759/",
+    "inApp": "Le bandiere rosse bloccano la seduta senza chiamare l'AI, con il 112 per i casi urgenti"
+  },
+  {
+    "id": "ogni_movimento_conta",
+    "claim": "Ogni movimento conta: meglio poco e spesso che niente, e si sale per gradi",
+    "source": "OMS, Linee guida su attività fisica e sedentarietà 2020",
+    "url": "https://www.who.int/publications/i/item/9789240015128",
+    "inApp": "Si parte da 20 minuti di camminata e si passa di livello per prontezza, non per calendario"
+  },
+  {
+    "id": "cammina_corri",
+    "claim": "Alternare camminata e corsa porta un principiante a correre di fila in poche settimane, senza farsi male",
+    "source": "NHS Couch to 5K",
+    "url": "https://www.nhs.uk/better-health/get-active/get-running-with-couch-to-5k/",
+    "inApp": "I livelli 3 e 4 del percorso corsa: 1 minuto di corsa e 2 di camminata, poi 2 e 1"
+  },
+  {
+    "id": "progressione_graduale",
+    "claim": "Aumentare il volume di corsa troppo in fretta da una settimana all'altra si associa a più infortuni",
+    "source": "Nielsen et al., Journal of Orthopaedic & Sports Physical Therapy 2014",
+    "url": "https://www.jospt.org/doi/10.2519/jospt.2014.5164",
+    "inApp": "Il lungo cresce di 5 minuti a settimana, mai più del 10%, con una settimana di scarico ogni quattro"
+  },
+  {
+    "id": "niente_calorie",
+    "claim": "Contare le calorie può peggiorare il rapporto con il cibo nelle persone più fragili",
+    "source": "Levinson et al., Eating Behaviors 2017",
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S1471015317301484",
+    "inApp": "Alimentazione per abitudini e foto del piatto con feedback qualitativo: mai numeri"
+  },
+  {
+    "id": "piatto_tre_parti",
+    "claim": "Una guida visiva semplice aiuta a mangiare in modo equilibrato senza pesare nulla",
+    "source": "Harvard T.H. Chan School of Public Health, Healthy Eating Plate",
+    "url": "https://www.hsph.harvard.edu/nutritionsource/healthy-eating-plate/",
+    "inApp": "Il piatto in tre parti animato nella risposta alla foto"
+  },
+  {
+    "id": "test_funzionali",
+    "claim": "Alzarsi dalla sedia per 30 secondi misura in modo affidabile la forza delle gambe che serve ogni giorno",
+    "source": "Jones, Rikli & Beam, Research Quarterly for Exercise and Sport 1999",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/10380242/",
+    "inApp": "Il test di prontezza prima del passaggio di livello"
+  }
+]
