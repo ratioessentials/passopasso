@@ -2,8 +2,9 @@ import { content, type BodyZone, type RedFlag } from '../content.js';
 import { db } from '../db.js';
 import { addDays, today, weekStart } from '../dates.js';
 import { clampIntensity, generateSession } from './builder.js';
+import { adaptRun, segmentsMinutes } from './run.js';
 import {
-  consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
+  consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, replanFrom, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
 } from './store.js';
 import type { Feedback, Profile, SessionRow, UserRow } from './types.js';
 
@@ -23,7 +24,16 @@ export async function checkin(user: UserRow, profile: Profile, row: SessionRow, 
     updateSession(row.id, { status: 'blocked', checkin: JSON.stringify(input) });
     return { status: 'blocked', redFlag };
   }
-  // 2. Seduta su misura (AI con esercizi filtrati, o regole)
+  // 2a. Corsa a segmenti: l'AI adatta i segmenti (10% e scarico restano deterministici)
+  if (row.segments && row.kind === 'normale') {
+    const run = await adaptRun(row, profile, input, user.intensity);
+    updateSession(row.id, {
+      status: 'planned', minutes: Math.round(segmentsMinutes(run.segments)), intensity: run.intensity, title: run.title,
+      reason: run.reason, segments: run.segments, source: run.source, checkin: JSON.stringify(input),
+    });
+    return { status: 'ok', session: toSession(db.prepare('SELECT * FROM sessions WHERE id = ?').get(row.id) as SessionRow, user) };
+  }
+  // 2b. Seduta su misura (AI con esercizi filtrati, o regole)
   const restart = row.kind === 'ripartenza';
   const r = content.program().restartSession;
   const draft = await generateSession({
@@ -65,7 +75,7 @@ export function skip(user: UserRow, profile: Profile, row: SessionRow, reason: s
   if (upcoming) {
     updateSession(upcoming.id, {
       kind: 'ripartenza', bonus_points: draft.bonus_points, minutes: draft.minutes, intensity: draft.intensity,
-      title: draft.title, reason: draft.reason, items: draft.items, source: 'rules', recovers: row.id, checkin: null,
+      title: draft.title, reason: draft.reason, items: draft.items, source: 'rules', recovers: row.id, checkin: null, segments: null, run_type: null,
     });
     restartId = upcoming.id;
   } else {
@@ -133,11 +143,12 @@ export function acceptLevel(user: UserRow): boolean {
     db.prepare('UPDATE users SET level = ?, level_since = ?, intensity = 1.0 WHERE id = ?').run(next, t, user.id);
   })();
   const fresh = getUser(user.id)!;
-  // ripianifica le sedute ancora da fare al nuovo livello (oggi compreso, se non è già stata fatta)
-  const pending = (db.prepare("SELECT * FROM sessions WHERE user_id = ? AND status = 'planned' AND date >= ?").all(user.id, t) as SessionRow[]);
-  for (const s of pending) {
-    const d = ruleDraft(fresh, profile, s.date, { restart: s.kind === 'ripartenza' });
-    updateSession(s.id, { level: next, minutes: d.minutes, intensity: d.intensity, title: d.title, reason: d.reason, items: d.items, source: 'rules', checkin: null });
+  // ripianifica le sedute ancora da fare al nuovo livello (oggi compreso; da corsa 4 in su arriva la settimana da podista)
+  db.prepare("UPDATE sessions SET checkin = NULL WHERE user_id = ? AND status = 'planned' AND date >= ?").run(user.id, t);
+  replanFrom(fresh, profile, { pain: [] });
+  for (const s of db.prepare("SELECT * FROM sessions WHERE user_id = ? AND status = 'planned' AND kind = 'ripartenza' AND date >= ?").all(user.id, t) as SessionRow[]) {
+    const d = ruleDraft(fresh, profile, s.date, { restart: true });
+    updateSession(s.id, { level: next, minutes: d.minutes, intensity: d.intensity, title: d.title, reason: d.reason, items: d.items });
   }
   evaluateWins(fresh);
   return true;

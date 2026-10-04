@@ -47,6 +47,11 @@ const migrations: string[] = [
    CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);`,
   // 2: scheda compilata prima della conversazione di onboarding
   `ALTER TABLE users ADD COLUMN draft TEXT;`,
+  // 3: corsa a segmenti e sedute importate (Strava, Apple Salute)
+  `ALTER TABLE sessions ADD COLUMN segments TEXT;
+   ALTER TABLE sessions ADD COLUMN run_type TEXT;
+   ALTER TABLE sessions ADD COLUMN origin TEXT;
+   ALTER TABLE sessions ADD COLUMN external_id TEXT;`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');

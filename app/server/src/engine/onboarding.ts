@@ -14,6 +14,12 @@ const TRACK_NAME: Record<Track, string> = { corsa: 'Corsa', forza: 'Forza', mobi
 /** L'obiettivo decide il percorso (in dubbio: corsa). */
 export function trackFromGoal(goal: string): Track {
   const t = goal.toLowerCase();
+  // prima le parole chiave del percorso (content/program.json → tracks.<id>.forGoals): mobilità e forza battono corsa
+  const tracks = content.tracks();
+  for (const id of ['mobilita', 'forza', 'corsa'] as Track[]) {
+    const words = (tracks[id]?.forGoals as string[] | undefined) ?? [];
+    if (words.some((w) => w.length >= 3 && t.includes(w.toLowerCase()))) return id;
+  }
   if (/schiena|postur|rigid|collo|cervical|seduto|scrivania|mobilit|flessibil|sciolt/.test(t)) return 'mobilita';
   if (/forz|ton|muscol|sollev|braccia|gambe forti|pi[uù] fort|rassod/.test(t)) return 'forza';
   return 'corsa';

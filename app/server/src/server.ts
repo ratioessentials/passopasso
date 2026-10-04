@@ -216,8 +216,11 @@ export async function buildServer() {
     const id = String(req.headers['x-user-id'] ?? '');
     if (id === DEMO_ID) seedDemo();
     const user = id ? getUser(id) : undefined;
-    const levels = content.program().levels;
-    return { levels, current: user?.level ?? 1 };
+    const profile = user ? profileOf(user) : null;
+    const track = profile?.track ?? 'corsa';
+    const levels = content.program().levels.map((l) => content.level(l.n, track));
+    const t = content.tracks()[track] ?? {};
+    return { levels, current: user?.level ?? 1, track: { id: track, name: t.name ?? track, tagline: t.tagline ?? null } };
   });
 
   app.get('/api/progress', async (req) => {

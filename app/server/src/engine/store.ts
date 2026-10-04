@@ -4,6 +4,7 @@ import { db } from '../db.js';
 import { addDays, diffDays, today, weekday, weekStart } from '../dates.js';
 import { buildRuleItems, ruleReason, ruleTitle } from './builder.js';
 import { derive } from './person.js';
+import { planRunWeek, runDraft, runLevel, runSessionsPerWeek, typeForDate } from './run.js';
 import type { DraftSession, Item, Profile, Session, SessionRow, UserRow } from './types.js';
 
 export const rid = (prefix: string, n = 6) => `${prefix}_${crypto.randomBytes(8).toString('base64url').replace(/[-_]/g, '').slice(0, n).toLowerCase()}`;
@@ -35,14 +36,15 @@ export function allSessions(userId: string): SessionRow[] {
   return db.prepare('SELECT * FROM sessions WHERE user_id = ? ORDER BY date, rowid').all(userId) as SessionRow[];
 }
 
-export function insertSession(userId: string, s: Partial<Omit<SessionRow, 'items'>> & { date: string; level: number } & DraftSession): string {
+export function insertSession(userId: string, s: Partial<Omit<SessionRow, 'items' | 'segments'>> & { date: string; level: number } & DraftSession): string {
   const id = s.id ?? sessionId(s.date);
-  db.prepare(`INSERT INTO sessions (id, user_id, date, status, kind, level, minutes, intensity, title, reason, items, bonus_points, feedback, skip_reason, recovers, source, checkin, done_at)
-    VALUES (@id, @user_id, @date, @status, @kind, @level, @minutes, @intensity, @title, @reason, @items, @bonus_points, @feedback, @skip_reason, @recovers, @source, @checkin, @done_at)`).run({
+  db.prepare(`INSERT INTO sessions (id, user_id, date, status, kind, level, minutes, intensity, title, reason, items, bonus_points, feedback, skip_reason, recovers, source, checkin, done_at, segments, run_type, origin, external_id)
+    VALUES (@id, @user_id, @date, @status, @kind, @level, @minutes, @intensity, @title, @reason, @items, @bonus_points, @feedback, @skip_reason, @recovers, @source, @checkin, @done_at, @segments, @run_type, @origin, @external_id)`).run({
     id, user_id: userId, date: s.date, status: s.status ?? 'planned', kind: s.kind ?? 'normale', level: s.level,
     minutes: s.minutes, intensity: s.intensity, title: s.title, reason: s.reason, items: JSON.stringify(s.items),
     bonus_points: s.bonus_points ?? 0, feedback: s.feedback ?? null, skip_reason: s.skip_reason ?? null, recovers: s.recovers ?? null,
     source: s.source, checkin: s.checkin ?? null, done_at: s.done_at ?? null,
+    segments: s.segments ? JSON.stringify(s.segments) : null, run_type: s.run_type ?? null, origin: s.origin ?? null, external_id: s.external_id ?? null,
   });
   return id;
 }
@@ -50,7 +52,7 @@ export function insertSession(userId: string, s: Partial<Omit<SessionRow, 'items
 export function updateSession(id: string, fields: Partial<Record<keyof SessionRow, unknown>>) {
   const keys = Object.keys(fields);
   if (!keys.length) return;
-  const vals = keys.map((k) => { const v = (fields as Record<string, unknown>)[k]; return k === 'items' && typeof v !== 'string' ? JSON.stringify(v) : v; });
+  const vals = keys.map((k) => { const v = (fields as Record<string, unknown>)[k]; return (k === 'items' || k === 'segments') && v !== null && typeof v !== 'string' ? JSON.stringify(v) : v; });
   db.prepare(`UPDATE sessions SET ${keys.map((k) => `${k} = ?`).join(', ')} WHERE id = ?`).run(...vals, id);
 }
 
@@ -97,6 +99,7 @@ export function toSession(row: SessionRow, user?: UserRow): Session {
     intensity: row.intensity, title: row.title, reason: row.reason,
     items: items.filter((i) => content.exercise(i.exerciseId)).map((i) => ({ ...i, exercise: content.exercise(i.exerciseId)! })),
     bonusPoints: row.bonus_points, feedback: row.feedback, source: row.source,
+    segments: row.segments ? JSON.parse(row.segments) : null, runType: row.run_type, origin: row.origin,
   };
 }
 
@@ -105,12 +108,32 @@ export function toSession(row: SessionRow, user?: UserRow): Session {
 const PATTERNS: Record<number, number[]> = { 1: [2], 2: [1, 4], 3: [0, 2, 4], 4: [0, 1, 3, 5], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
 
 export function sessionsPerWeek(user: UserRow, profile: Profile) {
+  if (runLevel(profile, user.level)) return runSessionsPerWeek(profile, user.level);
   const lvl = content.level(user.level, profile.track);
   return Math.max(2, Math.min(profile.daysPerWeek || lvl.sessionsPerWeek, lvl.sessionsPerWeek));
 }
 
 /** Pianifica i giorni della settimana a partire da `from` (incluso), senza toccare quelli che hanno già una seduta. */
+/** La seduta pianificata per una data: settimana da podista (corsa 4-5) o seduta a regole. */
+export function draftFor(user: UserRow, profile: Profile, date: string, opts: { restart?: boolean; pain?: BodyZone[]; type?: string } = {}) {
+  if (!opts.restart && runLevel(profile, user.level)) {
+    const type = opts.type ?? typeForDate(user, profile, date);
+    if (type !== 'forza') return runDraft(user, profile, date, type);
+  }
+  return ruleDraft(user, profile, date, { restart: opts.restart, pain: opts.pain });
+}
+
 export function planWeek(user: UserRow, profile: Profile, ws: string, from: string, opts: { includeFrom?: boolean; prefer?: string[]; pain?: BodyZone[] } = {}): string[] {
+  if (runLevel(profile, user.level)) {
+    const busy = new Set(sessionsBetween(user.id, ws, addDays(ws, 6)).filter((s) => s.status !== 'skipped').map((s) => s.date));
+    const slots = planRunWeek(user, profile, ws, from, busy, { prefer: opts.prefer });
+    if (opts.includeFrom && !busy.has(from) && !slots.some((s) => s.date === from)) slots.unshift({ date: from, type: 'facile', draft: runDraft(user, profile, from, 'facile') });
+    db.transaction(() => {
+      for (const s of slots) insertSession(user.id, { date: s.date, level: user.level, ...(s.draft ?? ruleDraft(user, profile, s.date, { pain: opts.pain })) });
+      db.prepare('INSERT OR IGNORE INTO planned_weeks (user_id, week_start) VALUES (?, ?)').run(user.id, ws);
+    })();
+    return slots.map((s) => s.date).sort();
+  }
   const count = sessionsPerWeek(user, profile);
   const existing = sessionsBetween(user.id, ws, addDays(ws, 6)).filter((s) => s.status !== 'skipped');
   const busy = new Set(existing.map((s) => s.date));
@@ -287,8 +310,8 @@ export function replanFrom(user: UserRow, profile: Profile, opts: { prefer?: str
   const todayRow = (db.prepare("SELECT * FROM sessions WHERE user_id = ? AND date = ? AND status = 'planned' AND checkin IS NULL").get(user.id, t)) as SessionRow | undefined;
   const moveToday = !!opts.prefer?.length && !opts.prefer.includes(t);
   if (todayRow && !moveToday) {
-    const d = ruleDraft(user, profile, t, { restart: todayRow.kind === 'ripartenza', pain: opts.pain });
-    updateSession(todayRow.id, { minutes: d.minutes, title: d.title, reason: d.reason, items: d.items, source: 'rules' });
+    const d = draftFor(user, profile, t, { restart: todayRow.kind === 'ripartenza', pain: opts.pain });
+    updateSession(todayRow.id, { level: user.level, minutes: d.minutes, title: d.title, reason: d.reason, items: d.items, source: 'rules', segments: d.segments ?? null, run_type: d.run_type ?? null });
     out.push(t);
   }
   for (let w = 0; w < weeks; w++) {

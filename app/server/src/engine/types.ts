@@ -67,6 +67,10 @@ export interface SessionRow {
   source: 'rules' | 'ai';
   checkin: string | null;
   done_at: string | null;
+  segments: string | null;
+  run_type: string | null;
+  origin: string | null;
+  external_id: string | null;
 }
 
 export interface UserRow {
@@ -78,6 +82,15 @@ export interface UserRow {
   start_date: string | null;
   level_since: string | null;
   draft: string | null;
+}
+
+export interface Segment {
+  label: string;
+  minutes: number;
+  motion: string;
+  rpe: number;
+  repeat?: number;
+  recovery?: { label: string; minutes: number; motion: string; rpe: number };
 }
 
 export interface Session {
@@ -94,9 +107,14 @@ export interface Session {
   bonusPoints: number;
   feedback?: Feedback | null;
   source?: 'rules' | 'ai';
+  segments: Segment[] | null;
+  runType?: string | null;
+  origin?: string | null;
 }
 
 export interface DraftSession {
+  segments?: Segment[] | null;
+  run_type?: string | null;
   minutes: number;
   intensity: number;
   title: string;
