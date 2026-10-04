@@ -1,127 +1,147 @@
 # Script del video pitch
 
-Durata obiettivo: **3:30** (massimo 4:00). Circa 480 parole di voce fuori campo, ritmo calmo.
-Il voto pesa: Funzionalità 30%, Tecnica & IA 30%, Impatto 20%, Pitch 20%. Per questo la demo occupa metà del video.
+Durata: **3:55** (massimo 4:00). Circa 530 parole di voce, ritmo calmo.
+Il voto pesa così: Funzionalità 30%, Tecnica & IA 30%, Impatto 20%, Pitch 20%. Per questo la demo prende due minuti e la tecnica 40 secondi.
 
-Legenda: **VOCE** = cosa si dice. **SCHERMO** = cosa si vede.
+Come si usa:
+- **Voce:** registrala una battuta alla volta, in un file per battuta (`B01.wav`, `B02.wav`…). Così puoi rifare una battuta senza toccare le altre.
+- **Schermo:** ogni battuta dice cosa si vede. I ciak della registrazione dello schermo sono in [demo.md](demo.md).
+- Tempi a 2,3 parole al secondo. Se una battuta sfora, accelera lo schermo, non la voce.
 
----
-
-## 1. Gancio — 0:00-0:20
-
-**SCHERMO:** sfondo petrolio, compare l'icona livello 1 (omino che cammina). Testo grande: "7 su 10".
-
-**VOCE:**
-> Sette persone su dieci abbandonano un'app fitness entro cento giorni.
-> Non perché sono pigre. Perché l'app non era fatta per loro.
-
----
-
-## 2. Problema — 0:20-0:55
-
-**SCHERMO:** tre schede che entrano una dopo l'altra, con la fonte in piccolo.
-- "70% abbandona entro 100 giorni" — JMIR 2024, 525.824 utenti
-- "ChatGPT come trainer: completo solo al 41%" — TIME
-- "73%: il conteggio calorie ha contribuito al disturbo alimentare" — studio su MyFitnessPal
-
-**VOCE:**
-> Chi parte da zero trova piani rigidi, pensati per chi è già allenato.
-> Salti una seduta e la streak si azzera. L'app ti rimprovera. Ti senti in colpa, e molli.
-> Chiedi a un chatbot e ti dà un piano generico, senza farti una sola domanda.
-> E per mangiare meglio ti chiedono di contare le calorie, che per molti fa più male che bene.
+| Blocco | Battute | Tempo |
+|---|---|---|
+| Problema | B01-B03 | 0:00-0:30 |
+| Soluzione | B04-B06 | 0:30-0:55 |
+| Demo | B07-B17 | 0:55-3:02 |
+| Tecnologia e AI agents | B18-B20 | 3:02-3:42 |
+| Chiusura | B21 | 3:42-3:55 |
 
 ---
 
-## 3. Soluzione — 0:55-1:20
+## Problema
 
-**SCHERMO:** logotipo PassoPasso, tagline. Poi le 5 icone in fila, da camminata a sprint, che si animano una dopo l'altra.
+**B01 · 0:00-0:08 · 8 s**
+> Pensa a Giulia. Non fa sport da anni. A gennaio scarica un'app fitness.
 
-**VOCE:**
-> PassoPasso. Da zero a dove vuoi arrivare.
-> Un percorso in cinque livelli, in circa dodici settimane: dalla camminata alla corsa.
-> Si sale di livello quando sei pronto, non quando lo dice il calendario. E il percorso non si azzera mai.
+*Schermo:* sfondo petrolio, testo che compare: "Gennaio". Icona generica di un'app fitness.
+
+**B02 · 0:08-0:18 · 10 s**
+> Il piano è pensato per chi è già allenato. Salta una seduta, la streak si azzera, e arriva la notifica che la rimprovera.
+
+*Schermo:* una streak "🔥 12" che diventa "0". Una notifica finta: "Non ti sei allenata ieri!" (mockup, non un'app reale riconoscibile).
+
+**B03 · 0:18-0:30 · 12 s**
+> A marzo l'ha già disinstallata. E non è sola: sette persone su dieci abbandonano un'app fitness entro cento giorni.
+
+*Schermo:* "Marzo". Poi grande: **"70%"** e sotto "abbandona entro 100 giorni". Fonte in piccolo: *JMIR 2024, 525.824 utenti*.
+
+## Soluzione
+
+**B04 · 0:30-0:35 · 5 s**
+> Per questo abbiamo fatto PassoPasso. Da zero a dove vuoi arrivare.
+
+*Schermo:* logotipo PassoPasso (Archivo corsivo extrabold) con la tagline.
+
+**B05 · 0:35-0:48 · 13 s**
+> Cinque livelli in circa dodici settimane, dalla camminata allo sprint. Si sale quando sei pronto, non quando lo dice il calendario. E il percorso non si azzera mai.
+
+*Schermo:* `pitch/screens/mobile-percorso.png`, oppure le 5 icone in fila (`brand/icons/level-1..5.svg`) con i nomi: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia.
+
+**B06 · 0:48-0:55 · 7 s**
 > Anche l'icona dell'app cresce con te: l'omino passa dal camminare allo sprint.
 
+*Schermo:* le 5 icone che si sostituiscono una all'altra al centro, da livello 1 a livello 5.
+
+## Demo
+
+**B07 · 0:55-1:08 · 13 s** — onboarding
+> Si parte con una conversazione, non con un modulo. Poche domande: quanto tempo hai, cosa hai in casa, se qualcosa ti fa male. E l'AI costruisce la prima settimana.
+
+*Schermo:* ciak 1. Chat di onboarding accelerata, le risposte rapide toccate, poi la prima settimana.
+
+**B08 · 1:08-1:20 · 12 s** — check-in
+> Prima di ogni seduta, un check-in. Oggi Giulia ha quindici minuti, poca energia, e le ginocchia che fanno male.
+
+*Schermo:* ciak 2. Check-in: 15 minuti, energia bassa, tocco sulle ginocchia nella mappa del corpo.
+
+**B09 · 1:20-1:34 · 14 s** — seduta rigenerata
+> La seduta si rigenera, e il coach ti dice perché. Niente camminata oggi: al suo posto la marcia in casa. Gli esercizi vengono da un catalogo verificato. L'AI sceglie, non inventa.
+
+*Schermo:* il riquadro "Perché questa seduta" con la `reason` dell'AI ben leggibile (zoom se serve). Poi l'elenco degli esercizi con la marcia sul posto.
+
+**B10 · 1:34-1:42 · 8 s** — omino animato
+> E per ogni esercizio, un omino che ti mostra il movimento.
+
+*Schermo:* player con l'omino animato grande sopra le istruzioni (squat o marcia).
+
+> *Alternativa se c'è tempo (+6 s): "E sullo squat, la fotocamera controlla la tua forma." Schermo: `/formcheck` con lo scheletro sovrapposto. In quel caso accorcia B13.*
+
+**B11 · 1:42-1:58 · 16 s** — feedback e livello
+> Fine seduta: facile, giusto o duro, e la prossima si regola. Giulia è costante da settimane: è pronta per il livello tre. E l'omino nell'icona inizia a correre.
+
+*Schermo:* feedback "giusto", anello della costanza. Poi la proposta del livello 3 (Costruzione), tocco su "accetta", icona che passa dal livello 2 al 3.
+
+**B12 · 1:58-2:13 · 15 s** — coach
+> Quando la vita cambia, parli col coach. "Questa settimana lavoro di sera." Il piano si sistema da solo, e ti dice cosa ha cambiato.
+
+*Schermo:* ciak 3. Tab Coach, il messaggio scritto, la risposta, i chip verdi sotto: "Settimana riorganizzata" e gli altri `applied`.
+
+**B13 · 2:13-2:23 · 10 s** — calendario
+> E se colleghi il calendario, PassoPasso si adatta alla tua agenda: trova gli spazi liberi e ci sposta le sedute.
+
+*Schermo:* foglio "Collega il calendario", link iCal incollato, elenco degli spazi liberi, tocco su "Sì, sposta".
+
+**B14 · 2:23-2:37 · 14 s** — seduta saltata
+> Salti una seduta? Capita. La settimana si riorganizza, e chi riparte prende dieci punti di bonus. Perché premiare chi riprende funziona meglio che punire chi si ferma.
+
+*Schermo:* ciak 4. "Oggi non ce la faccio" → motivo → "Capita. Riprendiamo da qui, con calma." e la seduta di ripartenza con **+10**. In sovrimpressione: *Milkman et al., Nature 2021*.
+
+**B15 · 2:37-2:46 · 9 s** — bandiera rossa
+> Ma se scrivi "ho un dolore al petto", niente allenamento. Prima la salute: chiama il 112.
+
+*Schermo:* ciak 5. Nel coach, il messaggio sul dolore al petto e la risposta di blocco con il 112.
+
+**B16 · 2:46-2:55 · 9 s** — alimentazione
+> Per mangiare meglio, un'abitudine a settimana e la foto del piatto. Zero calorie da contare.
+
+*Schermo:* ciak 6. Abitudine della settimana, foto caricata, feedback dell'AI senza numeri (`pitch/screens/mobile-cibo.png` come riserva).
+
+**B17 · 2:55-3:02 · 7 s** — widget
+> E PassoPasso ti aspetta anche sulla schermata del telefono.
+
+*Schermo:* `/widget` oppure `pitch/screens/desktop-widget.png`: widget piccolo e grande con livello, costanza e seduta di oggi.
+
+## Tecnologia e AI agents
+
+**B18 · 3:02-3:14 · 12 s**
+> Sotto c'è una PWA in React e un server Node con SQLite. Claude lavora dal server e risponde in JSON, che verifichiamo campo per campo.
+
+*Schermo:* il diagramma dell'architettura del README (PWA → API Node → Claude / SQLite / contenuti).
+
+**B19 · 3:14-3:27 · 13 s**
+> Un chatbot da solo non basta. Le bandiere rosse le controllano regole fisse, prima dell'AI. E se l'AI è lenta o sbaglia, il motore costruisce la seduta a regole. La demo non si rompe mai.
+
+*Schermo:* tre righe che compaiono: "Bandiere rosse prima dell'AI" · "Solo esercizi dal catalogo" · "Regole di riserva". Fonte in piccolo: *ChatGPT come trainer: completo solo al 41%, TIME 2024*.
+
+**B20 · 3:27-3:42 · 15 s**
+> E l'abbiamo costruita con Claude Code: cinque agenti in parallelo, per frontend, backend, contenuti, deploy e pitch, più uno di regia che custodisce il contratto API. In poche ore.
+
+*Schermo:* la cartella `docs/agenti/` (tabella delle chat nel README), poi `git log --oneline` che scorre con i prefissi `[chat-1]`…`[regia]`, poi `docs/agenti/richieste.md`.
+
+## Chiusura
+
+**B21 · 3:42-3:55 · 13 s**
+> Il principiante è la porta d'ingresso. Ma PassoPasso cresce con te. Un passo alla volta: da zero a dove vuoi arrivare.
+
+*Schermo:* le 5 icone, poi logotipo e `passopasso.andreavallieri.com` con il QR (riprendi la colonna sinistra di `pitch/screens/desktop-home.png`).
+
 ---
 
-## 4. Demo — 1:20-3:00
+## Se il video è troppo lungo
+Taglia in quest'ordine: B17 (widget), poi B13 (calendario) diventa una frase dentro B12: "…e se colleghi il calendario, trova anche gli spazi liberi."
 
-Registrazione dello schermo del telefono (o browser in vista mobile) sull'app pubblicata. Dettaglio dei passaggi in `scaletta-demo.md`.
-
-**4a. Onboarding a conversazione — 1:20-1:40**
-
-**SCHERMO:** chat di onboarding, si risponde a 2-3 domande, compare il piano della settimana.
-
-**VOCE:**
-> Niente moduli infiniti. Una conversazione: quanto tempo hai, cosa ti piace, se hai fastidi.
-> Da qui l'AI costruisce la tua prima settimana.
-
-**4b. Check-in e mappa del corpo — 1:40-2:05**
-
-**SCHERMO:** check-in prima della seduta. Tempo: 15 minuti. Energia bassa. Si tocca il ginocchio sulla mappa del corpo. La seduta si rigenera: esercizi diversi, più brevi.
-
-**VOCE:**
-> Prima di ogni seduta, un check-in. Oggi hai solo quindici minuti, sei stanco e ti fa male il ginocchio.
-> La seduta si rigenera al momento. Gli esercizi vengono da un catalogo verificato: l'AI sceglie, non inventa.
-
-**4c. Bandiera rossa — 2:05-2:15**
-
-**SCHERMO:** si segnala "dolore al petto". L'app blocca l'allenamento e consiglia di sentire un medico.
-
-**VOCE:**
-> E se segnali un sintomo serio, niente allenamento: ti consigliamo di sentire un medico.
-
-**4d. Seduta saltata e ripartenza — 2:15-2:35**
-
-**SCHERMO:** una seduta segnata come saltata. La settimana si riorganizza, compare la "seduta di ripartenza" con il bonus. Messaggio: "Capita. Riprendiamo da qui, con calma."
-
-**VOCE:**
-> Hai saltato una seduta? Capita. La settimana si riorganizza da sola, e chi riparte prende un bonus.
-> Lo dice la ricerca: premiare chi riprende funziona meglio che punire chi si ferma.
-
-**4e. Feedback e costanza — 2:35-2:45**
-
-**SCHERMO:** fine seduta, si tocca "duro". Poi la home con il punteggio di costanza e una vittoria non legata alla bilancia.
-
-**VOCE:**
-> Dopo la seduta dici com'è andata: facile, giusto o duro. L'intensità si regola.
-> Al posto della streak, un punteggio di costanza. E vittorie che non dipendono dalla bilancia.
-
-**4f. Alimentazione senza calorie — 2:45-3:00**
-
-**SCHERMO:** abitudine della settimana ("una porzione di verdura a pranzo"). Si carica la foto di un piatto, arriva il feedback qualitativo.
-
-**VOCE:**
-> Per l'alimentazione, un'abitudine a settimana. Fotografi il piatto e ricevi un consiglio. Zero calorie da contare.
-
-> *Se il controllo della forma con la fotocamera è pronto, sostituire 4f con 10 secondi di squat con MediaPipe e spostare 4f in una sola frase.*
-
----
-
-## 5. Tecnologia e AI agents — 3:00-3:20
-
-**SCHERMO:** schema semplice: telefono (PWA) → server Node → Claude (JSON strutturato) + SQLite. Sotto: "Costruita con Claude Code".
-
-**VOCE:**
-> Sotto: una PWA in React, installabile, e un server Node con SQLite.
-> Claude lavora lato server e restituisce JSON strutturato, sempre validato sul catalogo degli esercizi.
-> E l'abbiamo costruita con Claude Code: più agenti in parallelo, uno per l'app, uno per il backend, uno per il pitch.
-
----
-
-## 6. Chiusura — 3:20-3:30
-
-**SCHERMO:** le 5 icone, poi logotipo e link `passopasso.andreavallieri.com`.
-
-**VOCE:**
-> Il principiante è la porta d'ingresso. Ma PassoPasso cresce con te.
-> Un passo alla volta. Da zero a dove vuoi arrivare.
-
----
-
-## Note di produzione
-- Registrare la voce a parte, poi montarla sulla registrazione dello schermo: evita i tempi morti delle chiamate all'AI.
-- Durante le attese dell'AI, tagliare o accelerare 2x. Non nasconderle del tutto: mostrare un secondo di caricamento rende credibile che è tutto vero.
-- Sottotitoli in sovrimpressione: molti guardano i video senza audio.
-- Font Archivo corsivo extrabold per i titoli a schermo, Plus Jakarta Sans per le fonti. Colori del brand (`#2C6975`, `#68B2A0`, `#CDE0C9`).
-- Prima di registrare, controllare che ogni passaggio della demo esista davvero nell'app: se un pezzo manca, tagliare la sua sezione e redistribuire i secondi, non mostrare mockup spacciandoli per funzionanti.
+## Prima di registrare
+- Coach, calendario e omino animato arrivano con la seconda ondata. Controlla in `docs/agenti/stato.md` che siano online. Se uno manca, togli la sua battuta: niente mockup spacciati per funzioni vere.
+- Testi a schermo: Archivo corsivo extrabold per i titoli, Plus Jakarta Sans per le fonti. Colori `#2C6975`, `#68B2A0`, `#CDE0C9`.
+- Sottotitoli sempre attivi: molti guardano senza audio.
+- Le attese dell'AI vanno accelerate, non tagliate del tutto: un secondo di caricamento fa capire che è tutto vero.

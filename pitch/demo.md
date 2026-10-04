@@ -1,41 +1,61 @@
 # Scaletta della demo
 
-Serve per due cose: registrare la parte demo del video (1:20-3:00) e dare ai giurati un percorso da provare da soli.
+Serve per tre cose: registrare la parte demo del video (battute B07-B17 di [script.md](script.md)), presentare dal vivo e dare ai giurati un percorso da provare.
 
-Link: https://passopasso.andreavallieri.com
-Dispositivo: telefono, oppure browser desktop con DevTools in vista mobile (iPhone 14, 390×844).
+- Link: https://passopasso.andreavallieri.com
+- Dispositivo: telefono, oppure Chrome con DevTools in vista mobile (390×844). Su desktop largo l'app compare dentro una cornice iPhone, con i widget a lato: va bene anche quella.
+- Utente: **Giulia, l'utente `demo`** (pulsante "Prova con l'utente demo" nel benvenuto). È al livello 2, ha circa 3 settimane di storico, una seduta saltata e recuperata (+10) e un'abitudine in corso. **Completando la seduta di oggi le viene proposto il livello 3.**
+
+## Reset del demo
+Prima di ogni ciak che parte dallo stato iniziale:
+
+```bash
+curl -s -X POST https://passopasso.andreavallieri.com/api/demo/reset
+```
+
+Il demo si resetta anche da solo dopo 30 minuti senza modifiche.
 
 ## Prima di registrare
-- [ ] L'app risponde dal link pubblico (non da localhost).
-- [ ] Profilo pulito: finestra in incognito, o dati del sito cancellati.
-- [ ] Il server chiama Claude senza errori: fare una prova completa dell'onboarding.
-- [ ] Foto di un piatto pronta nella galleria (piatto vario e colorato, si capisce bene).
-- [ ] Notifiche del telefono disattivate, batteria e orario puliti nella barra di stato.
-- [ ] Registrazione schermo in verticale, 1080p.
+- [ ] `curl -s https://passopasso.andreavallieri.com/api/health` risponde con `"ai":"cli"` o `"ai":"sdk"` (non `"off"`).
+- [ ] Finestra in incognito, così parti dal benvenuto.
+- [ ] Foto di un piatto pronta (vario, colorato, ben illuminato).
+- [ ] Un link iCal di prova con qualche impegno nei prossimi 7 giorni (Google Calendar → Impostazioni → il calendario → "Indirizzo segreto in formato iCal"). **Non mostrare a schermo il link vero**: è segreto. Usa un calendario creato per la demo.
+- [ ] Notifiche spente, registrazione in verticale a 1080p.
 
-## Percorso
+## Ciak
+I ciak sono separati perché alcune azioni si escludono a vicenda: dopo aver completato la seduta di oggi non si può più saltarla, e una bandiera rossa al check-in blocca la seduta. Tra un ciak e l'altro fai il reset.
 
-| # | Tempo video | Azione | Cosa deve vedersi | Funzione dimostrata |
+| Ciak | Battute | Parti da | Azioni | Cosa deve vedersi |
 |---|---|---|---|---|
-| 1 | 1:20 | Apri il link. Opzionale: "Aggiungi a schermata Home" e apri dall'icona | Splash con l'icona livello 1 | PWA installabile, icona che evolve |
-| 2 | 1:25 | Onboarding: rispondi "Non mi alleno da anni", "20 minuti, 3 volte a settimana", "A volte mi fa male il ginocchio" | L'AI fa domande di seguito, poi mostra la prima settimana | Onboarding a conversazione |
-| 3 | 1:40 | Apri la seduta di oggi → check-in. Tempo 15 min, energia bassa, tocca il ginocchio sulla mappa del corpo | La seduta si rigenera: più breve, senza esercizi che caricano il ginocchio | Check-in adattivo, catalogo verificato |
-| 4 | 2:05 | Torna al check-in, segnala un sintomo da bandiera rossa (es. dolore al petto) | Nessuna seduta, messaggio che consiglia un medico | Sicurezza |
-| 5 | 2:15 | Segna come saltata la seduta di ieri (o usa il comando demo per simularla) | Settimana riorganizzata, seduta di ripartenza con bonus, tono "Capita. Riprendiamo da qui, con calma." | Riorganizzazione senza colpa |
-| 6 | 2:35 | Completa una seduta, scegli "duro" | La prossima seduta è più leggera; home con punteggio di costanza e una vittoria non legata al peso | Feedback che regola l'intensità, motivazione |
-| 7 | 2:45 | Sezione alimentazione: leggi l'abitudine della settimana, carica la foto del piatto | Feedback qualitativo dell'AI, nessun numero di calorie | Alimentazione senza calorie |
-| 8 | (bonus) | Se disponibile: controllo della forma sullo squat con la fotocamera | Scheletro sovrapposto e indicazione sulla forma | Effetto wow (MediaPipe) |
-| 9 | (bonus) | Mostra il passaggio di livello | Icona che passa da livello 1 a livello 2 | Percorso progressivo |
+| 1 | B07 | incognito, nuovo utente | Benvenuto → "Inizia" → rispondi da principiante: "Non faccio sport da anni", "20 minuti, 3 volte", "Ho una sedia e un muro", "A volte le ginocchia" | Domande una dopo l'altra (3-4 s a risposta), poi la prima settimana al livello 1 |
+| 2 | B08-B11 | reset, utente demo | Home → "Inizia" → check-in: 15 minuti, energia bassa, ginocchia sulla mappa → "Prepara la mia seduta" → player → completa → "giusto" → accetta il livello 3 | `reason` dell'AI in "Perché questa seduta"; marcia in casa al posto della camminata; omino animato nel player; anello della costanza; proposta del livello 3 (Costruzione); icona nuova |
+| 3 | B12-B13 | stato dopo il ciak 2 (va bene) | Tab Coach → scrivi "Questa settimana lavoro di sera" → poi "Collega il calendario" → incolla il link iCal → "Sì, sposta" | Risposta del coach con i chip verdi (`applied`); spazi liberi; settimana spostata |
+| 4 | B14 | reset, utente demo | Settimana → seduta di oggi → "Oggi non ce la faccio" → motivo "tempo" | "Capita. Riprendiamo da qui, con calma." e la ripartenza con +10 |
+| 5 | B15 | qualsiasi | Tab Coach → scrivi "Da ieri ho un dolore al petto" | Blocco senza AI, consiglio di sentire un medico e il 112 |
+| 6 | B16 | qualsiasi | Tab Cibo → segna l'abitudine di oggi → carica la foto del piatto | Feedback qualitativo, nessun numero |
+| 7 | B17 | qualsiasi | Apri `/widget` | Widget piccolo e grande con livello, costanza e seduta di oggi |
+| bonus | B10 alt. | qualsiasi, telefono vero | Apri `/formcheck`, consenti la fotocamera, fai due squat | Scheletro sovrapposto e indicazioni sulla forma |
+
+Bandiera rossa dal check-in, in alternativa al ciak 5: nel check-in, in fondo, "Oggi hai qualche sintomo insolito?" → spunta "Dolore al petto" → schermata di blocco con il 112. Poi reset.
+
+## Dal vivo (5 minuti)
+1. Utente demo, check-in con le ginocchia: mentre l'AI lavora (circa 10-15 s) spiega che sceglie solo dal catalogo e che le bandiere rosse sono già state controllate.
+2. Leggi ad alta voce la `reason`, apri il player e mostra l'omino.
+3. Completa, accetta il livello 3.
+4. Coach: "Questa settimana lavoro di sera" → chip verdi.
+5. Coach: "Ho un dolore al petto" → blocco immediato (nessuna attesa: non passa dall'AI).
+6. Cibo con la foto, poi i widget.
 
 ## Piano B
-- **L'AI è lenta:** in registrazione si taglia. Dal vivo, riempire l'attesa spiegando cosa sta succedendo ("sta rigenerando la seduta sul catalogo").
-- **L'AI non risponde:** usare un profilo già preparato con onboarding completato e mostrare dal punto 3 in poi.
-- **Una funzione non è pronta:** saltare la riga, non simularla. Aggiornare script e testi di consegna.
+- **L'AI è lenta:** in registrazione si accelera. Dal vivo, riempi l'attesa spiegando cosa succede.
+- **L'AI non risponde:** dopo 25 secondi il server costruisce la seduta a regole, quindi la demo va avanti comunque. Lo stesso succede con `AI_MODE=off` nel `.env` del server (poi `deploy/deploy.sh`). La `reason` sarà più generica, il resto identico.
+- **Lo stato del demo è strano:** reset (vedi sopra).
+- **Una funzione non è online:** salta il ciak e togli la battuta dallo script, non simularla.
 
-## Per i giurati (versione breve, da incollare nelle istruzioni)
-1. Apri https://passopasso.andreavallieri.com dal telefono.
-2. Fai l'onboarding rispondendo come un principiante vero.
-3. Apri la seduta di oggi, fai il check-in e segna un dolore sulla mappa del corpo: la seduta cambia.
-4. Segna una seduta come saltata: guarda come si riorganizza la settimana.
-5. Completa una seduta e dai un feedback.
-6. Carica la foto di un piatto nella sezione alimentazione.
+## Per i giurati (versione da incollare)
+1. Apri https://passopasso.andreavallieri.com dal telefono e tocca "Prova con l'utente demo".
+2. Inizia la seduta di oggi: nel check-in scegli 15 minuti e tocca le ginocchia sulla mappa. Leggi perché la seduta è cambiata.
+3. Completa la seduta e dai un feedback: ti viene proposto il livello 3.
+4. Apri il Coach e scrivi come va la tua settimana: guarda cosa cambia nel piano.
+5. Carica la foto di un piatto nella sezione Cibo.
+6. Vuoi partire da zero? Apri il link in una finestra in incognito e fai l'onboarding.
