@@ -1,0 +1,12 @@
+# Chat 6: Motivazione e alimentazione (frontend)
+
+Leggi `docs/agenti/README.md` (regole comuni), `CLAUDE.md`, `docs/api.md` (sezioni "Coach proattivo", "Il tuo perché", "Percorso alimentare", "Alimentazione 2.0"), `docs/schema.md` e `docs/agenti/chat-1.md` (sezioni "Direzione estetica e motion" e "Layout desktop": stesso stile). Guarda il codice in `app/web/src` per riusare `ui/kit.tsx`, `ui/motion.ts`, il client API e i tipi.
+
+Lavori **solo** in `app/web/src/features/coach-inbox/`, `app/web/src/features/why/`, `app/web/src/features/food-path/` e aggiungi a `app/web/src/api/` SOLO file nuovi (`inbox.ts`, `foodPath.ts`) con funzioni e mock. Per agganciare le tue viste alle rotte e alle schermate esistenti (Coach, Settimana, Cibo, Feedback, Onboarding) **non modificare i file della chat 1**: scrivi in `docs/agenti/richieste.md` cosa deve inserire (import + una riga), con il numero `[chat-6]`. Chat 1 lo fa.
+
+## Da costruire
+1. **Inbox del coach** (`coach-inbox`): lista dei messaggi proattivi con "Ti scrivo perché…" in piccolo, pallino dei non letti, azioni come pulsanti ("Sposta il venerdì al sabato"), messaggio che entra con una molla. Componente `CoachInbox` da mostrare in cima alla tab Coach, e `InboxBadge` per la tab bar. Pulsante nascosto in fondo "Simula un messaggio" (solo in demo) che chiama `simulate` con un trigger a scelta.
+2. **Il tuo perché** (`why`): `WhyPrompt` per l'onboarding (ultima domanda, campo libero grande con esempi come segnaposto); `WhyCard` (frase dell'utente in Archivo corsivo su sfondo del livello) da mostrare nella ripartenza, nel passaggio di livello e nella card della settimana 3; `SkipGate`: la schermata che compare quando l'utente tocca "Oggi non ce la faccio": il suo perché, poi due pulsanti "10 minuti invece di niente?" (avvia la seduta ridotta da `/alternatives`) e, più piccolo, "Oggi salto davvero" (procede allo skip). Senza colpa, senza rosso.
+3. **Percorso alimentare** (`food-path`): schermata come il Percorso dei livelli: tre fasi (Sostituire, Aggiungere, Come mangi) con le tappe, "sei qui", tappe saltate con il motivo, intro "Ora che ti alleni non devi mangiare perfetto…". `AfterFoodNote` per la schermata di fine seduta ("Avere fame adesso è normale…").
+
+Stile: lo stesso dell'app (glass, molle, Archivo per i numeri e le frasi importanti). Mock per tutto finché il backend non c'è. Commit piccoli, `[chat-6]`, `git pull --rebase --autostash` prima del push.

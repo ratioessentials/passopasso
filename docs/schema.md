@@ -102,7 +102,17 @@ Tre percorsi con gli stessi 5 livelli e le stesse icone; cambiano verbo, obietti
 }
 ```
 
-## Habit (`content/habits.json`: array di 12, uno per settimana)
+## Habit (`content/habits.json`: array di 12, in tre fasi)
+Campo `phase`: `sostituire` (settimane 1-3: merendine e gelati → frutta o yogurt, bibite → acqua, spuntino scelto in anticipo), `aggiungere` (4-7: verdura, proteine a colazione, legumi, integrali), `come_mangi` (8-12: piatto in tre parti, senza schermi, fame e sazietà). `week` è l'ordine di default; il mini-onboarding alimentare riordina e salta le tappe già acquisite.
+
+## CoachMessage (messaggi proattivi del coach)
+```json
+{ "id": "cm_…", "date": "2026-10-04T08:05:00+02:00", "trigger": "ripartenza_fatta", "text": "Sei tornata. È la cosa più difficile, ed è fatta.",
+  "because": "Ti scrivo perché hai completato la ripartenza", "read": false, "actions": [ { "label": "Sposta il venerdì al sabato", "type": "move_day", "from": "ven", "to": "sab" } ] }
+```
+Trigger: `ripartenza_fatta`, `assenza_3_giorni`, `pattern_giorno_saltato`, `due_duro`, `prontezza_bassa_2gg`, `record_personale`, `fine_settimana_1`, `inizio_settimana_2`, `livello_nuovo`. Regole: massimo 1 al giorno, mai due giorni di fila salvo `prontezza_bassa_2gg` e `record_personale`, nessun messaggio di routine.
+
+## Habit (vecchia definizione)
 ```json
 {
   "id": "acqua_pasti",
@@ -156,6 +166,7 @@ Tono: dai del tu, frasi brevi, mai colpa.
     "notes": "Lieve condromalacia al ginocchio destro"   // condizioni, farmaci, note libere (può essere "")
   },
   "goal": "Riuscire a correre 20 minuti senza fermarmi",
+  "why": "Per giocare con mio figlio senza fiatone",   // a parole sue: rimostrato nei momenti difficili
   "experience": "nessuna",          // nessuna | poca | qualche_volta
   "daysPerWeek": 3,
   "minutesPerSession": 20,

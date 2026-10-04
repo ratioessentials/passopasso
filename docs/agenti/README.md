@@ -10,6 +10,7 @@ La **chat di regia** custodisce il contratto ([api.md](../api.md), [schema.md](.
 | 3 Contenuti e sicurezza | [chat-3.md](chat-3.md) | `content/` |
 | 4 Deploy e PWA tecnica | [chat-4.md](chat-4.md) | `deploy/`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `app/web/public/pwa/`, `app/web/src/features/formcheck/` |
 | 5 Pitch e consegna | [chat-5.md](chat-5.md) | `pitch/`, `README.md` |
+| 6 Motivazione e alimentazione (frontend) | [chat-6.md](chat-6.md) | `app/web/src/features/coach-inbox/`, `features/why/`, `features/food-path/`, `app/web/src/api/inbox.ts`, `api/foodPath.ts` |
 
 ## Regole comuni (valgono per tutte)
 1. Leggi prima `CLAUDE.md`, `docs/api.md` e `docs/schema.md`.

@@ -27,6 +27,8 @@ Conversazione stateless: il client rimanda tutta la cronologia.
 { "reply": "Piacere Giulia! Quanto ti muovi in una settimana normale?", "done": false, "quickReplies": ["Quasi mai", "Cammino un po'", "Qualche volta"] }
 // ultima risposta: il server salva il profilo e genera la prima settimana
 { "reply": "Perfetto, si parte dal livello 1.", "done": true, "profile": { /* Profile */ } }
+// penultima risposta: la domanda del perché, a parole sue (il client mostra un campo libero grande)
+{ "reply": "Ultima cosa: perché conta per te?", "done": false, "askWhy": true }
 ```
 Con esperienza "corro regolarmente" (o simili) l'AI fa 3 domande in più (km a settimana, corsa più lunga, ritmo comodo o "non lo so") e compila `runner`; il server colloca al livello 4 (< 20 km/sett.) o 5 (≥ 20). L'obiettivo decide `track`: correre → `corsa`; forza, tono, "sentirmi più forte" → `forza`; schiena, postura, rigidità, "lavoro seduto" → `mobilita`; in dubbio → `corsa`. Età < 16 → `{ done: true, minor: true }` con messaggio che invita a usare l'app con un adulto e nessun piano; 16-17 → livelli massimo 3. Il primo messaggio dell'assistente lo mostra il client in modo fisso (`copy.json` → `onboarding.hello`) e non richiede chiamate. L'onboarding si chiude in circa 6 domande.
 
@@ -213,6 +215,19 @@ Modello unificato dei dati del corpo. Ogni sorgente (Comando rapido di Apple Sal
 
 ### Progressi: confronto con la settimana 1
 `GET /api/progress` aggiunge `"thenNow": [ { "label": "Alzate dalla sedia in 30 s", "then": 9, "now": 14, "unit": "" }, { "label": "Cammino continuo", "then": 8, "now": 20, "unit": "min" }, { "label": "Sedute a settimana", "then": 1, "now": 3, "unit": "" } ]` (valori dai test di prontezza e dalle sedute; `null` se non ancora misurati).
+
+### Coach proattivo (inbox)
+- `GET /api/coach/inbox` → `{ "unread": 1, "messages": [ /* CoachMessage, più recenti prima */ ] }`.
+- `POST /api/coach/inbox/:id/read` → `204`. `POST /api/coach/inbox/:id/action` `{ "actionIndex": 0 }` → applica l'azione (es. sposta un giorno) e risponde come `GET /api/me`.
+- Generazione: uno scheduler ogni 15 minuti valuta i trigger per ogni utente attivo (funzioni deterministiche su sedute, feedback, prontezza, aperture dell'app registrate da `GET /api/me`); se un trigger scatta e le regole anti-spam lo permettono, l'AI scrive il testo (2-3 frasi, tono, cita `why` solo per `assenza_3_giorni`, `livello_nuovo` e `inizio_settimana_2`), validato da zod e dal filtro di tono. Con push attive, la notifica è la prima frase. `POST /api/coach/inbox/simulate` `{ "trigger": "…" }` genera subito un messaggio (per demo e test).
+
+### Il tuo perché
+- `why` fa parte del profilo (onboarding: ultima domanda, a parole sue). `POST /api/sessions/:id/skip` ora va preceduto da `GET /api/sessions/:id/alternatives` → `{ "why": "Per giocare con mio figlio senza fiatone", "short": { /* Session da 10 minuti a regole, kind "ridotta" */ } }`; il client propone "10 minuti invece di niente?" prima dello skip. La seduta ridotta completata conta come fatta.
+
+### Percorso alimentare
+- `GET /api/food/path` → `{ "phases": [ { "id": "sostituire", "title": "Sostituire", "weeks": "1-3" }, ... ], "steps": [ { "habit": {...}, "order": 1, "status": "done" | "current" | "next" | "skipped", "skippedWhy": "Non bevi bibite zuccherate" } ], "intro": "Ora che ti alleni non devi mangiare perfetto. Cambiamo una cosa sola alla volta." }` (ordine personalizzato dal mini-onboarding).
+- `POST /api/sessions/:id/complete` aggiunge `"afterFood": "Avere fame adesso è normale: un frutto o uno yogurt, poi cena come sempre."` (da `content/fuel.json`, in base all'orario).
+- Prompt della foto: se il pasto è chiaramente di festa o sociale (pizza, torta, ristorante), `positives` con una frase sola tipo "Bella serata" e `suggestion` vuota: nessun consiglio.
 
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
