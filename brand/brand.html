@@ -1,0 +1,202 @@
+<title>PassoPasso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,500;0,700;1,800;1,900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: the evolving icon is the hero; then the 5 levels as a strip, the home screen, lockups, palette, type and tone. */
+:root{
+  --petrolio:#2C6975; --acqua:#68B2A0; --salvia:#CDE0C9; --salvia-chiara:#E0ECDE; --bianco:#FFFFFF;
+  --bg:#F3F8F4; --surface:#FFFFFF; --ink:#173A40; --muted:#557A7A; --line:#DCE9E0; --accent-text:#2C6975;
+  --display:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body:"Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E2025; --surface:#15303A; --ink:#E6F1EC; --muted:#9CC0B6; --line:#21414A; --accent-text:#8FD1BF;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E2025; --surface:#15303A; --ink:#E6F1EC; --muted:#9CC0B6; --line:#21414A; --accent-text:#8FD1BF;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;padding:0 20px}
+.wrap{max-width:1000px;margin:0 auto;padding-block:40px 64px;display:grid;gap:60px}
+h1,h3{font-family:var(--display);margin:0;text-wrap:balance}
+h2{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+section{display:grid;gap:20px}
+p{margin:0;max-width:62ch}
+button{font:inherit}
+button:focus-visible{outline:3px solid var(--acqua);outline-offset:3px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,56px);align-items:center}
+.stage{display:grid;justify-items:center;gap:16px}
+.icons{position:relative;width:clamp(150px,26vw,220px);aspect-ratio:1;filter:drop-shadow(0 18px 28px rgba(44,105,117,.28))}
+.hl{position:absolute;inset:0;opacity:0;transform:scale(.94);transition:opacity .5s ease,transform .5s ease}
+.hl.on{opacity:1;transform:none}
+.hl svg,.hm svg,.lvl svg,.lk svg{display:block;width:100%;height:auto}
+.dots{display:flex;gap:8px}
+.dot{width:28px;height:6px;border-radius:3px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dot.on{background:var(--petrolio)}
+.cap{font-size:13px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;min-height:2.6em}
+.cap b{display:block;color:var(--ink);font-family:var(--display);font-size:16px}
+.word{font-weight:900;font-style:italic;font-size:clamp(48px,9vw,100px);letter-spacing:-.04em;line-height:.88}
+.word span{color:var(--acqua)}
+.tag{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.4vw,24px);color:var(--muted);margin:14px 0 18px}
+@media (max-width:680px){.hero{grid-template-columns:1fr;justify-items:start}.stage{justify-self:center}}
+
+/* levels */
+.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.lvl{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer;transition:border-color .2s}
+.lvl.on{border-color:var(--acqua);box-shadow:0 0 0 2px var(--acqua) inset}
+.lvl svg{border-radius:22%}
+.lvl b{display:block;font-family:var(--display);font-size:15px}
+.lvl span{font-size:12.5px;color:var(--muted)}
+.track{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--salvia),var(--acqua),var(--petrolio))}
+@media (max-width:760px){.levels{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+
+/* home screen */
+.homewrap{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center}
+.phone{width:210px;max-width:100%;aspect-ratio:9/18;border-radius:34px;border:7px solid #10262B;background:linear-gradient(170deg,#CDE0C9 0%,#68B2A0 55%,#2C6975 100%);padding:26px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px 12px;align-content:start}
+.app{display:grid;justify-items:center;gap:5px;font-size:9px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.app i{width:100%;aspect-ratio:1;border-radius:22%;background:rgba(255,255,255,.35);display:block}
+.app .slot{position:relative;width:100%;aspect-ratio:1}
+.hm{position:absolute;inset:0;opacity:0;transition:opacity .5s}
+.hm.on{opacity:1}
+.notes{display:grid;gap:12px}
+.notes p{font-size:15px}
+@media (max-width:620px){.homewrap{grid-template-columns:1fr;justify-items:center}}
+
+/* lockups */
+.locks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.lock{border-radius:20px;padding:26px 22px;display:grid;gap:18px}
+.lk{display:flex;align-items:center;gap:12px}
+.lk svg{width:52px;border-radius:22%}
+.lk b{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;letter-spacing:-.04em}
+.lock small{font-size:12px;opacity:.75}
+.l-white{background:#fff;color:#173A40;border:1px solid #DCE9E0}
+.l-white b span{color:#68B2A0}
+.l-teal{background:linear-gradient(160deg,#2C6975,#3F8A8A);color:#fff}
+.l-teal b span{color:#CDE0C9}
+.l-dark{background:#0E2025;color:#E6F1EC}
+.l-dark b span{color:#8FD1BF}
+
+/* palette */
+.pills{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.pill{display:grid;gap:10px;justify-items:center;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pill div{width:100%;max-width:120px;aspect-ratio:1/2.1;border-radius:999px;box-shadow:0 10px 24px rgba(23,58,64,.12)}
+.pill b{color:var(--ink);font-weight:600;font-size:13px}
+.grads{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grads div{height:72px;border-radius:16px;display:flex;align-items:flex-end;padding:10px 12px;color:#fff;font-size:12px;font-weight:600}
+@media (max-width:560px){.pills{grid-template-columns:repeat(3,1fr)}.grads{grid-template-columns:1fr}}
+
+/* type */
+.type{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:8px}
+.spec small{font-size:12.5px;color:var(--muted)}
+.big{font-family:var(--display);font-weight:900;font-style:italic;font-size:40px;line-height:1;letter-spacing:-.03em}
+.say{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.say span{font-size:13px;color:var(--muted)}
+.say q{font-family:var(--display);font-weight:500;font-size:18px;quotes:none}
+@media (max-width:520px){.say{grid-template-columns:1fr;gap:2px}}
+
+@media (prefers-reduced-motion: reduce){.hl,.hm{transition:none}}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="stage">
+      <div class="icons" role="img" aria-label="Icona di PassoPasso che cambia con il livello"><div class="hl" data-l="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxh0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8C8C"/><stop offset="1" stop-color="#7FC1AD"/></linearGradient><radialGradient id="gxh0h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxh0)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,42 68,55 73,66"/><polyline points="59,70 54,85 49,99"/></g><polyline points="59,70 63,85 67,100"/><line x1="61" y1="42" x2="59" y2="70" stroke-width="13"/><polyline points="61,42 52,55 46,66"/></g><circle cx="62" cy="26" r="9.5" fill="#fff"/></svg></div><div class="hl" data-l="1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxh1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#357F84"/><stop offset="1" stop-color="#73B9A6"/></linearGradient><radialGradient id="gxh1h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxh1)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,41 70,52 77,58"/><polyline points="57,69 52,84 42,95"/></g><polyline points="57,69 67,83 74,98"/><line x1="61" y1="41" x2="57" y2="69" stroke-width="13"/><polyline points="61,41 51,53 46,63"/></g><circle cx="64" cy="25" r="9.5" fill="#fff"/></svg></div><div class="hl" data-l="2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxh2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C6975"/><stop offset="1" stop-color="#68B2A0"/></linearGradient><radialGradient id="gxh2h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxh2)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="62,41 72,50 79,41"/><polyline points="55,68 50,85 37,91"/></g><polyline points="55,68 70,78 70,95"/><line x1="62" y1="41" x2="55" y2="68" stroke-width="13"/><polyline points="62,41 49,51 40,46"/></g><circle cx="67" cy="25" r="9.5" fill="#fff"/></svg></div><div class="hl" data-l="3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxh3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25596A"/><stop offset="1" stop-color="#5BA696"/></linearGradient><radialGradient id="gxh3h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxh3)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="64,40 75,48 85,38"/><polyline points="54,66 48,84 31,86"/></g><polyline points="54,66 75,74 73,92"/><line x1="64" y1="40" x2="54" y2="66" stroke-width="13"/><polyline points="64,40 48,47 37,41"/></g><circle cx="71" cy="24" r="9.5" fill="#fff"/></svg></div><div class="hl" data-l="4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxh4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A5A"/><stop offset="1" stop-color="#4E9C8D"/></linearGradient><radialGradient id="gxh4h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxh4)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="20" y1="70" x2="32" y2="70" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="66,40 78,46 91,34"/><polyline points="52,64 44,82 25,82"/></g><polyline points="52,64 79,70 77,89"/><line x1="66" y1="40" x2="52" y2="64" stroke-width="13"/><polyline points="66,40 46,44 33,37"/></g><circle cx="75" cy="24" r="9.5" fill="#fff"/></svg></div></div>
+      <div class="dots" role="group" aria-label="Scegli il livello"><button class="dot" data-l="0" aria-label="Livello 1"></button><button class="dot" data-l="1" aria-label="Livello 2"></button><button class="dot" data-l="2" aria-label="Livello 3"></button><button class="dot" data-l="3" aria-label="Livello 4"></button><button class="dot" data-l="4" aria-label="Livello 5"></button></div>
+      <div class="cap" id="cap" aria-live="polite"><b>Livello 3 · Costruzione</b>Corsetta · Settimane 5-7</div>
+    </div>
+    <div>
+      <h2>Identità di marca · v2</h2>
+      <h1 class="word">Passo<span>Passo</span></h1>
+      <div class="tag">Da zero a dove vuoi arrivare.</div>
+      <p>L'icona cresce insieme a te. Il primo giorno l'omino cammina; livello dopo livello accelera, finché all'ultimo fa lo sprint. Chi apre il telefono vede a colpo d'occhio a che punto è del percorso.</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>I 5 livelli del percorso</h2>
+    <div class="levels"><div class="lvl" data-l="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxc0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8C8C"/><stop offset="1" stop-color="#7FC1AD"/></linearGradient><radialGradient id="gxc0h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxc0)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,42 68,55 73,66"/><polyline points="59,70 54,85 49,99"/></g><polyline points="59,70 63,85 67,100"/><line x1="61" y1="42" x2="59" y2="70" stroke-width="13"/><polyline points="61,42 52,55 46,66"/></g><circle cx="62" cy="26" r="9.5" fill="#fff"/></svg><div><b>1 · Attivazione</b><span>Cammina · Settimane 1-2</span></div></div><div class="lvl" data-l="1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxc1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#357F84"/><stop offset="1" stop-color="#73B9A6"/></linearGradient><radialGradient id="gxc1h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxc1)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,41 70,52 77,58"/><polyline points="57,69 52,84 42,95"/></g><polyline points="57,69 67,83 74,98"/><line x1="61" y1="41" x2="57" y2="69" stroke-width="13"/><polyline points="61,41 51,53 46,63"/></g><circle cx="64" cy="25" r="9.5" fill="#fff"/></svg><div><b>2 · Fondamenta</b><span>Passo svelto · Settimane 3-4</span></div></div><div class="lvl" data-l="2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxc2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C6975"/><stop offset="1" stop-color="#68B2A0"/></linearGradient><radialGradient id="gxc2h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxc2)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="62,41 72,50 79,41"/><polyline points="55,68 50,85 37,91"/></g><polyline points="55,68 70,78 70,95"/><line x1="62" y1="41" x2="55" y2="68" stroke-width="13"/><polyline points="62,41 49,51 40,46"/></g><circle cx="67" cy="25" r="9.5" fill="#fff"/></svg><div><b>3 · Costruzione</b><span>Corsetta · Settimane 5-7</span></div></div><div class="lvl" data-l="3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxc3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25596A"/><stop offset="1" stop-color="#5BA696"/></linearGradient><radialGradient id="gxc3h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxc3)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="64,40 75,48 85,38"/><polyline points="54,66 48,84 31,86"/></g><polyline points="54,66 75,74 73,92"/><line x1="64" y1="40" x2="54" y2="66" stroke-width="13"/><polyline points="64,40 48,47 37,41"/></g><circle cx="71" cy="24" r="9.5" fill="#fff"/></svg><div><b>4 · Slancio</b><span>Corsa · Settimane 8-10</span></div></div><div class="lvl" data-l="4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxc4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A5A"/><stop offset="1" stop-color="#4E9C8D"/></linearGradient><radialGradient id="gxc4h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxc4)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="20" y1="70" x2="32" y2="70" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="66,40 78,46 91,34"/><polyline points="52,64 44,82 25,82"/></g><polyline points="52,64 79,70 77,89"/><line x1="66" y1="40" x2="52" y2="64" stroke-width="13"/><polyline points="66,40 46,44 33,37"/></g><circle cx="75" cy="24" r="9.5" fill="#fff"/></svg><div><b>5 · Autonomia</b><span>Sprint · Settimane 11-12</span></div></div></div>
+    <div class="track" aria-hidden="true"></div>
+    <p style="font-size:14px;color:var(--muted)">Si sale di livello quando sei pronto, non quando lo dice il calendario. Se salti qualche seduta il livello resta: il percorso non si azzera mai.</p>
+  </section>
+
+  <section>
+    <h2>Sulla schermata home</h2>
+    <div class="homewrap">
+      <div class="phone" aria-label="Schermata home con l'icona di PassoPasso">
+        <div class="app"><i></i>Meteo</div><div class="app"><i></i>Foto</div><div class="app"><i></i>Mappe</div><div class="app"><i></i>Note</div>
+        <div class="app"><div class="slot"><div class="hm" data-l="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxm0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8C8C"/><stop offset="1" stop-color="#7FC1AD"/></linearGradient><radialGradient id="gxm0h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxm0)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,42 68,55 73,66"/><polyline points="59,70 54,85 49,99"/></g><polyline points="59,70 63,85 67,100"/><line x1="61" y1="42" x2="59" y2="70" stroke-width="13"/><polyline points="61,42 52,55 46,66"/></g><circle cx="62" cy="26" r="9.5" fill="#fff"/></svg></div><div class="hm" data-l="1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxm1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#357F84"/><stop offset="1" stop-color="#73B9A6"/></linearGradient><radialGradient id="gxm1h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxm1)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,41 70,52 77,58"/><polyline points="57,69 52,84 42,95"/></g><polyline points="57,69 67,83 74,98"/><line x1="61" y1="41" x2="57" y2="69" stroke-width="13"/><polyline points="61,41 51,53 46,63"/></g><circle cx="64" cy="25" r="9.5" fill="#fff"/></svg></div><div class="hm" data-l="2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxm2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C6975"/><stop offset="1" stop-color="#68B2A0"/></linearGradient><radialGradient id="gxm2h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxm2)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="62,41 72,50 79,41"/><polyline points="55,68 50,85 37,91"/></g><polyline points="55,68 70,78 70,95"/><line x1="62" y1="41" x2="55" y2="68" stroke-width="13"/><polyline points="62,41 49,51 40,46"/></g><circle cx="67" cy="25" r="9.5" fill="#fff"/></svg></div><div class="hm" data-l="3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxm3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25596A"/><stop offset="1" stop-color="#5BA696"/></linearGradient><radialGradient id="gxm3h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxm3)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="64,40 75,48 85,38"/><polyline points="54,66 48,84 31,86"/></g><polyline points="54,66 75,74 73,92"/><line x1="64" y1="40" x2="54" y2="66" stroke-width="13"/><polyline points="64,40 48,47 37,41"/></g><circle cx="71" cy="24" r="9.5" fill="#fff"/></svg></div><div class="hm" data-l="4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxm4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A5A"/><stop offset="1" stop-color="#4E9C8D"/></linearGradient><radialGradient id="gxm4h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxm4)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="20" y1="70" x2="32" y2="70" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="66,40 78,46 91,34"/><polyline points="52,64 44,82 25,82"/></g><polyline points="52,64 79,70 77,89"/><line x1="66" y1="40" x2="52" y2="64" stroke-width="13"/><polyline points="66,40 46,44 33,37"/></g><circle cx="75" cy="24" r="9.5" fill="#fff"/></svg></div></div>PassoPasso</div><div class="app"><i></i>Musica</div><div class="app"><i></i>Salute</div><div class="app"><i></i>Posta</div>
+      </div>
+      <div class="notes">
+        <h3 style="font-size:22px">Ogni livello sbloccato cambia l'icona</h3>
+        <p>Nella demo PWA l'icona cambia nella tab del browser, nelle notifiche e dentro l'app. Nella versione nativa iOS e Android supportano le icone alternative: a ogni livello sbloccato l'app propone la nuova icona per la schermata home.</p>
+        <p style="color:var(--muted);font-size:14px">Prova a cliccare un livello qui sopra: l'icona cambia anche qui.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Logo</h2>
+    <div class="locks">
+      <div class="lock l-white"><div class="lk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C6975"/><stop offset="1" stop-color="#68B2A0"/></linearGradient><radialGradient id="gxl1h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxl1)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="62,41 72,50 79,41"/><polyline points="55,68 50,85 37,91"/></g><polyline points="55,68 70,78 70,95"/><line x1="62" y1="41" x2="55" y2="68" stroke-width="13"/><polyline points="62,41 49,51 40,46"/></g><circle cx="67" cy="25" r="9.5" fill="#fff"/></svg><b>Passo<span>Passo</span></b></div><small>Principale · su bianco</small></div>
+      <div class="lock l-teal"><div class="lk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxl2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D4A5A"/><stop offset="1" stop-color="#4E9C8D"/></linearGradient><radialGradient id="gxl2h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxl2)"/><line x1="14" y1="46" x2="30" y2="46" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="17" y1="58" x2="31" y2="58" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><line x1="20" y1="70" x2="32" y2="70" stroke="#fff" stroke-opacity=".38" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="66,40 78,46 91,34"/><polyline points="52,64 44,82 25,82"/></g><polyline points="52,64 79,70 77,89"/><line x1="66" y1="40" x2="52" y2="64" stroke-width="13"/><polyline points="66,40 46,44 33,37"/></g><circle cx="75" cy="24" r="9.5" fill="#fff"/></svg><b>Passo<span>Passo</span></b></div><small>Su petrolio · splash e social</small></div>
+      <div class="lock l-dark"><div class="lk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="gxl3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8C8C"/><stop offset="1" stop-color="#7FC1AD"/></linearGradient><radialGradient id="gxl3h" cx=".3" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="27" fill="url(#gxl3)"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"><g stroke="#E0ECDE" stroke-opacity=".55"><polyline points="61,42 68,55 73,66"/><polyline points="59,70 54,85 49,99"/></g><polyline points="59,70 63,85 67,100"/><line x1="61" y1="42" x2="59" y2="70" stroke-width="13"/><polyline points="61,42 52,55 46,66"/></g><circle cx="62" cy="26" r="9.5" fill="#fff"/></svg><b>Passo<span>Passo</span></b></div><small>Tema scuro</small></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Colori</h2>
+    <div class="pills">
+      <div class="pill"><div style="background:#2C6975"></div><b>Petrolio</b>#2C6975</div>
+      <div class="pill"><div style="background:#68B2A0"></div><b>Verde acqua</b>#68B2A0</div>
+      <div class="pill"><div style="background:#CDE0C9"></div><b>Salvia</b>#CDE0C9</div>
+      <div class="pill"><div style="background:#E0ECDE"></div><b>Salvia chiara</b>#E0ECDE</div>
+      <div class="pill"><div style="background:#FFFFFF;border:1px solid #DCE9E0"></div><b>Bianco</b>#FFFFFF</div>
+    </div>
+    <div class="grads">
+      <div style="background:linear-gradient(180deg,#2C6975,#68B2A0)">Icona · petrolio → verde acqua</div>
+      <div style="background:linear-gradient(135deg,#68B2A0,#CDE0C9);color:#173A40">Card e progressi</div>
+      <div style="background:linear-gradient(135deg,#E0ECDE,#68B2A0);color:#173A40">Sfondi e splash</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tipografia e tono</h2>
+    <div class="type">
+      <div class="spec"><small>Titoli e logotipo · Archivo corsivo</small><div class="big">Livello 4 sbloccato</div></div>
+      <div class="spec"><small>Testi · Plus Jakarta Sans</small><div style="font-size:17px">Squat al muro: schiena appoggiata, ginocchia sopra le caviglie, 3 serie da 20 secondi.</div></div>
+    </div>
+    <div>
+      <div class="say"><span>Seduta saltata</span><q>Capita. Riprendiamo da qui, con calma.</q></div>
+      <div class="say"><span>Ritorno</span><q>Bentornato! Bonus ripartenza +1.</q></div>
+      <div class="say"><span>Livello sbloccato</span><q>Ora cammini veloce. Prossima tappa: la corsetta.</q></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(() => {
+  const L = [{"n": 1, "name": "Attivazione", "verb": "Cammina", "w": "Settimane 1-2"}, {"n": 2, "name": "Fondamenta", "verb": "Passo svelto", "w": "Settimane 3-4"}, {"n": 3, "name": "Costruzione", "verb": "Corsetta", "w": "Settimane 5-7"}, {"n": 4, "name": "Slancio", "verb": "Corsa", "w": "Settimane 8-10"}, {"n": 5, "name": "Autonomia", "verb": "Sprint", "w": "Settimane 11-12"}];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cur = 2, timer = null;
+  const set = (i) => {
+    cur = i;
+    document.querySelectorAll('[data-l]').forEach(el => el.classList.toggle('on', +el.dataset.l === i));
+    document.getElementById('cap').innerHTML = `<b>Livello ${L[i].n} · ${L[i].name}</b>${L[i].verb} · ${L[i].w}`;
+  };
+  const start = () => { if (!reduce) timer = setInterval(() => set((cur + 1) % 5), 1800); };
+  document.querySelectorAll('.dot, .lvl').forEach(el => el.addEventListener('click', () => {
+    clearInterval(timer); set(+el.dataset.l);
+  }));
+  set(cur); start();
+})();
+</script>
