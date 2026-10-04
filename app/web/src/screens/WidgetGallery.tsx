@@ -140,9 +140,9 @@ export default function WidgetGallery() {
   const time = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
   return (
     <div className="relative min-h-full overflow-hidden" style={{ background: 'linear-gradient(160deg, #1D4A5A 0%, #2C6975 35%, #68B2A0 75%, #CDE0C9 100%)' }}>
-      <div className="safe-top relative flex flex-col items-center px-[26px] pb-28 text-white">
+      <div className="safe-top relative flex flex-col items-center px-[26px] pb-tabbar text-white">
         <div className="mt-6 text-sm font-semibold text-white/80">{new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
-        <div className="font-display text-[76px] font-semibold leading-none tracking-tight">{time}</div>
+        <div className="font-display text-[64px] font-semibold leading-none tracking-tight">{time}</div>
         {d && <div className="mt-3"><CircularWidget d={d} /></div>}
         {d && (
           <div className="mt-8 flex w-full max-w-[338px] flex-col gap-5">

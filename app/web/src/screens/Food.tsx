@@ -61,7 +61,7 @@ export default function Food() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-32">
+    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-tabbar">
       <Header title="Cibo" subtitle="Nessuna caloria da contare. Un'abitudine alla volta." />
       <div className="space-y-4 px-5">
         {!habit ? <Skeleton className="h-48" /> : (

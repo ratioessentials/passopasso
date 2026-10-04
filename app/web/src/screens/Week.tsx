@@ -62,7 +62,7 @@ export default function WeekScreen() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-32">
+    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-tabbar">
       <Header title="La tua settimana" subtitle={week ? `${week.sessions.filter((s) => s.status === 'done').length} sedute fatte su ${week.sessions.length}` : undefined} />
       {error && <ErrorBox message={error} onRetry={load} />}
       {!week && !error && <div className="space-y-3 px-5"><Skeleton className="h-24" /><Skeleton className="h-20" /><Skeleton className="h-20" /></div>}

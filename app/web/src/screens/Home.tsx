@@ -21,7 +21,7 @@ export default function Home() {
 
   if (!me) {
     return (
-      <div className="relative min-h-full pb-32">
+      <div className="relative min-h-full pb-tabbar">
         <MeshBackground level={2} />
         <div className="safe-top relative space-y-4 px-5 pt-6">
           {meError ? <ErrorBox message={meError} onRetry={() => void loadMe()} /> : (
@@ -41,7 +41,7 @@ export default function Home() {
   const date = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
-    <div className="relative min-h-full pb-32">
+    <div className="relative min-h-full pb-tabbar">
       <MeshBackground level={level.n} className="h-[620px]" fade />
       <div className="safe-top relative px-5">
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={spring.gentle} className="flex items-start justify-between pt-3 text-white">

@@ -14,7 +14,7 @@ export default function ProgressScreen() {
   useEffect(() => { api.progress().then(setP).catch((e: Error) => setError(e.message)) }, [])
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-32">
+    <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-tabbar">
       <Header title="I tuoi progressi" subtitle="Quello che conta davvero, bilancia esclusa." />
       {error && <ErrorBox message={error} />}
       {!p && !error && <div className="space-y-3 px-5"><Skeleton className="h-52" /><Skeleton className="h-24" /></div>}

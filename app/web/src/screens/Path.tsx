@@ -17,7 +17,7 @@ export default function Path() {
   const levels = data?.levels?.length ? data.levels : LEVELS.map((l) => ({ ...l, goal: '', weeks: [2, 3] as [number, number], sessionsPerWeek: 3 }))
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-salvia via-salvia-chiaro to-white pb-32">
+    <div className="min-h-full bg-gradient-to-b from-salvia via-salvia-chiaro to-white pb-tabbar">
       <Header title="Il tuo percorso" subtitle="Si sale per prontezza, non per calendario. E non si torna mai a zero." />
       {error && <ErrorBox message={error} />}
       <div className="relative px-5 pt-2">

@@ -26,6 +26,8 @@
     color: var(--color-inchiostro);
     background: var(--color-salvia-chiaro);
     -webkit-font-smoothing: antialiased;
+    /* gli spazi tra le parole restano visibili anche con il tracking stretto o durante il caricamento del font */
+    word-spacing: 0.06em;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
   }
@@ -37,7 +39,8 @@
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  word-spacing: 0.1em;
 }
 
 @utility glass {
@@ -98,6 +101,8 @@
 }
 
 .safe-top { padding-top: max(env(safe-area-inset-top), var(--frame-top, 12px)); }
+/* spazio sotto i contenuti con scroll: altezza della tab bar più la safe area */
+.pb-tabbar { padding-bottom: calc(132px + max(env(safe-area-inset-bottom), var(--frame-bottom, 10px))); }
 .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), var(--frame-bottom, 10px)); }
 
 @media (prefers-reduced-motion: reduce) {

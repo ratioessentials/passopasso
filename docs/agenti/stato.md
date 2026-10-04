@@ -10,3 +10,5 @@
 - [chat-1] 10:17 — fatto: tutte le 10 schermate, cornice desktop, widget, passaggio di livello; provato con mock e con il server vero (giro completo ok). Prossimo: onboarding col server, rifiniture, script Scriptable. Nessun blocco.
 - [chat-1] 10:20 — fatto: commit e push di app/web (ultimo 1c874db: tutte le schermate, cornice desktop, widget, script Scriptable). Provato con il mock e con il server vero. Prossimo: rifiniture visive, commit ogni 20-30 minuti. Nessun blocco.
 - [chat-1] 10:25 — fatto: rifiniture visive (scala dei livelli nel benvenuto, categorie nella card di oggi, costanza a zero gentile, anello delle serie, scroll al feedback del piatto); passaggio di livello verificato. Prossimo: altre rifiniture su richiesta. Nessun blocco.
+- [chat-4] 10:50 — fatto: https://passopasso.andreavallieri.com online (placeholder) via tunnel dev-server → 127.0.0.1:3210; prossimo: deploy.sh dell'app vera appena app/web compila
+- [chat-1] 10:37 — fatto: correzioni della regia delle 10:40 (spazio per la tab bar su tutte le schermate con scroll, widget grande non più coperto dal dock, spazi tra le parole). Nessun blocco.
