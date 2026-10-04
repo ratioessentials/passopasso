@@ -11,9 +11,11 @@ const TABS = [
   { to: '/settimana', label: 'Settimana', icon: I('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>') },
   { to: '/percorso', label: 'Percorso', icon: I('<path d="M6 21c0-4 4-4 4-8s-4-4-4-8"/><circle cx="18" cy="5" r="2"/><circle cx="16" cy="19" r="2"/><path d="M10 13h4"/>') },
   { to: '/cibo', label: 'Cibo', icon: I('<path d="M12 21c-5 0-8-3.5-8-8h16c0 4.5-3 8-8 8z"/><path d="M8 9c0-2 1-3 2-4M13 9c0-3 2-4 3-5"/>') },
-  { to: '/progressi', label: 'Progressi', icon: I('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>') },
+  { to: '/coach', label: 'Coach', icon: I('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>') },
 ]
 export const TAB_PATHS = TABS.map((t) => t.to)
+/** Schermate con la tab bar visibile (le tab più le sottopagine) */
+export const TABBAR_PATHS = [...TAB_PATHS, '/progressi']
 
 export function TabBar() {
   const { pathname } = useLocation()

@@ -106,9 +106,24 @@ export default function Home() {
           </motion.div>
         )}
 
+        {/* Progressi */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={stagger(4)} className="mt-4">
+          <Card className="flex items-center gap-4" whileTap={press} onClick={() => nav('/progressi')}>
+            <svg width="56" height="40" viewBox="0 0 56 40" className="shrink-0">
+              <motion.path d="M3 34 C12 30, 14 22, 22 24 S34 12, 40 14 S50 6, 53 4" fill="none" stroke="#2C6975" strokeWidth="4" strokeLinecap="round"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.6, ease: 'easeInOut' }} />
+            </svg>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-semibold uppercase tracking-wider text-acqua">I tuoi progressi</div>
+              <div className="font-title text-lg leading-tight text-inchiostro">Costanza, minuti e vittorie</div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C6975" strokeWidth="2.4" strokeLinecap="round"><path d="M9 6l6 6-6 6" /></svg>
+          </Card>
+        </motion.div>
+
         {/* Ultima vittoria */}
         {wins[0] && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={stagger(4)} className="mt-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={stagger(5)} className="mt-4">
             <Card className="flex items-center gap-4" onClick={() => nav('/progressi')}>
               <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-b from-sole/80 to-[#fbe3b0] text-3xl shadow-[0_8px_20px_-10px_rgb(200_140_40/.7)]">{winIcon(wins[0].icon)}</div>
               <div className="min-w-0">

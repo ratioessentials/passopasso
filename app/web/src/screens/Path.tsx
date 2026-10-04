@@ -1,14 +1,16 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { api } from '../api/client'
 import type { LevelsResponse } from '../api/types'
 import { LEVELS } from '../content/copy'
 import { useStore } from '../lib/store'
-import { ErrorBox, Header, LevelIcon } from '../ui/kit'
+import { Button, ErrorBox, Header, LevelIcon } from '../ui/kit'
 import { spring, stagger } from '../ui/motion'
 
 export default function Path() {
   const { me } = useStore()
+  const nav = useNavigate()
   const [data, setData] = useState<LevelsResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => { api.levels().then(setData).catch((e: Error) => setError(e.message)) }, [])
@@ -53,6 +55,9 @@ export default function Path() {
             )
           })}
         </div>
+      </div>
+      <div className="px-5">
+        <Button variant="light" className="mt-6 w-full" onClick={() => nav('/progressi')}>📈 Guarda i tuoi progressi</Button>
       </div>
     </div>
   )

@@ -15,7 +15,7 @@ export default function ProgressScreen() {
 
   return (
     <div className="min-h-full bg-gradient-to-b from-salvia to-salvia-chiaro pb-tabbar">
-      <Header title="I tuoi progressi" subtitle="Quello che conta davvero, bilancia esclusa." />
+      <Header title="I tuoi progressi" subtitle="Quello che conta davvero, bilancia esclusa." onBack={() => nav(-1)} />
       {error && <ErrorBox message={error} />}
       {!p && !error && <div className="space-y-3 px-5"><Skeleton className="h-52" /><Skeleton className="h-24" /></div>}
       {p && (

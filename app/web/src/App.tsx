@@ -4,7 +4,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { getUserId } from './api/client'
 import { StoreProvider } from './lib/store'
 import { FormCheck } from './lib/formcheck'
-import { TabBar, TAB_PATHS } from './ui/TabBar'
+import { TabBar, TAB_PATHS, TABBAR_PATHS } from './ui/TabBar'
 import { spring } from './ui/motion'
 import { LevelUpOverlay } from './screens/LevelUp'
 import Welcome from './screens/Welcome'
@@ -17,6 +17,7 @@ import WeekScreen from './screens/Week'
 import Path from './screens/Path'
 import ProgressScreen from './screens/Progress'
 import Food from './screens/Food'
+import Coach from './screens/Coach'
 import WidgetGallery from './screens/WidgetGallery'
 
 
@@ -44,7 +45,7 @@ function Page({ children, k }: { children: ReactNode; k: string }) {
 export function AppRoutes() {
   const location = useLocation()
   const top = '/' + (location.pathname.split('/')[1] ?? '')
-  const showTabs = TAB_PATHS.includes(top)
+  const showTabs = TABBAR_PATHS.includes(top)
   const r = (el: ReactNode) => <RequireUser>{el}</RequireUser>
   // le schermate della seduta cambiano chiave per id, le tab per sezione
   const pageKey = ['/seduta', '/checkin', '/feedback'].includes(top) ? location.pathname : top
@@ -64,6 +65,7 @@ export function AppRoutes() {
               <Route path="/percorso" element={r(<Path />)} />
               <Route path="/progressi" element={r(<ProgressScreen />)} />
               <Route path="/cibo" element={r(<Food />)} />
+              <Route path="/coach" element={r(<Coach />)} />
               <Route path="/widget" element={<WidgetGallery />} />
               <Route path="/formcheck" element={FormCheck ? <Suspense fallback={null}><FormCheck /></Suspense> : <Navigate to="/" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
