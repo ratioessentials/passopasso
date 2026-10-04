@@ -11,7 +11,7 @@ import { Button, Card, ErrorBox, Header, RotatingText, Skeleton, Typewriter } fr
 import { press, spring, stagger } from '../ui/motion'
 import { BonusBadge } from './Home'
 
-const MINUTES = [10, 15, 20, 30]
+const MINUTES = [10, 15, 20, 25, 30]
 const ENERGY = [
   { v: 1, face: '😴', label: 'Scarica' },
   { v: 2, face: '😕', label: 'Bassa' },
@@ -33,6 +33,7 @@ export default function Checkin() {
   const [flags, setFlags] = useState<string[]>([])
   const [phase, setPhase] = useState<Phase>({ k: 'form' })
   const [redFlags, setRedFlags] = useState<RedFlag[]>(RED_FLAGS)
+  const [flagsOpen, setFlagsOpen] = useState(false)
   useEffect(() => { api.redFlags().then((r) => { if (Array.isArray(r) && r.length) setRedFlags(r) }).catch(() => {}) }, [])
 
   const mins = minutes ?? nearest(session?.minutes ?? me?.profile?.minutesPerSession ?? 20)
@@ -72,7 +73,7 @@ export default function Checkin() {
           <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4 px-5">
             <Card initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={stagger(0)}>
               <h3 className="font-title mb-3 text-lg">Quanto tempo hai?</h3>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-5 gap-2">
                 {MINUTES.map((m) => (
                   <motion.button key={m} whileTap={press} onClick={() => setMinutes(m)} className={`relative rounded-2xl py-3 text-center ${mins === m ? 'text-white' : 'bg-white/70 text-petrolio'}`}>
                     {mins === m && <motion.span layoutId="min-pill" transition={spring.snappy} className="absolute inset-0 rounded-2xl bg-gradient-to-b from-petrolio to-acqua" />}
@@ -103,28 +104,12 @@ export default function Checkin() {
               <BodyMap value={pain} onChange={setPain} />
             </Card>
 
-            <Card initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={stagger(3)}>
-              <h3 className="font-title mb-1 text-lg">Oggi hai…?</h3>
-              <p className="mb-3 text-sm text-inchiostro/60">Spunta solo se ti riguarda. La tua sicurezza viene prima.</p>
-              <div className="space-y-2">
-                {redFlags.map((f) => {
-                  const on = flags.includes(f.id)
-                  return (
-                    <motion.button key={f.id} whileTap={press} onClick={() => setFlags(on ? flags.filter((x) => x !== f.id) : [...flags, f.id])}
-                      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm transition-colors ${on ? 'bg-corallo/20 text-[#7a3a2a]' : 'bg-white/60 text-inchiostro/80'}`}>
-                      <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg border-2 ${on ? 'border-corallo bg-corallo text-white' : 'border-petrolio/25'}`}>
-                        {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>}
-                      </span>
-                      {f.label}
-                    </motion.button>
-                  )
-                })}
-              </div>
-            </Card>
-
             <Button className="w-full py-4 text-lg" onClick={submit} disabled={!session}>
               Prepara la mia seduta
             </Button>
+            <button onClick={() => setFlagsOpen(true)} className="mx-auto block pb-4 text-sm text-inchiostro/55 underline decoration-inchiostro/20 underline-offset-4">
+              {flags.length ? `Hai segnalato ${flags.length === 1 ? 'un sintomo' : `${flags.length} sintomi`}: rivedi` : 'Oggi hai qualche sintomo insolito?'}
+            </button>
           </motion.div>
         )}
 
@@ -137,6 +122,38 @@ export default function Checkin() {
               <Button className="w-full py-4 text-lg" onClick={() => nav(`/seduta/${phase.session.id}`, { replace: true })}>
                 Iniziamo
               </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {flagsOpen && (
+          <motion.div className="fixed inset-0 z-50 flex items-end" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div className="absolute inset-0 bg-inchiostro/40 backdrop-blur-sm" onClick={() => setFlagsOpen(false)} />
+            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={spring.gentle}
+              drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.05, bottom: 0.6 }} onDragEnd={(_, i) => { if (i.offset.y > 100) setFlagsOpen(false) }}
+              className="safe-bottom relative max-h-[85%] w-full overflow-y-auto rounded-t-[34px] bg-white px-6 pt-3 shadow-[0_-20px_60px_-20px_rgb(18_49_58/.5)]">
+              <div className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-inchiostro/15" />
+              <h2 className="font-title text-[24px] leading-tight text-inchiostro">Oggi hai qualcuno di questi sintomi?</h2>
+              <p className="mt-1 text-sm text-inchiostro/65">Spunta solo se ti riguarda. In quel caso oggi niente allenamento: la tua sicurezza viene prima.</p>
+              <div className="mt-4 space-y-2">
+                {redFlags.map((f) => {
+                  const on = flags.includes(f.id)
+                  return (
+                    <motion.button key={f.id} whileTap={press} onClick={() => setFlags(on ? flags.filter((x) => x !== f.id) : [...flags, f.id])}
+                      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-[14.5px] transition-colors ${on ? 'bg-salvia text-inchiostro' : 'bg-salvia-chiaro/70 text-inchiostro/80'}`}>
+                      <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg border-2 ${on ? 'border-petrolio bg-petrolio text-white' : 'border-petrolio/25'}`}>
+                        {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>}
+                      </span>
+                      {f.label}
+                    </motion.button>
+                  )
+                })}
+              </div>
+              <p className="mt-4 text-xs leading-relaxed text-inchiostro/55">Se un sintomo è forte o improvviso, chiama il <a href="tel:112" className="font-semibold text-petrolio underline">112</a>.</p>
+              <div className="pb-4 pt-4">
+                <Button className="w-full" onClick={() => setFlagsOpen(false)}>{flags.length ? 'Ho capito' : 'Nessuno, sto bene'}</Button>
+              </div>
             </motion.div>
           </motion.div>
         )}

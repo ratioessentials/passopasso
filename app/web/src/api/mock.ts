@@ -1,7 +1,7 @@
 // Backend finto per lavorare senza server (VITE_MOCK=1).
 // Utente "Giulia", livello 2, settimana con una seduta saltata.
 import type {
-  BodyZone, Category, ChatMessage, CheckinRequest, CheckinResponse, CompleteResponse, Exercise, Feedback,
+  BodyZone, CalendarConnectResponse, Category, ChatMessage, CoachReply, CheckinRequest, CheckinResponse, CompleteResponse, Exercise, Feedback,
   Level, LevelsResponse, MealFeedback, Me, OnboardingReply, Profile, Progress, Session, SessionItem,
   SkipReason, SkipResponse, Week, WidgetData, Win,
 } from './types'
@@ -333,6 +333,36 @@ export const mockApi = {
       tone: 'incoraggiante',
     }
   },
+  coachMessage: async (messages: ChatMessage[]): Promise<CoachReply> => {
+    await wait(1400)
+    const last = (messages[messages.length - 1]?.content ?? '').toLowerCase()
+    if (/petto|svenut|fiato/.test(last)) {
+      return { reply: 'Grazie per avermelo detto. Con questo sintomo oggi niente allenamento.', applied: [], redFlag: RED_FLAGS[0] }
+    }
+    if (/spostal|sì, sposta/.test(last)) {
+      return { reply: 'Fatto. Le sedute ora cadono negli spazi liberi del tuo calendario.', applied: ['Sedute spostate negli spazi liberi', 'Settimana riorganizzata'], quickReplies: ['Grazie!'], redFlag: null }
+    }
+    if (/dolore|male|ginocch|schiena/.test(last)) {
+      state.profile = { ...state.profile, limitations: [...new Set([...state.profile.limitations, 'ginocchia' as BodyZone])] }
+      return { reply: 'Capito. Per questa settimana tolgo gli esercizi che caricano le ginocchia e tengo il passo svelto. Se il dolore resta più di qualche giorno, sentilo con il medico.', applied: ['Da tenere d\'occhio: ginocchia', 'Settimana riorganizzata'], quickReplies: ['Va bene', 'È solo un fastidio leggero'], redFlag: null }
+    }
+    if (/tempo|lavor|impegn/.test(last)) {
+      state.profile = { ...state.profile, minutesPerSession: 15 }
+      return { reply: 'Nessun problema: questa settimana sedute da 15 minuti, più dense. Meglio poco che niente.', applied: ['Durata delle sedute: 15 minuti', 'Settimana riorganizzata'], quickReplies: ['Perfetto', 'Posso farne solo 2?'], redFlag: null }
+    }
+    return { reply: 'Ci sono. Raccontami pure: tempo, energia, dolori o obiettivi. Adatto il piano a te.', applied: [], quickReplies: ['Ho un dolore nuovo', 'Questa settimana ho poco tempo'], redFlag: null }
+  },
+  calendarConnect: async (icsUrl: string): Promise<CalendarConnectResponse> => {
+    await wait(1600)
+    if (!/^https?:\/\//.test(icsUrl) && !icsUrl.startsWith('webcal://')) throw new Error('Questo non sembra un link iCal. Controlla di averlo copiato tutto.')
+    const d = (n: number) => iso(addDays(today, n))
+    return {
+      ok: true, eventsNext7Days: 14,
+      freeSlots: [{ date: d(1), start: '07:00', end: '08:30' }, { date: d(3), start: '12:30', end: '13:30' }, { date: d(5), start: '18:30', end: '20:00' }],
+      suggestion: 'Vedo spazio domani mattina, a pranzo fra tre giorni e una sera nel weekend: sposto lì le sedute?',
+    }
+  },
+  calendarDisconnect: async () => { await wait(300); return { ok: true } },
   redFlags: async () => { await wait(150); return clone(RED_FLAGS) },
   demoReset: async () => { await wait(150); return { ok: true } },
   widget: async (_userId: string): Promise<WidgetData> => {

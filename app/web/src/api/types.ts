@@ -20,7 +20,13 @@ export interface Exercise {
   regression: string | null
   progression: string | null
   formCheck: boolean
+  motion?: MotionArchetype | null
 }
+
+export type MotionArchetype =
+  | 'marcia' | 'camminata_veloce' | 'corsetta' | 'corsa' | 'scatto' | 'squat' | 'affondo' | 'ponte' | 'plank'
+  | 'flessioni_muro' | 'polpacci' | 'rotazioni_braccia' | 'rotazioni_anche' | 'allungamento' | 'respirazione'
+  | 'jumping_jack' | 'step'
 
 export interface SessionTemplate {
   minutes: number
@@ -168,6 +174,21 @@ export interface WidgetData {
   week: { day: string; status: DayStatus }[]
   habit: { title: string; doneDays: number } | null
   lastWin: { title: string } | null
+}
+
+export interface CoachReply {
+  reply: string
+  quickReplies?: string[]
+  applied: string[]
+  redFlag: RedFlag | null
+}
+
+export interface FreeSlot { date: string; start: string; end: string }
+export interface CalendarConnectResponse {
+  ok: boolean
+  eventsNext7Days: number
+  freeSlots: FreeSlot[]
+  suggestion: string
 }
 
 export interface ApiErrorBody { error: { code: string; message: string } }
