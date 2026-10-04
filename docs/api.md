@@ -170,6 +170,34 @@ Il server salva l'URL nel profilo (`calendarUrl`), lo rilegge a ogni pianificazi
 ### Perché funziona
 - `GET /api/science` → `[ { "id": "ripartenza", "claim": "Premiare chi riprende funziona più di premiare chi non salta mai", "source": "Milkman et al., Nature 2021", "url": "...", "inApp": "La seduta di ripartenza con bonus" }, ... ]` da `content/science.json`.
 
+### Salute e wearable (Health Bridge)
+Modello unificato dei dati del corpo. Ogni sorgente (Comando rapido di Apple Salute, Strava, in futuro Health Connect, Garmin, Fitbit, Oura) scrive nello stesso formato; il server calcola una baseline personale a 14 giorni e la **prontezza del giorno**.
+- `GET /api/health/token` → `{ "token": "ht_…" }` token personale per le sorgenti che inviano dati (Comando rapido). Rigenerabile.
+- `POST /api/health/ingest` (header `X-Health-Token`, CORS aperto) 
+  ```json
+  { "source": "apple_health", "date": "2026-10-04", "steps": 6400, "restingHr": 58, "hrv": 42, "sleepMinutes": 340, "activeMinutes": 25,
+    "workouts": [ { "type": "run", "start": "2026-10-04T07:10:00+02:00", "minutes": 32, "distanceKm": 5.1, "avgHr": 148 } ] }
+  ```
+  → `{ "ok": true, "readiness": { ... } }`. Campi tutti opzionali; un invio per giorno sovrascrive (upsert per sorgente+data). Gli allenamenti importati diventano sedute `done` con `kind: "importata"` se nello stesso giorno c'è una seduta pianificata di tipo compatibile, altrimenti attività extra.
+- `GET /api/health/summary` →
+  ```json
+  { "sources": [ { "id": "apple_health", "connected": true, "lastSync": "2026-10-04T08:02:00+02:00" }, { "id": "strava", "connected": false }, { "id": "health_connect", "connected": false, "comingSoon": true }, ... ],
+    "today": { "steps": 6400, "restingHr": 58, "hrv": 42, "sleepMinutes": 340 },
+    "baseline": { "restingHr": 54, "hrv": 48, "sleepMinutes": 410 },
+    "readiness": { "score": 62, "level": "media", "signals": [ "Sonno 5h40 (meno del solito)", "Battito a riposo +7%" ], "suggestion": "Oggi ti propongo una seduta leggera.", "suggestedEnergy": 2, "restAdvised": false } }
+  ```
+  Regole deterministiche (`content/readiness.json`): sonno < 6 h, battito a riposo > +8% sulla baseline, HRV < −15% → segnali; 3 giorni consecutivi con 2+ segnali → `restAdvised` e il coach consiglia riposo e, se c'è febbre o malessere, il medico. `suggestedEnergy` precompila il check-in. Passi ≥ 7000 in un giorno senza seduta ai livelli 1-2 → contano come "giorno attivo" per la costanza (max 2 a settimana).
+- Strava (OAuth vero): `GET /api/connect/strava` → redirect a Strava; `GET /api/connect/strava/callback` → salva i token, importa gli ultimi 30 giorni, `302` all'app `/coach?connected=strava`; `DELETE /api/connect/strava`. Variabili `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`. Sync alla chiamata di `/api/health/summary` se l'ultima è più vecchia di 30 minuti.
+- Le sedute di corsa importate aggiornano `runner.kmPerWeek` (media 4 settimane) e il volume della settimana dopo (regola del 10% sui km reali).
+
+### Notifiche push (Web Push, funziona su Android e su iPhone con l'app installata, iOS 16.4+)
+- `GET /api/push/vapid` → `{ "publicKey": "…" }`
+- `POST /api/push/subscribe` `{ "subscription": { /* PushSubscription */ }, "reminderMinutesBefore": 60 }` → `{ "ok": true }`; `DELETE /api/push/subscribe`.
+- Il server manda: promemoria gentile prima della seduta ("Tra un'ora c'è la tua seduta: 20 minuti, come stai?"), la mattina dopo una seduta saltata ("Capita. Oggi c'è una ripartenza da 15 minuti, se ti va"), e quando la prontezza consiglia riposo. Mai più di una al giorno, mai di sera tardi, testi da `copy.json`. `POST /api/push/test` manda subito una notifica di prova.
+
+### Piani (solo schermata, nessun pagamento nella demo)
+- `GET /api/plans` → da `content/plans.json`: Free (livelli 1-2, coach 5 messaggi/sett., foto 3/sett.), Plus (tutto: percorsi, coach illimitato, calendario, salute e wearable, test) con prezzo indicativo, e le **promesse anti-dark-pattern**: niente prova che si rinnova a tradimento, cancellazione in un tocco, prezzo visibile prima, i dati restano tuoi anche se smetti. Nella demo tutto è sbloccato (`"demo": true`).
+
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 ```json
