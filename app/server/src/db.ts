@@ -45,6 +45,8 @@ const migrations: string[] = [
    CREATE TABLE level_history (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, n INTEGER NOT NULL, from_date TEXT NOT NULL, to_date TEXT);
    CREATE TABLE meals (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, date TEXT NOT NULL, habit_id TEXT, feedback TEXT NOT NULL);
    CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);`,
+  // 2: scheda compilata prima della conversazione di onboarding
+  `ALTER TABLE users ADD COLUMN draft TEXT;`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');

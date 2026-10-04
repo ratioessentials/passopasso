@@ -3,6 +3,7 @@ import { content, type BodyZone, type Habit, type WinDef } from '../content.js';
 import { db } from '../db.js';
 import { addDays, diffDays, today, weekday, weekStart } from '../dates.js';
 import { buildRuleItems, ruleReason, ruleTitle } from './builder.js';
+import { derive } from './person.js';
 import type { DraftSession, Item, Profile, Session, SessionRow, UserRow } from './types.js';
 
 export const rid = (prefix: string, n = 6) => `${prefix}_${crypto.randomBytes(8).toString('base64url').replace(/[-_]/g, '').slice(0, n).toLowerCase()}`;
@@ -56,7 +57,7 @@ export function updateSession(id: string, fields: Partial<Record<keyof SessionRo
 /** Seduta pianificata a regole (nessuna chiamata all'AI: il check-in la rigenera). */
 export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: { level?: number; restart?: boolean; pain?: BodyZone[] } = {}): DraftSession & { bonus_points: number; kind: 'normale' | 'ripartenza' } {
   const level = opts.level ?? user.level;
-  const lvl = content.level(level);
+  const lvl = content.level(level, profile.track);
   if (opts.restart) {
     const r = content.program().restartSession;
     const intensity = Math.min(r.intensity ?? 0.8, user.intensity);
@@ -71,8 +72,8 @@ export function ruleDraft(user: UserRow, profile: Profile, date: string, opts: {
   const minutes = Math.round(Math.min(Math.max(profile.minutesPerSession || lvl.sessionTemplate.minutes, 10), lvl.sessionTemplate.minutes * 1.5));
   return {
     kind: 'normale', bonus_points: 0, source: 'rules', minutes, intensity: user.intensity,
-    title: ruleTitle(level),
-    reason: ruleReason({ level, minutes, templateMinutes: lvl.sessionTemplate.minutes, pain: opts.pain }),
+    title: ruleTitle(level, profile.track),
+    reason: ruleReason({ level, minutes, templateMinutes: lvl.sessionTemplate.minutes, pain: opts.pain, caution: !!profile.caution, track: profile.track }),
     items: buildRuleItems({ level, template: lvl.sessionTemplate, minutes, intensity: user.intensity, profile, seed: date, pain: opts.pain }),
   };
 }
@@ -104,7 +105,7 @@ export function toSession(row: SessionRow, user?: UserRow): Session {
 const PATTERNS: Record<number, number[]> = { 1: [2], 2: [1, 4], 3: [0, 2, 4], 4: [0, 1, 3, 5], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
 
 export function sessionsPerWeek(user: UserRow, profile: Profile) {
-  const lvl = content.level(user.level);
+  const lvl = content.level(user.level, profile.track);
   return Math.max(2, Math.min(profile.daysPerWeek || lvl.sessionsPerWeek, lvl.sessionsPerWeek));
 }
 
@@ -173,8 +174,9 @@ export function consistencyAt(userId: string, at = today()): number {
 // ---------- Livello e prontezza ----------
 
 export function levelInfo(user: UserRow) {
-  const lvl = content.level(user.level);
-  const maxLevel = Math.max(...content.program().levels.map((l) => l.n));
+  const profile = profileOf(user);
+  const lvl = content.level(user.level, profile?.track);
+  const maxLevel = Math.min(Math.max(...content.program().levels.map((l) => l.n)), profile ? derive(profile).maxLevel : 5);
   const consistency = consistencyAt(user.id);
   const since = user.level_since ?? '0000-00-00';
   const done = allSessions(user.id).filter((s) => s.status === 'done' && s.level === user.level && s.date >= since);

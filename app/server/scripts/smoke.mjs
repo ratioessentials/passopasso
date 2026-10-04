@@ -37,6 +37,10 @@ check('/levels', levels.status === 200 && levels.json.levels.length === 5 && lev
 const created = await api('POST', '/api/users');
 const uid = created.json?.userId;
 check('nuovo utente', created.status === 201 && /^u_/.test(uid), uid);
+const card = await api('POST', '/api/onboarding/profile', { user: uid, body: {
+  name: 'Marco', age: 52, sex: 'm', heightCm: 178, weightKg: 96, job: 'seduto', sleepHours: 6,
+  health: { heartCondition: false, chestPain: false, dizziness: false, jointIssue: true, medication: false, pregnancy: false, otherCondition: false, notes: '' } } });
+check('scheda salvata (problema articolare: niente prudenza)', card.status === 200 && card.json.ok && card.json.caution === false, card.json?.cautionMessage);
 const answers = ['Marco', 'Quasi mai', 'Correre 20 minuti senza fermarmi', '3 giorni, 20 minuti', 'Una sedia', 'Ginocchia', 'Sera'];
 const messages = [{ role: 'assistant', content: 'Ciao! Come ti chiami?' }];
 let onboarding;
@@ -57,6 +61,9 @@ check('onboarding completo', onboarding.status === 200 && onboarding.json.done &
   `${onboarding.ms} ms, livello ${onboarding.json?.profile?.startLevel}: "${onboarding.json?.reply}"`);
 
 const meNew = await api('GET', '/api/me', { user: uid });
+check('il peso non torna mai nel profilo', meNew.json?.profile && !('weightKg' in meNew.json.profile) && meNew.json.profile.impactAllowed === false);
+const impactItems = (meNew.json?.today?.items ?? []).filter((i) => i.exercise.impact);
+check('niente esercizi ad impatto con problema articolare', impactItems.length === 0, impactItems.map((i) => i.exerciseId).join(','));
 const todayId = meNew.json?.today?.id;
 check('prima seduta oggi', !!todayId, meNew.json?.today?.title);
 
@@ -115,6 +122,31 @@ const move = await api('POST', '/api/coach/message', { user: uid, body: { messag
 check('coach: sposta negli spazi liberi', move.status === 200 && move.json.applied.some((a) => /spazi liberi|riorganizzata/i.test(a)), `${move.ms} ms, ${JSON.stringify(move.json?.applied)}`);
 const unlink = await api('DELETE', '/api/calendar', { user: uid });
 check('calendario scollegato', unlink.status === 200 && unlink.json.ok);
+
+// --- prudenza (PAR-Q+) e minorenni ---
+const u2 = (await api('POST', '/api/users')).json.userId;
+const c2 = await api('POST', '/api/onboarding/profile', { user: u2, body: { name: 'Anna', age: 61, sex: 'f', heightCm: 160, weightKg: 70, job: 'in_piedi', sleepHours: 7,
+  health: { heartCondition: true, chestPain: false, dizziness: false, jointIssue: false, medication: true, pregnancy: false, otherCondition: false, notes: 'Pressione alta' } } });
+check('PAR-Q+ con un sì → prudenza e messaggio', c2.json?.caution === true && !!c2.json.cautionMessage, c2.json?.cautionMessage);
+const m2 = [{ role: 'assistant', content: 'Ciao!' }];
+let o2;
+for (const a of ['Camminare senza fiatone', 'Quasi mai', '3 giorni, 20 minuti', 'Una sedia', 'Nessuna', 'Mattina', 'Va bene', 'Ok']) {
+  m2.push({ role: 'user', content: a });
+  o2 = await api('POST', '/api/onboarding/message', { user: u2, body: { messages: m2 } });
+  if (o2.json?.done) break;
+  m2.push({ role: 'assistant', content: o2.json.reply });
+}
+const me2 = await api('GET', '/api/me', { user: u2 });
+const cats = new Set((me2.json?.today?.items ?? []).map((i) => i.exercise.category));
+check('prudenza: niente forza nella seduta', o2.json?.done && me2.json?.profile?.caution === true && !cats.has('forza'), [...cats].join(','));
+const ok2 = await api('POST', '/api/coach/message', { user: u2, body: { messages: [{ role: 'user', content: 'Il medico mi ha dato il via libera per allenarmi' }] } });
+check('coach: via libera del medico → prudenza disattivata', ok2.status === 200 && (await api('GET', '/api/me', { user: u2 })).json.profile.caution === false, JSON.stringify(ok2.json?.applied));
+const patch = await api('PATCH', '/api/me/profile', { user: u2, body: { sleepHours: 5.5 } });
+check('PATCH della scheda', patch.status === 200 && patch.json.profile.sleepHours === 5.5 && !('weightKg' in patch.json.profile));
+const u3 = (await api('POST', '/api/users')).json.userId;
+const c3 = await api('POST', '/api/onboarding/profile', { user: u3, body: { name: 'Leo', age: 14, sex: 'm', job: 'seduto', sleepHours: 9 } });
+const o3 = await api('POST', '/api/onboarding/message', { user: u3, body: { messages: [{ role: 'assistant', content: 'Ciao!' }, { role: 'user', content: 'Voglio correre' }] } });
+check('minore di 16 anni → nessun piano', c3.json?.minor === true && o3.json?.minor === true && o3.json.done === true, o3.json?.reply);
 
 const hab = await api('POST', '/api/habit/checkin', { user: uid });
 check('habit checkin', hab.status === 200 && hab.json.doneDays >= 1);

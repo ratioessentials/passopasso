@@ -3,13 +3,14 @@ import { db } from '../db.js';
 import { addDays, today, weekStart } from '../dates.js';
 import { currentHabit, evaluateWins, getUser, insertSession, planWeek, ruleDraft, updateSession } from './store.js';
 import type { Feedback, Profile, UserRow } from './types.js';
+import { startIntensity } from './person.js';
 
 /** Fine dell'onboarding: salva il profilo, fissa il livello di partenza e pianifica la prima settimana (con una seduta già oggi). */
 export function saveProfile(user: UserRow, profile: Profile) {
   const t = today();
   db.transaction(() => {
-    db.prepare('UPDATE users SET profile = ?, level = ?, intensity = 1.0, start_date = ?, level_since = ? WHERE id = ?')
-      .run(JSON.stringify(profile), profile.startLevel, t, t, user.id);
+    db.prepare('UPDATE users SET profile = ?, level = ?, intensity = ?, start_date = ?, level_since = ?, draft = NULL WHERE id = ?')
+      .run(JSON.stringify(profile), profile.startLevel, startIntensity(profile), t, t, user.id);
     db.prepare("DELETE FROM sessions WHERE user_id = ? AND status = 'planned'").run(user.id);
     db.prepare('DELETE FROM planned_weeks WHERE user_id = ?').run(user.id);
     db.prepare('DELETE FROM level_history WHERE user_id = ?').run(user.id);
@@ -26,6 +27,21 @@ export const DEMO_ID = 'demo';
 const DEMO_PROFILE: Profile = {
   name: 'Giulia',
   age: 34,
+  sex: 'f',
+  heightCm: 168,
+  weightKg: 74,
+  job: 'seduto',
+  sleepHours: 6.5,
+  health: {
+    heartCondition: false, chestPain: false, dizziness: false, jointIssue: true,
+    medication: false, pregnancy: false, otherCondition: false, notes: 'Lieve condromalacia al ginocchio destro',
+  },
+  caution: false,
+  medicalOk: null,
+  calendarUrl: null,
+  track: 'corsa',
+  runner: null,
+  food: null,
   goal: 'Riuscire a correre 20 minuti senza fermarmi',
   experience: 'poca',
   daysPerWeek: 3,
@@ -69,7 +85,7 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v4`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v5`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
   if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();

@@ -19,6 +19,8 @@ export interface Exercise {
   regression: string | null;
   progression: string | null;
   formCheck: boolean;
+  impact?: boolean;
+  motion?: string | null;
 }
 export interface Block { category: Category; count: number; seconds?: number }
 export interface SessionTemplate { minutes: number; blocks: Block[] }
@@ -31,6 +33,7 @@ export interface Level {
 export interface Program {
   levels: Level[];
   restartSession: { title?: string; intensity?: number; bonusPoints: number; sessionTemplate: SessionTemplate };
+  tracks?: Record<string, unknown>;
   [k: string]: unknown;
 }
 export interface Habit { id: string; week: number; title: string; why: string; tips: string[]; photoPrompt: string }
@@ -61,9 +64,19 @@ export const content = {
   exercises: () => load<Exercise[]>('exercises.json'),
   exercise: (id: string) => load<Exercise[]>('exercises.json').find((e) => e.id === id),
   program: () => load<Program>('program.json'),
-  level: (n: number) => {
-    const levels = load<Program>('program.json').levels;
-    return levels.find((l) => l.n === n) ?? levels[0];
+  /** Livello base, con le sostituzioni del percorso (`tracks.<track>.levels`) se ci sono. */
+  level: (n: number, track?: string): Level => {
+    const program = load<Program>('program.json');
+    const base = program.levels.find((l) => l.n === n) ?? program.levels[0];
+    if (!track) return base;
+    const tracks = (program.tracks ?? load<Program>('tracks.json').tracks) as Record<string, { levels?: unknown }> | undefined;
+    const tl = tracks?.[track]?.levels;
+    const over = (Array.isArray(tl) ? tl.find((l) => (l as Level).n === n) ?? tl[n - 1] : (tl as Record<string, unknown> | undefined)?.[String(n)]) as Partial<Level> | undefined;
+    return over ? { ...base, ...over, n: base.n, name: base.name } as Level : base;
+  },
+  tracks: () => {
+    const program = load<Program>('program.json');
+    return (program.tracks ?? load<Program>('tracks.json').tracks ?? {}) as Record<string, Record<string, unknown>>;
   },
   habits: () => load<Habit[]>('habits.json'),
   redFlags: () => load<RedFlag[]>('red_flags.json'),

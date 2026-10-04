@@ -16,7 +16,10 @@ DOSAGGIO:
 - "reps" per gli esercizi a ripetizioni, "seconds" per quelli a tempo (mai entrambi).
 - Numeri tondi: secondi multipli di 5 (sotto i 2 minuti) o di 30 (cardio lungo); ripetizioni intere. sets 1-3, restSec 15-90.
 
+PERSONA: "CHI È" ti serve per i dosaggi (età, corpo, sonno, lavoro, condizioni). Se c'è un limite al cardio continuo o niente impatto, rispettali. Con PRUDENZA usa solo camminata, mobilità e respirazione.
+
 TESTI (si leggono su un telefono, in un colpo d'occhio):
+- MAI citare peso, BMI, forma fisica, corpo o età della persona: nemmeno in modo gentile.
 - "title": 2-4 parole, concrete (es. "Passo svelto e gambe forti").
 - "note": facoltativa, massimo 6 parole, senza punto finale, suggerimento e non ordine (no "devi": "fiato per parlare" sì, "devi riuscire a parlare" no). Mettila solo dove aiuta davvero (2-4 note in tutto).
 - "reason": UNA frase, massimo 20 parole. Dice cosa cambia oggi e perché, partendo dal check-in.

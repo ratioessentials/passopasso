@@ -6,13 +6,14 @@ import { addDays, today, weekday, weekStart } from '../dates.js';
 import { db } from '../db.js';
 import { freeSlots, loadBusy, suggestDays, type FreeSlot } from './calendar.js';
 import { detectRedFlag, normalize } from './redflags.js';
+import { personSummary } from './person.js';
 import { getUser, levelInfo, profileOf, replanFrom, sessionsBetween, sessionsPerWeek, updateSession } from './store.js';
 import type { PreferredTime, Profile, UserRow } from './types.js';
 
 export interface CoachMessage { role: 'user' | 'assistant'; content: string }
 export interface CoachReply { reply: string; quickReplies: string[]; applied: string[]; redFlag: RedFlag | null }
 
-const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino'] as const;
+const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino', 'elastico', 'manubri'] as const;
 const ZONE_LABEL: Record<string, string> = { schiena_alta: 'schiena alta', schiena_bassa: 'schiena bassa' };
 const zl = (z: string) => ZONE_LABEL[z] ?? z;
 const TIME_LABEL: Record<PreferredTime, string> = { mattina: 'mattina', pausa_pranzo: 'pausa pranzo', sera: 'sera' };
@@ -28,6 +29,12 @@ const Changes = z.object({
   equipmentAdd: z.array(z.string()).nullish(),
   equipmentRemove: z.array(z.string()).nullish(),
   goal: z.string().max(160).nullish(),
+  healthAdd: z.array(z.string()).nullish(),
+  healthRemove: z.array(z.string()).nullish(),
+  healthNote: z.string().max(200).nullish(),
+  medicalClearance: z.boolean().nullish(),
+  sleepHours: z.number().nullish(),
+  job: z.enum(['seduto', 'in_piedi', 'fisico']).nullish(),
   replanWeek: z.boolean().nullish(),
   useFreeSlots: z.boolean().nullish(),
 });
@@ -71,10 +78,38 @@ export function applyChanges(user: UserRow, ch: Changes, slots: FreeSlot[] | nul
   const goal = ch.goal?.trim();
   if (goal && goal.length >= 3 && normalize(goal) !== normalize(profile.goal)) { next.goal = goal; applied.push(`Nuovo obiettivo: ${goal}`); }
 
+  // scheda: salute, sonno, lavoro
+  const H_LABEL: Record<string, string> = {
+    heartCondition: 'problema al cuore o pressione', chestPain: 'dolore al petto', dizziness: 'capogiri', jointIssue: 'problema articolare',
+    medication: 'farmaci per cuore o pressione', pregnancy: 'gravidanza', otherCondition: 'condizione cronica',
+  };
+  const health = { ...(profile.health ?? { heartCondition: false, chestPain: false, dizziness: false, jointIssue: false, medication: false, pregnancy: false, otherCondition: false, notes: '' }) };
+  const hAdd = (ch.healthAdd ?? []).filter((k) => k in H_LABEL && !(health as Record<string, unknown>)[k]);
+  const hRemove = (ch.healthRemove ?? []).filter((k) => k in H_LABEL && (health as Record<string, unknown>)[k] && !hAdd.includes(k));
+  for (const k of hAdd) (health as Record<string, unknown>)[k] = true;
+  for (const k of hRemove) (health as Record<string, unknown>)[k] = false;
+  if (ch.healthNote?.trim()) health.notes = [health.notes, ch.healthNote.trim()].filter(Boolean).join('; ').slice(0, 500);
+  if (hAdd.length || hRemove.length || ch.healthNote?.trim()) {
+    next.health = health;
+    if (hAdd.length) applied.push(`Scheda: ${joinIt(hAdd.map((k) => H_LABEL[k]))}`);
+    if (hRemove.length) applied.push(`Scheda: tolto ${joinIt(hRemove.map((k) => H_LABEL[k]))}`);
+    if (!hAdd.length && !hRemove.length) applied.push('Scheda aggiornata');
+  }
+  const cautionKeys = ['heartCondition', 'chestPain', 'dizziness', 'medication', 'pregnancy', 'otherCondition'];
+  const newCaution = hAdd.some((k) => cautionKeys.includes(k));
+  const anyCaution = cautionKeys.some((k) => (health as Record<string, unknown>)[k]);
+  if (newCaution && !profile.caution) { next.caution = true; next.medicalOk = null; applied.push('Modalità prudenza: camminata, mobilità e respiro'); }
+  else if (!anyCaution && profile.caution) { next.caution = false; applied.push('Modalità prudenza disattivata'); }
+  else if (ch.medicalClearance && profile.caution && !newCaution) { next.caution = false; next.medicalOk = today(); applied.push('Via libera del medico: si sblocca tutto il piano'); }
+  if (typeof ch.sleepHours === 'number' && ch.sleepHours >= 2 && ch.sleepHours <= 14 && ch.sleepHours !== profile.sleepHours) {
+    next.sleepHours = Math.round(ch.sleepHours * 2) / 2; applied.push(`Ore di sonno: ${next.sleepHours}`);
+  }
+  if (ch.job && ch.job !== profile.job) { next.job = ch.job; applied.push(`Lavoro: ${ch.job.replace('_', ' ')}`); }
+
   const profileChanged = applied.length > 0;
   if (profileChanged) db.prepare('UPDATE users SET profile = ? WHERE id = ?').run(JSON.stringify(next), user.id);
 
-  const planChanged = add.length || remove.length || next.daysPerWeek !== profile.daysPerWeek || next.minutesPerSession !== profile.minutesPerSession || eqAdd.length || eqRemove.length;
+  const planChanged = next.caution !== profile.caution || add.length || remove.length || next.daysPerWeek !== profile.daysPerWeek || next.minutesPerSession !== profile.minutesPerSession || eqAdd.length || eqRemove.length;
   const fresh = getUser(user.id)!;
   if (ch.useFreeSlots && slots?.length) {
     const { dates } = suggestDays(slots, sessionsPerWeek(fresh, next), next);
@@ -106,12 +141,13 @@ function context(user: UserRow, profile: Profile, slots: FreeSlot[] | null): str
   const ws = weekStart(t);
   const week = sessionsBetween(user.id, ws, addDays(ws, 6))
     .map((s) => `- ${DAY[weekday(s.date)]} ${s.date}${s.date === t ? ' (oggi)' : ''}: ${s.title}, ${s.minutes} min, ${s.kind}, stato ${s.status}`).join('\n') || '- nessuna seduta';
-  const { calendarUrl, ...visible } = profile as Profile & { calendarUrl?: string };
+  const { calendarUrl, weightKg: _w, heightCm: _h, ...visible } = profile;
   const slotText = slots === null
     ? (calendarUrl ? 'collegato ma non leggibile ora' : 'non collegato')
     : slots.length ? slots.slice(0, 14).map((s) => `${DAY[weekday(s.date)]} ${s.date} ${s.start}-${s.end}`).join('; ') : 'collegato, nessuno spazio libero';
   return `OGGI: ${DAY[weekday(t)]} ${t}.
 PROFILO: ${JSON.stringify(visible)}
+CHI È: ${personSummary(profile)}
 LIVELLO: ${info.n} "${info.name}" (${info.verb}), avanzamento ${Math.round(info.progress * 100)}%, costanza ${info.consistency}/100.
 SETTIMANA:
 ${week}
@@ -137,6 +173,10 @@ function ruleCoach(text: string, profile: Profile, slots: FreeSlot[] | null): { 
   if (/(di|la|al) mattin/.test(t)) changes.preferredTime = 'mattina';
   else if (/pausa pranzo|a pranzo/.test(t)) changes.preferredTime = 'pausa_pranzo';
   else if (/(di|la) sera/.test(t)) changes.preferredTime = 'sera';
+  if (/pressione alta|ipertes|problema al cuore|cardiopat/.test(t)) { changes.healthAdd = ['heartCondition']; changes.healthNote = 'Segnalato al coach: pressione o cuore'; }
+  if (/diabet|asma/.test(t)) { changes.healthAdd = [...(changes.healthAdd ?? []), 'otherCondition']; }
+  if (/incinta|gravidanza/.test(t)) changes.healthAdd = [...(changes.healthAdd ?? []), 'pregnancy'];
+  if (/medico.*(via libera|ok|posso allenarmi)|via libera del medico|ok dal medico/.test(t)) changes.medicalClearance = true;
   if (/spazi liberi|spostale|sposta le sedute|si, sposta|si sposta/.test(t) && slots?.length) changes.useFreeSlots = true;
   if (/calendari/.test(t) && slots !== null && !changes.useFreeSlots) {
     const { suggestion } = suggestDays(slots, profile.daysPerWeek, profile);

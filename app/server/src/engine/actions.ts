@@ -113,7 +113,7 @@ export function complete(user: UserRow, row: SessionRow, feedback: Feedback) {
   const fresh = getUser(user.id)!;
   const newWins: Win[] = evaluateWins(fresh);
   const info = levelInfo(fresh);
-  const levelUp = info.ready ? { from: fresh.level, to: fresh.level + 1, name: content.level(fresh.level + 1).name } : null;
+  const levelUp = info.ready ? { from: fresh.level, to: fresh.level + 1, name: content.level(fresh.level + 1, profileOf(fresh)?.track).name } : null;
   let message = content.text(`feedback.${feedback}_reply`, COMPLETE_MESSAGES[feedback]);
   if (row.kind === 'ripartenza') message = `${content.text('restart.done', 'Ripartenza fatta.')} +${row.bonus_points} punti di costanza.`;
   return { consistency: consistencyAt(user.id), intensity, newWins, levelUp, message };

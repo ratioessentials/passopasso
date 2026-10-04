@@ -3,6 +3,7 @@ import { askJson } from '../ai/claude.js';
 import { SEDUTA_SYSTEM } from '../ai/prompts/seduta.js';
 import { content, type BodyZone, type Category, type Exercise, type SessionTemplate } from '../content.js';
 import type { DraftSession, Item, Profile } from './types.js';
+import { derive, personSummary } from './person.js';
 
 const ZONE_LABEL: Record<string, string> = {
   collo: 'collo', spalle: 'spalle', schiena_alta: 'schiena alta', schiena_bassa: 'schiena bassa', petto: 'petto',
@@ -18,12 +19,27 @@ export const clampIntensity = (x: number) => Math.round(Math.min(1.3, Math.max(0
 /** Il muro c'è in ogni casa: lo consideriamo sempre disponibile. */
 const available = (equipment: string[]) => new Set([...equipment, 'muro']);
 
-export interface Filter { level: number; equipment: string[]; pain: BodyZone[]; watch?: BodyZone[] }
+export interface Filter { level: number; equipment: string[]; pain: BodyZone[]; watch?: BodyZone[]; noImpact?: boolean; cautionOnly?: boolean }
+
+/** Prudenza (PAR-Q+): solo camminata, mobilità e respirazione. */
+const CAUTION_CARDIO = /cammin|marcia/;
+function cautionOk(ex: Exercise): boolean {
+  if (ex.impact) return false;
+  if (ex.category === 'cardio') return CAUTION_CARDIO.test(ex.id) || ex.motion === 'marcia' || ex.motion === 'camminata_veloce';
+  return ex.category === 'riscaldamento' || ex.category === 'mobilita' || ex.category === 'defaticamento';
+}
+
+/** Il filtro completo per una persona (regole 3, 4 e 4b). */
+export function filterFor(profile: Profile, level: number, pain: BodyZone[] = []): Filter {
+  const d = derive(profile);
+  return { level, equipment: profile.equipment, pain, watch: profile.limitations, noImpact: !d.impactAllowed, cautionOnly: d.caution };
+}
 
 /** Regole 3 e 4 del motore: livello, attrezzatura, zone doloranti. */
 export function isAllowed(ex: Exercise, f: Filter): boolean {
   const eq = available(f.equipment);
-  return ex.minLevel <= f.level && ex.equipment.every((e) => eq.has(e)) && !ex.zones.some((z) => f.pain.includes(z));
+  return ex.minLevel <= f.level && ex.equipment.every((e) => eq.has(e)) && !ex.zones.some((z) => f.pain.includes(z))
+    && !(f.noImpact && ex.impact) && !(f.cautionOnly && !cautionOk(ex));
 }
 
 export function allowedExercises(f: Filter): Exercise[] {
@@ -102,11 +118,12 @@ const tidyNote = (n: string) => {
   return t.charAt(0).toUpperCase() + t.slice(1);
 };
 
-export function dose(ex: Exercise, opts: { intensity: number; level: number; timeRatio: number; energy?: number; cardioSeconds?: number }): Item {
+export function dose(ex: Exercise, opts: { intensity: number; level: number; timeRatio: number; energy?: number; cardioSeconds?: number; cardioCap?: number | null }): Item {
   const { intensity, level, timeRatio, energy = 3 } = opts;
   const lowEnergy = energy <= 2;
   if (ex.category === 'cardio' && opts.cardioSeconds) {
-    const secs = Math.max(120, Math.round((opts.cardioSeconds * timeRatio * intensity) / 30) * 30);
+    let secs = Math.max(120, Math.round((opts.cardioSeconds * timeRatio * intensity) / 30) * 30);
+    if (opts.cardioCap) secs = Math.min(secs, opts.cardioCap * 60);
     return { exerciseId: ex.id, sets: 1, seconds: secs, restSec: 30 };
   }
   let sets = 1;
@@ -137,7 +154,8 @@ export interface BuildInput {
 
 /** Seduta di riserva costruita a regole da `sessionTemplate` (regola 5). */
 export function buildRuleItems(input: BuildInput): Item[] {
-  const f: Filter = { level: input.level, equipment: input.profile.equipment, pain: input.pain ?? [], watch: input.profile.limitations };
+  const f: Filter = filterFor(input.profile, input.level, input.pain ?? []);
+  const cardioCap = derive(input.profile).cardioCap;
   const timeRatio = Math.min(1.5, Math.max(0.4, input.minutes / input.template.minutes));
   const easy = input.easy || (input.energy ?? 3) <= 2;
   const taken = new Set<string>();
@@ -160,18 +178,19 @@ export function buildRuleItems(input: BuildInput): Item[] {
       chosen = pick(block.category, count, f, input.seed, { easy, taken });
     }
     for (const ex of chosen) {
-      items.push(dose(ex, { intensity: input.intensity, level: input.level, timeRatio, energy: input.energy, cardioSeconds: block.category === 'cardio' ? block.seconds : undefined }));
+      items.push(dose(ex, { intensity: input.intensity, level: input.level, timeRatio, energy: input.energy, cardioSeconds: block.category === 'cardio' ? block.seconds : undefined, cardioCap }));
     }
   }
   return items;
 }
 
-export function ruleTitle(level: number): string {
-  const l = content.level(level);
+export function ruleTitle(level: number, track?: string): string {
+  const l = content.level(level, track);
   return `${l.verb} e forza`;
 }
 
-export function ruleReason(input: { level: number; minutes: number; templateMinutes: number; energy?: number; pain?: string[] }): string {
+export function ruleReason(input: { level: number; minutes: number; templateMinutes: number; energy?: number; pain?: string[]; caution?: boolean; track?: string }): string {
+  if (input.caution) return 'Per ora camminata, mobilità e respiro: quando il medico ti dà il via libera, dillo al coach e sblocchiamo il resto.';
   const causes: string[] = [];
   const effects: string[] = [];
   if (input.pain?.length) { causes.push(`${zonesText(input.pain)} da proteggere`); effects.push(`niente esercizi su ${zonesText(input.pain)}`); }
@@ -179,7 +198,7 @@ export function ruleReason(input: { level: number; minutes: number; templateMinu
   if (input.energy !== undefined && input.energy <= 2) { causes.push('poca energia'); effects.push('ritmo tranquillo e pause più lunghe'); }
   else if (input.energy !== undefined && input.energy >= 5) { causes.push('energia alta'); effects.push('spingiamo un pelo di più'); }
   if (!causes.length) {
-    const goal = content.level(input.level).goal;
+    const goal = content.level(input.level, input.track).goal;
     return `Seduta piena del livello ${input.level}: un passo verso "${goal.charAt(0).toLowerCase()}${goal.slice(1)}".`;
   }
   const c = causes.length > 1 ? `${causes.slice(0, -1).join(', ')} e ${causes[causes.length - 1]}` : causes[0];
@@ -211,23 +230,25 @@ export interface CheckinInput { minutes: number; energy: number; pain: BodyZone[
 export async function generateSession(opts: {
   level: number; profile: Profile; intensity: number; checkin: CheckinInput; seed: string; template?: SessionTemplate; kindNote?: string; easy?: boolean;
 }): Promise<DraftSession> {
-  const lvl = content.level(opts.level);
+  const lvl = content.level(opts.level, opts.profile.track);
   const template = opts.template ?? lvl.sessionTemplate;
   const { minutes, energy, pain } = opts.checkin;
   const intensity = clampIntensity(opts.intensity * (energy <= 2 ? 0.85 : energy >= 5 ? 1.05 : 1));
-  const f: Filter = { level: opts.level, equipment: opts.profile.equipment, pain, watch: opts.profile.limitations };
+  const f: Filter = filterFor(opts.profile, opts.level, pain);
+  const cap = derive(opts.profile).cardioCap;
   const allowed = allowedExercises(f);
   const buildInput: BuildInput = { level: opts.level, template, minutes, intensity, profile: opts.profile, pain, energy, seed: opts.seed, easy: opts.easy };
   const fallback = (): DraftSession => ({
     minutes, intensity,
-    title: ruleTitle(opts.level),
-    reason: ruleReason({ level: opts.level, minutes, templateMinutes: template.minutes, energy, pain }),
+    title: ruleTitle(opts.level, opts.profile.track),
+    reason: ruleReason({ level: opts.level, minutes, templateMinutes: template.minutes, energy, pain, caution: derive(opts.profile).caution, track: opts.profile.track }),
     items: buildRuleItems(buildInput),
     source: 'rules',
   });
 
   const list = allowed.map((e) => `${e.id} | ${e.name} | ${e.category} | liv ${e.minLevel} | zone: ${e.zones.join(',') || '-'} | ${e.prescription.type} default ${e.prescription.default}`).join('\n');
   const user = `PERSONA: ${opts.profile.name}, obiettivo "${opts.profile.goal}", esperienza ${opts.profile.experience}. Zone da tenere d'occhio da profilo: ${opts.profile.limitations.join(', ') || 'nessuna'}.
+CHI È (contesto per i dosaggi): ${personSummary(opts.profile)}
 LIVELLO ${lvl.n} "${lvl.name}" (${lvl.verb}). Obiettivo del livello: ${lvl.goal}.${typeof lvl.cardioGuide === 'string' ? `\nGuida al cardio: ${lvl.cardioGuide}` : ''}
 STRUTTURA DEL LIVELLO (per ${template.minutes} minuti): ${template.blocks.map((b) => `${b.category} x${b.count}${b.seconds ? ` (${Math.round(b.seconds / 60)} min)` : ''}`).join(', ')}.${opts.kindNote ? `\nNOTA: ${opts.kindNote}` : ''}
 
@@ -250,6 +271,7 @@ ${list}`;
       const item: Item = { exerciseId: ex.id, sets: it.sets, restSec: it.restSec };
       if (ex.prescription.type === 'reps') item.reps = Math.min(Math.max(1, it.reps ?? Math.round(ex.prescription.default * intensity)), Math.ceil(ex.prescription.default * 1.6));
       else item.seconds = roundSecs(Math.min(Math.max(10, it.seconds ?? ex.prescription.default * intensity), Math.max(ex.prescription.default * 2, 60 * minutes)));
+      if (cap && ex.category === 'cardio' && item.seconds) item.seconds = Math.min(item.seconds, cap * 60);
       item.sets = Math.min(item.sets, 4);
       item.restSec = Math.min(120, round5(Math.max(15, item.restSec)));
       if (it.note && tidyNote(it.note)) item.note = tidyNote(it.note);

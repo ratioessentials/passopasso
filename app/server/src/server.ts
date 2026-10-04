@@ -14,11 +14,12 @@ import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/cal
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
 import { saveProfile, seedDemo, touchDemo, DEMO_ID } from './engine/seed.js';
+import { CardPatchSchema, CardSchema, cautionFromHealth, cautionMessage, publicProfile, type Card } from './engine/person.js';
 import {
   allSessions, consistencyAt, createUser, currentHabit, ensureCurrentWeek, getSessionRow, getUser, habitDoneDays, levelInfo, listWins,
-  profileOf, sessionsBetween, toSession,
+  profileOf, replanFrom, sessionsBetween, toSession,
 } from './engine/store.js';
-import type { SessionRow, UserRow } from './engine/types.js';
+import type { Profile, SessionRow, UserRow } from './engine/types.js';
 
 class HttpError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message); }
@@ -64,7 +65,7 @@ function mePayload(user: UserRow) {
   const info = levelInfo(user);
   const habit = currentHabit(user);
   return {
-    profile: profileOf(user),
+    profile: publicProfile(profileOf(user)),
     level: { n: info.n, name: info.name, verb: info.verb, progress: info.progress, ready: info.ready },
     consistency: info.consistency,
     intensity: user.intensity,
@@ -75,6 +76,25 @@ function mePayload(user: UserRow) {
 }
 
 const DAY_NAMES = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
+
+/** Aggiorna la scheda: il peso vuoto resta com'era; se cambia la salute si ricalcola la prudenza e si ripianifica. */
+function patchProfile(user: UserRow, patch: Partial<Omit<Card, 'health'>> & { health?: Partial<Card['health']> }) {
+  const old = profileOf(user)!;
+  const health = { ...(old.health ?? {}), ...(patch.health ?? {}) } as NonNullable<Profile['health']>;
+  const next: Profile = {
+    ...old,
+    ...Object.fromEntries(Object.entries(patch).filter(([k, v]) => v !== undefined && v !== null && k !== 'health')),
+    health,
+  } as Profile;
+  // prudenza: nessun "sì" la spegne; un "sì" nuovo la riaccende anche dopo il via libera del medico
+  const keys = ['heartCondition', 'chestPain', 'dizziness', 'medication', 'pregnancy', 'otherCondition'] as const;
+  const newYes = keys.some((k) => health[k] && !old.health?.[k]);
+  next.caution = cautionFromHealth(health) && (newYes || !!old.caution || !old.medicalOk);
+  if (newYes) next.medicalOk = null;
+  db.prepare('UPDATE users SET profile = ? WHERE id = ?').run(JSON.stringify(next), user.id);
+  replanFrom(getUser(user.id)!, next, { pain: [] });
+  return { ok: true, caution: !!next.caution, cautionMessage: next.caution ? cautionMessage(health) : null, profile: publicProfile(next) };
+}
 
 export async function buildServer() {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL || 'info' }, bodyLimit: 10 * 1024 * 1024 });
@@ -110,12 +130,33 @@ export async function buildServer() {
       messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(2000) })).min(1).max(40),
     }), req.body);
     if (messages[messages.length - 1].role !== 'user') throw fail(400, 'bad_request', 'Manca la tua risposta. Scrivimi qualcosa!');
-    const step = await onboardingStep(messages);
+    const card = (user.draft ? JSON.parse(user.draft) : {}) as Partial<Card> & { caution?: boolean };
+    const step = await onboardingStep(messages, card);
+    if (step.minor) return { reply: step.reply, done: true, minor: true };
     if (step.done && step.profile) {
       saveProfile(user, step.profile);
-      return { reply: step.reply, done: true, profile: step.profile };
+      return { reply: step.reply, done: true, profile: publicProfile(step.profile) };
     }
     return { reply: step.reply, done: false, quickReplies: step.quickReplies ?? [] };
+  });
+
+  // La scheda (chi sei + PAR-Q+) prima della conversazione
+  app.post('/api/onboarding/profile', async (req) => {
+    const user = requireUser(req, { profile: false });
+    if (user.id === DEMO_ID) throw fail(409, 'demo', 'Il profilo demo è già pronto: crea un nuovo profilo per provare la scheda.');
+    const card = parse(CardSchema, req.body);
+    const caution = cautionFromHealth(card.health);
+    if (user.profile) {
+      // già fatto l'onboarding: vale come modifica della scheda
+      return patchProfile(user, card);
+    }
+    db.prepare('UPDATE users SET draft = ? WHERE id = ?').run(JSON.stringify({ ...card, caution }), user.id);
+    return { ok: true, caution, cautionMessage: cautionMessage(card.health), minor: card.age < 16 };
+  });
+
+  app.patch('/api/me/profile', async (req) => {
+    const user = requireUser(req);
+    return patchProfile(user, parse(CardPatchSchema, req.body));
   });
 
   app.get('/api/me', async (req) => mePayload(requireUser(req)));

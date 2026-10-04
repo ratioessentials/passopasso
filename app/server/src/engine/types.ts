@@ -3,9 +3,28 @@ import type { BodyZone, Exercise } from '../content.js';
 export type Experience = 'nessuna' | 'poca' | 'qualche_volta';
 export type PreferredTime = 'mattina' | 'pausa_pranzo' | 'sera';
 
+export type Track = 'corsa' | 'forza' | 'mobilita';
+export interface Runner { kmPerWeek: number; longestRunMin: number; easyPaceMinKm: number | null; runGoal: string }
+export interface FoodProfile { breakfast: boolean; veggiesPerDay: number; sugaryDrinks: 'mai' | 'a_volte' | 'spesso'; mealsOut: number; cooks: 'mai' | 'a_volte' | 'spesso' }
+
 export interface Profile {
   name: string;
   age?: number | null;
+  sex?: 'f' | 'm' | 'altro' | 'non_dico';
+  heightCm?: number | null;
+  weightKg?: number | null;
+  job?: 'seduto' | 'in_piedi' | 'fisico';
+  sleepHours?: number;
+  health?: {
+    heartCondition: boolean; chestPain: boolean; dizziness: boolean; jointIssue: boolean;
+    medication: boolean; pregnancy: boolean; otherCondition: boolean; notes: string;
+  };
+  caution?: boolean;
+  medicalOk?: string | null;      // data del via libera del medico, detto al coach
+  calendarUrl?: string | null;
+  track?: Track;
+  runner?: Runner | null;
+  food?: FoodProfile | null;
   goal: string;
   experience: Experience;
   daysPerWeek: number;
@@ -26,7 +45,7 @@ export interface Item {
 }
 
 export type SessionStatus = 'planned' | 'done' | 'skipped' | 'blocked';
-export type SessionKind = 'normale' | 'ripartenza';
+export type SessionKind = 'normale' | 'ripartenza' | 'importata';
 export type Feedback = 'facile' | 'giusto' | 'duro';
 
 export interface SessionRow {
@@ -58,6 +77,7 @@ export interface UserRow {
   created_at: string;
   start_date: string | null;
   level_since: string | null;
+  draft: string | null;
 }
 
 export interface Session {
