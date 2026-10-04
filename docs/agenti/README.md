@@ -18,7 +18,7 @@ La **chat di regia** custodisce il contratto ([api.md](../api.md), [schema.md](.
 4. Non fare `git reset --hard`, `git checkout -- .`, `git stash` o `git clean`: cancelleresti il lavoro delle altre chat.
 5. Niente segreti nel repository (`.env` è già in `.gitignore`).
 6. Tono di ogni testo per l'utente: dai del tu, frasi brevi, mai colpa.
-7. Scadenza: **blocco del codice alle 14:30 di oggi (2026-10-04)**. Meglio una cosa semplice che funziona di una completa a metà.
+7. Le scadenze le gestisce l'utente: non fermarti da solo. Meglio una cosa che si mostra bene in demo di una completa a metà.
 8. Quando finisci un blocco di lavoro, aggiorna `docs/agenti/stato.md` con una riga: `[chat-N] HH:MM — fatto X, prossimo Y, bloccato da Z`.
 
 ## Porte

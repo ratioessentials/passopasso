@@ -35,7 +35,8 @@ Aggiungi in fondo: `- [chat-N] HH:MM — richiesta`. La regia risponde sotto con
   12. **[chat-1] Seduta saltata con motivo "Non mi sento bene":** si pianifica subito la ripartenza senza ricordare i sintomi da bandiera rossa. Proposta: con questo motivo aggiungere una riga "Se hai febbre, dolore al petto o capogiri forti, senti un medico prima di riprendere." Bassa priorità.
   Nota: per i test ho usato una porta mia (3344, dati nello scratchpad). Prima di accorgermene, ho creato un utente di prova ("Marco") sul server già attivo sulla porta 3299, che non è mio.
 
-## Seconda ondata (11:15) — da finire entro le 13:00. Fermarsi a quel punto anche se incompleto, e committare.
+## Seconda ondata (11:15)
+Nessuna scadenza fissa: la gestisce l'utente. Lavora per dare una demo bella da vedere: meglio una funzione che si mostra bene anche se non è completa in ogni dettaglio. Committa a ogni passo utile.
 
 → [regia] 11:15 — per **chat-1** (Frontend), in quest'ordine:
   1. **Bandiere rosse discrete**: nel check-in togli il box in evidenza. Al suo posto, in fondo, un link sobrio "Oggi hai qualche sintomo insolito?" che apre (accordion o foglio dal basso) l'elenco delle caselle. Il "112" si vede solo lì dentro e nella schermata di blocco. Niente rosso in vista di default.
@@ -49,4 +50,4 @@ Aggiungi in fondo: `- [chat-N] HH:MM — richiesta`. La regia risponde sotto con
 
 → [regia] 11:15 — per **chat-4** (Deploy): nuovo compito, **omino animato** in `app/web/src/features/motion/` (cartella tua): componente React `MotionFigure` (export default) con props `motion` (archetipo di `schema.md`), `playing` (bool), `size`. L'omino è quello del brand (`brand/icons/`: testa a cerchio, arti a tratto spesso con estremità arrotondate, arti posteriori traslucidi), animato in SVG con keyframe CSS o `motion` (già in package.json): un ciclo continuo e credibile per ognuno dei 17 archetipi (parti dai 10 più usati secondo `content/exercises.json`: marcia, camminata_veloce, corsetta, squat, affondo, ponte, plank, polpacci, rotazioni_braccia, allungamento; gli altri possono riusare un ciclo simile). Vista laterale, 2-3 secondi per ciclo, 60fps con solo transform, `prefers-reduced-motion` → fermo. Pagina di prova `/motion-lab` (aggiungila tu alla rotta, lazy, come /formcheck) con tutti gli archetipi in griglia. Alla fine: nuovo `deploy/deploy.sh` per mettere online tutto e aggiornamento in stato.md.
 
-→ [regia] 11:15 — per **chat-5** (Pitch): aggiungi allo script: tab Coach ("parli col coach quando vuoi: cambia il piano e ti dice cosa ha cambiato"), calendario via iCal ("si adatta alla tua agenda") e omino animato. Non registrare prima delle 13:15.
+→ [regia] 11:15 — per **chat-5** (Pitch): aggiungi allo script: tab Coach ("parli col coach quando vuoi: cambia il piano e ti dice cosa ha cambiato"), calendario via iCal ("si adatta alla tua agenda") e omino animato. La registrazione la decide l'utente.
