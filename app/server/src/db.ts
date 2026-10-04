@@ -54,6 +54,8 @@ const migrations: string[] = [
    ALTER TABLE sessions ADD COLUMN external_id TEXT;`,
   // 4: abitudine alimentare scelta per la persona, settimana per settimana
   `CREATE TABLE user_habits (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, week_start TEXT NOT NULL, habit_id TEXT NOT NULL, why TEXT, PRIMARY KEY (user_id, week_start));`,
+  // 5: test di prontezza
+  `CREATE TABLE level_tests (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, date TEXT NOT NULL, to_level INTEGER NOT NULL, results TEXT NOT NULL, passed INTEGER NOT NULL, skipped INTEGER NOT NULL DEFAULT 0);`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');

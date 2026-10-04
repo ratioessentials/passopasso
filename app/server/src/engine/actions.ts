@@ -3,6 +3,7 @@ import { db } from '../db.js';
 import { addDays, today, weekStart } from '../dates.js';
 import { clampIntensity, generateSession } from './builder.js';
 import { adaptRun, segmentsMinutes } from './run.js';
+import { testPassed, testSnoozed } from './tests.js';
 import {
   consistencyAt, evaluateWins, getUser, insertSession, levelInfo, profileOf, replanFrom, ruleDraft, sessionsBetween, toSession, updateSession, type Win,
 } from './store.js';
@@ -123,7 +124,10 @@ export function complete(user: UserRow, row: SessionRow, feedback: Feedback) {
   const fresh = getUser(user.id)!;
   const newWins: Win[] = evaluateWins(fresh);
   const info = levelInfo(fresh);
-  const levelUp = info.ready ? { from: fresh.level, to: fresh.level + 1, name: content.level(fresh.level + 1, profileOf(fresh)?.track).name } : null;
+  // proposta di livello: prontezza raggiunta e test non rimandato ("Non oggi" o non superato → tra una settimana)
+  const levelUp = info.ready && !testSnoozed(fresh.id, fresh.level + 1)
+    ? { from: fresh.level, to: fresh.level + 1, name: content.level(fresh.level + 1, profileOf(fresh)?.track).name, testRequired: !testPassed(fresh.id, fresh.level + 1) }
+    : null;
   let message = content.text(`feedback.${feedback}_reply`, COMPLETE_MESSAGES[feedback]);
   if (row.kind === 'ripartenza') message = `${content.text('restart.done', 'Ripartenza fatta.')} +${row.bonus_points} punti di costanza.`;
   return { consistency: consistencyAt(user.id), intensity, newWins, levelUp, message };
@@ -131,9 +135,10 @@ export function complete(user: UserRow, row: SessionRow, feedback: Feedback) {
 
 // ---------- Cambio di livello ----------
 
-export function acceptLevel(user: UserRow): boolean {
+export function acceptLevel(user: UserRow): 'ok' | 'not_ready' | 'test_required' {
   const info = levelInfo(user);
-  if (!info.ready) return false;
+  if (!info.ready) return 'not_ready';
+  if (!testPassed(user.id, user.level + 1)) return 'test_required';
   const t = today();
   const next = user.level + 1;
   const profile = profileOf(user)!;
@@ -151,5 +156,5 @@ export function acceptLevel(user: UserRow): boolean {
     updateSession(s.id, { level: next, minutes: d.minutes, intensity: d.intensity, title: d.title, reason: d.reason, items: d.items });
   }
   evaluateWins(fresh);
-  return true;
+  return 'ok';
 }

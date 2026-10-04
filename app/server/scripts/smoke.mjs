@@ -97,6 +97,13 @@ const demoToday = me.json?.today;
 if (demoToday && demoToday.status === 'planned') {
   const d = await api('POST', `/api/sessions/${demoToday.id}/complete`, { user: 'demo', body: { feedback: 'giusto' } });
   check('demo: complete → levelUp', d.status === 200 && d.json.levelUp?.to === 3, JSON.stringify(d.json?.levelUp));
+  const noTest = await api('POST', '/api/level/accept', { user: 'demo' });
+  check('demo: senza test non si sale', noTest.status === 409 && noTest.json.error.code === 'test_required');
+  const tests = await api('GET', '/api/level/test', { user: 'demo' });
+  const results = Object.fromEntries(tests.json.tests.map((t) => [t.id, t.direction === 'atMost' ? t.target : t.target + 2]));
+  check('test di prontezza: target per età e sesso', tests.status === 200 && tests.json.tests.length >= 2, tests.json.tests.map((t) => `${t.id}→${t.target}`).join(', '));
+  const sub = await api('POST', '/api/level/test', { user: 'demo', body: { results } });
+  check('test superato → levelUp', sub.json?.passed === true && sub.json.levelUp?.to === 3, sub.json?.message);
   const acc = await api('POST', '/api/level/accept', { user: 'demo' });
   check('demo: accetta livello 3', acc.status === 200 && acc.json.level.n === 3);
 }

@@ -10,6 +10,7 @@ import { addDays, DAY_LETTERS, diffDays, today, weekStart } from './dates.js';
 import { db } from './db.js';
 import { acceptLevel, checkin, complete, skip } from './engine/actions.js';
 import { mealFeedback } from './engine/meals.js';
+import { submitTest, testsFor } from './engine/tests.js';
 import { FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
@@ -210,8 +211,19 @@ export async function buildServer() {
 
   app.post('/api/level/accept', async (req) => {
     const user = requireUser(req);
-    if (!acceptLevel(user)) throw fail(409, 'not_ready', 'Ancora qualche seduta e ci siamo. Il prossimo livello ti aspetta.');
+    const res = acceptLevel(user);
+    if (res === 'not_ready') throw fail(409, 'not_ready', 'Ancora qualche seduta e ci siamo. Il prossimo livello ti aspetta.');
+    if (res === 'test_required') throw fail(409, 'test_required', 'Prima un piccolo test di prontezza: due prove brevi, e si sale.');
     return mePayload(getUser(user.id)!);
+  });
+
+  // ---------- Test di prontezza ----------
+  app.get('/api/level/test', async (req) => testsFor(requireUser(req)));
+  app.post('/api/level/test', async (req) => {
+    const user = requireUser(req);
+    const body = parse(z.object({ results: z.record(z.string(), z.coerce.number()).optional(), skip: z.boolean().optional() }), req.body);
+    if (!body.skip && !body.results) throw fail(400, 'bad_request', 'Mancano i risultati del test.');
+    return submitTest(user, body);
   });
 
   app.get('/api/levels', async (req) => {
