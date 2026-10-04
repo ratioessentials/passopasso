@@ -32,7 +32,7 @@ export default defineConfig({
       },
       workbox: {
         importScripts: ['push-sw.js'],
-        navigateFallbackDenylist: [/^\/api/],
+        navigateFallbackDenylist: [/^\/api/, /^\/pitch\//, /\.(mp4|ics|json|webm)$/],
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
       },
     }),
