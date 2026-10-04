@@ -1,0 +1,1748 @@
+[
+  {
+    "id": "marcia_sul_posto",
+    "name": "Marcia sul posto",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 60
+    },
+    "instructions": [
+      "Stai in piedi, schiena dritta",
+      "Alza un ginocchio alla volta, senza fretta",
+      "Muovi le braccia a ritmo",
+      "Respira con calma"
+    ],
+    "commonMistakes": [
+      "Trattenere il fiato",
+      "Piegarsi in avanti con il busto"
+    ],
+    "regression": null,
+    "progression": "ginocchia_al_petto_in_piedi",
+    "formCheck": false
+  },
+  {
+    "id": "ginocchia_al_petto_in_piedi",
+    "name": "Ginocchio al petto in piedi",
+    "category": "riscaldamento",
+    "minLevel": 2,
+    "zones": [
+      "anche",
+      "ginocchia"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "In piedi, piedi alla larghezza delle anche",
+      "Porta un ginocchio verso il petto e abbraccialo per un attimo",
+      "Torna giù e cambia gamba",
+      "Se serve, appoggia una mano al muro"
+    ],
+    "commonMistakes": [
+      "Incurvare la schiena per tirare su il ginocchio",
+      "Andare troppo veloce e perdere l'equilibrio"
+    ],
+    "regression": "marcia_sul_posto",
+    "progression": "skip_basso",
+    "formCheck": false
+  },
+  {
+    "id": "skip_basso",
+    "name": "Skip basso",
+    "category": "riscaldamento",
+    "minLevel": 3,
+    "zones": [
+      "caviglie",
+      "ginocchia"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Corri sul posto con passi piccoli e rapidi",
+      "Atterra sull'avampiede, leggero",
+      "Braccia piegate che seguono il ritmo"
+    ],
+    "commonMistakes": [
+      "Atterrare pesante sui talloni",
+      "Spalle contratte verso le orecchie"
+    ],
+    "regression": "ginocchia_al_petto_in_piedi",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "cerchi_braccia",
+    "name": "Cerchi con le braccia",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "spalle"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Apri le braccia di lato, all'altezza delle spalle",
+      "Disegna piccoli cerchi in avanti",
+      "A metà tempo inverti il senso",
+      "Allarga i cerchi piano piano"
+    ],
+    "commonMistakes": [
+      "Alzare le spalle verso le orecchie",
+      "Cerchi troppo ampi da subito"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "rotazioni_spalle",
+    "name": "Rotazioni delle spalle",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "spalle",
+      "collo"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Braccia morbide lungo i fianchi",
+      "Porta le spalle in su, indietro e giù",
+      "Fai cerchi lenti e ampi",
+      "Poi ripeti in avanti"
+    ],
+    "commonMistakes": [
+      "Muovere la testa insieme alle spalle",
+      "Andare di fretta"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "rotazioni_anche",
+    "name": "Cerchi con il bacino",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "schiena_bassa"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Mani sui fianchi, piedi alla larghezza delle spalle",
+      "Disegna cerchi lenti con il bacino",
+      "Dopo metà ripetizioni cambia verso"
+    ],
+    "commonMistakes": [
+      "Piegare troppo le ginocchia",
+      "Movimenti a scatti"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "circonduzioni_caviglie",
+    "name": "Cerchi con le caviglie",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Appoggiati a un muro o a una sedia",
+      "Solleva un piede e disegna cerchi con la punta",
+      "Cambia verso, poi cambia piede"
+    ],
+    "commonMistakes": [
+      "Muovere tutta la gamba invece della caviglia"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "slanci_gamba_avanti",
+    "name": "Slanci della gamba avanti e indietro",
+    "category": "riscaldamento",
+    "minLevel": 2,
+    "zones": [
+      "anche"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Una mano al muro, di fianco",
+      "Fai oscillare la gamba esterna avanti e indietro",
+      "Oscillazioni morbide, l'ampiezza cresce da sola",
+      "Cambia gamba"
+    ],
+    "commonMistakes": [
+      "Calciare forte",
+      "Inarcare la schiena quando la gamba va indietro"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "inclinazioni_laterali",
+    "name": "Inclinazioni laterali",
+    "category": "riscaldamento",
+    "minLevel": 1,
+    "zones": [
+      "schiena_bassa",
+      "schiena_alta"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "In piedi, un braccio sopra la testa",
+      "Piegati di lato, dalla parte opposta",
+      "Torna al centro e cambia lato"
+    ],
+    "commonMistakes": [
+      "Ruotare il busto in avanti",
+      "Spingere oltre il fastidio"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "camminata_tranquilla",
+    "name": "Camminata tranquilla",
+    "category": "cardio",
+    "minLevel": 1,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 600
+    },
+    "instructions": [
+      "Cammina a un ritmo comodo, fuori o in casa",
+      "Riesci a parlare senza fiatone",
+      "Braccia morbide che oscillano",
+      "Guarda avanti, non i piedi"
+    ],
+    "commonMistakes": [
+      "Partire troppo forte",
+      "Scarpe scomode o senza ammortizzazione"
+    ],
+    "regression": null,
+    "progression": "camminata_svelta",
+    "formCheck": false
+  },
+  {
+    "id": "camminata_svelta",
+    "name": "Camminata a passo svelto",
+    "category": "cardio",
+    "minLevel": 2,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 900
+    },
+    "instructions": [
+      "Cammina come se fossi un po' in ritardo",
+      "Riesci a parlare, ma non a cantare",
+      "Braccia piegate che spingono indietro",
+      "Passi rapidi, non più lunghi"
+    ],
+    "commonMistakes": [
+      "Allungare troppo il passo",
+      "Rallentare dopo pochi minuti: tieni un ritmo che riesci a mantenere"
+    ],
+    "regression": "camminata_tranquilla",
+    "progression": "cammina_corri_1_2",
+    "formCheck": false
+  },
+  {
+    "id": "cammina_corri_1_2",
+    "name": "Cammina e corri: 1 minuto di corsetta, 2 di camminata",
+    "category": "cardio",
+    "minLevel": 3,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 1200
+    },
+    "instructions": [
+      "Parti con qualche minuto di camminata svelta",
+      "Corri piano per 1 minuto, poi cammina 2 minuti",
+      "Ripeti fino alla fine del tempo",
+      "La corsetta è lenta: devi poter parlare"
+    ],
+    "commonMistakes": [
+      "Correre troppo veloce nel primo minuto",
+      "Fermarsi del tutto invece di camminare"
+    ],
+    "regression": "camminata_svelta",
+    "progression": "cammina_corri_2_1",
+    "formCheck": false
+  },
+  {
+    "id": "cammina_corri_2_1",
+    "name": "Cammina e corri: 2 minuti di corsa, 1 di camminata",
+    "category": "cardio",
+    "minLevel": 4,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 1500
+    },
+    "instructions": [
+      "Scalda con 5 minuti di camminata svelta",
+      "Corri 2 minuti a ritmo comodo, poi cammina 1 minuto",
+      "Ripeti fino alla fine del tempo",
+      "Respira con calma, anche dal naso se riesci"
+    ],
+    "commonMistakes": [
+      "Accelerare quando ti senti bene",
+      "Passo lungo e atterraggio sul tallone"
+    ],
+    "regression": "cammina_corri_1_2",
+    "progression": "corsa_continua",
+    "formCheck": false
+  },
+  {
+    "id": "corsa_continua",
+    "name": "Corsa leggera continua",
+    "category": "cardio",
+    "minLevel": 4,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 1200
+    },
+    "instructions": [
+      "Scalda con qualche minuto di camminata",
+      "Corri a un ritmo con cui potresti parlare",
+      "Se serve, cammina un minuto e riparti",
+      "Finisci camminando"
+    ],
+    "commonMistakes": [
+      "Andare troppo forte all'inizio",
+      "Fare passi lunghi invece che frequenti"
+    ],
+    "regression": "cammina_corri_2_1",
+    "progression": "corsa_con_allunghi",
+    "formCheck": false
+  },
+  {
+    "id": "corsa_con_allunghi",
+    "name": "Corsa con allunghi",
+    "category": "cardio",
+    "minLevel": 5,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 1500
+    },
+    "instructions": [
+      "Corri tranquillo per la maggior parte del tempo",
+      "Ogni 4 minuti accelera per 20 secondi, senza arrivare al massimo",
+      "Torna al ritmo comodo per recuperare",
+      "Finisci camminando"
+    ],
+    "commonMistakes": [
+      "Trasformare gli allunghi in sprint massimali",
+      "Non recuperare abbastanza tra un allungo e l'altro"
+    ],
+    "regression": "corsa_continua",
+    "progression": "scatti_brevi",
+    "formCheck": false
+  },
+  {
+    "id": "scatti_brevi",
+    "name": "Scatti brevi",
+    "category": "cardio",
+    "minLevel": 5,
+    "zones": [
+      "caviglie",
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 1200
+    },
+    "instructions": [
+      "Scalda bene con 8-10 minuti di corsa leggera",
+      "Scatta per 15 secondi, forte ma con controllo",
+      "Recupera camminando per 1 minuto e mezzo",
+      "Ripeti da 6 a 8 volte, poi corri piano e defatica"
+    ],
+    "commonMistakes": [
+      "Partire senza riscaldamento",
+      "Recuperi troppo corti",
+      "Irrigidire spalle e collo mentre scatti"
+    ],
+    "regression": "corsa_con_allunghi",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "marcia_veloce_casa",
+    "name": "Marcia veloce in casa",
+    "category": "cardio",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 300
+    },
+    "instructions": [
+      "Marcia sul posto a ritmo sostenuto",
+      "Ginocchia all'altezza che ti è comoda",
+      "Braccia che si muovono con energia",
+      "Ogni minuto, prova 10 secondi più veloci"
+    ],
+    "commonMistakes": [
+      "Restare sulle punte troppo a lungo",
+      "Trattenere il fiato"
+    ],
+    "regression": null,
+    "progression": "corsa_sul_posto",
+    "formCheck": false
+  },
+  {
+    "id": "corsa_sul_posto",
+    "name": "Corsa sul posto",
+    "category": "cardio",
+    "minLevel": 3,
+    "zones": [
+      "caviglie",
+      "ginocchia"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 180
+    },
+    "instructions": [
+      "Corri sul posto con passi leggeri",
+      "Atterra sull'avampiede",
+      "Braccia piegate a ritmo",
+      "Se ti manca il fiato, torna a marciare"
+    ],
+    "commonMistakes": [
+      "Atterraggi rumorosi e pesanti",
+      "Busto piegato in avanti"
+    ],
+    "regression": "marcia_veloce_casa",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "step_jack",
+    "name": "Jumping jack senza salto",
+    "category": "cardio",
+    "minLevel": 1,
+    "zones": [
+      "spalle",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 45
+    },
+    "instructions": [
+      "Porta un piede di lato e alza le braccia sopra la testa",
+      "Torna al centro abbassando le braccia",
+      "Cambia lato e continua a ritmo",
+      "Nessun salto: un piede è sempre a terra"
+    ],
+    "commonMistakes": [
+      "Braccia rigide e spalle contratte",
+      "Perdere il ritmo del respiro"
+    ],
+    "regression": null,
+    "progression": "jumping_jack",
+    "formCheck": false
+  },
+  {
+    "id": "jumping_jack",
+    "name": "Jumping jack",
+    "category": "cardio",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "anche",
+      "ginocchia",
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Salta aprendo le gambe e alzando le braccia",
+      "Salta di nuovo chiudendo gambe e braccia",
+      "Atterra morbido sull'avampiede",
+      "Tieni un ritmo regolare"
+    ],
+    "commonMistakes": [
+      "Atterrare con le ginocchia rigide",
+      "Ginocchia che cadono verso l'interno"
+    ],
+    "regression": "step_jack",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "step_scalino",
+    "name": "Salita sullo scalino",
+    "category": "cardio",
+    "minLevel": 2,
+    "zones": [
+      "ginocchia",
+      "caviglie",
+      "anche"
+    ],
+    "equipment": [
+      "scalino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 180
+    },
+    "instructions": [
+      "Mettiti davanti a uno scalino basso e stabile",
+      "Sali con un piede, poi con l'altro",
+      "Scendi nello stesso ordine",
+      "Ogni minuto cambia il piede che parte"
+    ],
+    "commonMistakes": [
+      "Appoggiare solo la punta sul gradino",
+      "Usare uno scalino troppo alto"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "boxe_sul_posto",
+    "name": "Boxe sul posto",
+    "category": "cardio",
+    "minLevel": 1,
+    "zones": [
+      "spalle",
+      "braccia"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 120
+    },
+    "instructions": [
+      "Piedi ben piantati, ginocchia morbide",
+      "Tira pugni dritti davanti a te, alternando le braccia",
+      "Pugni veloci ma senza stendere del tutto il gomito",
+      "Si può fare anche da seduti, se le gambe oggi non vanno"
+    ],
+    "commonMistakes": [
+      "Bloccare il gomito a braccio teso",
+      "Trattenere il fiato"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "alzate_sedia_mani",
+    "name": "Alzarsi dalla sedia con le mani",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Siediti sul bordo di una sedia stabile, piedi a terra",
+      "Mani sulle cosce, busto un po' in avanti",
+      "Alzati aiutandoti con le mani",
+      "Siediti di nuovo, piano"
+    ],
+    "commonMistakes": [
+      "Lasciarsi cadere sulla sedia",
+      "Piedi troppo avanti rispetto alle ginocchia"
+    ],
+    "regression": null,
+    "progression": "squat_sedia",
+    "formCheck": true
+  },
+  {
+    "id": "squat_sedia",
+    "name": "Squat alla sedia",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "In piedi davanti alla sedia, piedi alla larghezza delle spalle",
+      "Scendi portando indietro il bacino, braccia in avanti",
+      "Sfiora la sedia senza sederti",
+      "Risali spingendo coi talloni"
+    ],
+    "commonMistakes": [
+      "Ginocchia che cadono verso l'interno",
+      "Talloni che si staccano da terra",
+      "Scendere di colpo"
+    ],
+    "regression": "alzate_sedia_mani",
+    "progression": "squat_libero",
+    "formCheck": true
+  },
+  {
+    "id": "squat_libero",
+    "name": "Squat a corpo libero",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Piedi alla larghezza delle spalle, punte un po' aperte",
+      "Scendi come per sederti, petto in alto",
+      "Arriva dove ti senti in controllo",
+      "Risali spingendo coi talloni"
+    ],
+    "commonMistakes": [
+      "Ginocchia che cadono verso l'interno",
+      "Schiena che si arrotonda",
+      "Peso sulle punte"
+    ],
+    "regression": "squat_sedia",
+    "progression": "squat_pausa",
+    "formCheck": true
+  },
+  {
+    "id": "squat_pausa",
+    "name": "Squat con pausa",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Scendi in squat in 3 secondi",
+      "Resta giù fermo per 2 secondi",
+      "Risali con decisione",
+      "Respira: giù inspiri, su espiri"
+    ],
+    "commonMistakes": [
+      "Rimbalzare in basso",
+      "Perdere la tensione durante la pausa"
+    ],
+    "regression": "squat_libero",
+    "progression": "squat_salto",
+    "formCheck": true
+  },
+  {
+    "id": "squat_salto",
+    "name": "Squat con salto",
+    "category": "forza",
+    "minLevel": 5,
+    "zones": [
+      "ginocchia",
+      "anche",
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Scendi in uno squat non troppo profondo",
+      "Salta verso l'alto spingendo con le gambe",
+      "Atterra morbido, ginocchia piegate",
+      "Fermati un attimo prima del salto successivo"
+    ],
+    "commonMistakes": [
+      "Atterrare a gambe rigide",
+      "Ginocchia che si chiudono all'atterraggio"
+    ],
+    "regression": "squat_pausa",
+    "progression": null,
+    "formCheck": true
+  },
+  {
+    "id": "affondo_assistito",
+    "name": "Affondo con appoggio",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 6
+    },
+    "instructions": [
+      "Una mano sullo schienale di una sedia",
+      "Fai un passo indietro con una gamba",
+      "Scendi piano piegando entrambe le ginocchia",
+      "Risali e fai le ripetizioni, poi cambia gamba"
+    ],
+    "commonMistakes": [
+      "Ginocchio davanti che va verso l'interno",
+      "Busto che cade in avanti"
+    ],
+    "regression": null,
+    "progression": "affondo_indietro",
+    "formCheck": false
+  },
+  {
+    "id": "affondo_indietro",
+    "name": "Affondo indietro",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "ginocchia",
+      "anche"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "In piedi, mani sui fianchi",
+      "Fai un passo indietro e scendi",
+      "Il ginocchio dietro si avvicina al pavimento",
+      "Spingi col piede davanti per tornare su, poi alterna"
+    ],
+    "commonMistakes": [
+      "Passo troppo corto",
+      "Ginocchio davanti che crolla verso l'interno"
+    ],
+    "regression": "affondo_assistito",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "polpacci_muro",
+    "name": "Sollevamenti sulle punte",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 12
+    },
+    "instructions": [
+      "Mani appoggiate al muro o a un mobile stabile",
+      "Sali sulle punte dei piedi",
+      "Fermati un attimo in alto",
+      "Scendi piano"
+    ],
+    "commonMistakes": [
+      "Scendere di colpo",
+      "Caviglie che si piegano verso l'esterno"
+    ],
+    "regression": null,
+    "progression": "polpacci_una_gamba",
+    "formCheck": false
+  },
+  {
+    "id": "polpacci_una_gamba",
+    "name": "Sollevamenti sulle punte su una gamba",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "caviglie"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Una mano al muro per l'equilibrio",
+      "Solleva un piede da terra",
+      "Sali sulla punta dell'altro piede e scendi piano",
+      "Fai le ripetizioni, poi cambia piede"
+    ],
+    "commonMistakes": [
+      "Spingere con la mano invece che con il polpaccio",
+      "Movimento troppo veloce"
+    ],
+    "regression": "polpacci_muro",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "piegamenti_muro",
+    "name": "Piegamenti al muro",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "spalle",
+      "petto",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Mani al muro all'altezza delle spalle",
+      "Fai un passo indietro, corpo dritto",
+      "Piega i gomiti e avvicina il petto al muro",
+      "Spingi per tornare indietro"
+    ],
+    "commonMistakes": [
+      "Bacino che va avanti prima del petto",
+      "Gomiti troppo aperti"
+    ],
+    "regression": null,
+    "progression": "piegamenti_sedia",
+    "formCheck": false
+  },
+  {
+    "id": "piegamenti_sedia",
+    "name": "Piegamenti inclinati alla sedia",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "spalle",
+      "petto",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "sedia",
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Appoggia lo schienale della sedia al muro, così non scivola",
+      "Mani sul bordo della seduta, corpo dritto",
+      "Piega i gomiti e porta il petto verso la sedia",
+      "Spingi per risalire"
+    ],
+    "commonMistakes": [
+      "Sedia non bloccata",
+      "Pancia che cede verso il basso"
+    ],
+    "regression": "piegamenti_muro",
+    "progression": "piegamenti_ginocchia",
+    "formCheck": false
+  },
+  {
+    "id": "piegamenti_ginocchia",
+    "name": "Piegamenti sulle ginocchia",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "petto",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Ginocchia sul tappetino, mani sotto le spalle",
+      "Corpo in linea dalle ginocchia alla testa",
+      "Scendi piegando i gomiti",
+      "Spingi per risalire"
+    ],
+    "commonMistakes": [
+      "Bacino alto",
+      "Testa che cade verso il pavimento"
+    ],
+    "regression": "piegamenti_sedia",
+    "progression": "piegamenti_classici",
+    "formCheck": false
+  },
+  {
+    "id": "piegamenti_classici",
+    "name": "Piegamenti classici",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "spalle",
+      "petto",
+      "braccia",
+      "polsi"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Mani sotto le spalle, piedi uniti dietro",
+      "Corpo dritto come una tavola",
+      "Scendi con i gomiti a 45 gradi dal corpo",
+      "Spingi per risalire"
+    ],
+    "commonMistakes": [
+      "Schiena che si inarca",
+      "Gomiti aperti a 90 gradi"
+    ],
+    "regression": "piegamenti_ginocchia",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "ponte_glutei",
+    "name": "Ponte per i glutei",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 10
+    },
+    "instructions": [
+      "Sdraiati sulla schiena, ginocchia piegate, piedi a terra",
+      "Solleva il bacino stringendo i glutei",
+      "Fermati un attimo in alto",
+      "Scendi piano"
+    ],
+    "commonMistakes": [
+      "Inarcare la schiena invece di usare i glutei",
+      "Piedi troppo lontani dal bacino"
+    ],
+    "regression": null,
+    "progression": "ponte_una_gamba",
+    "formCheck": false
+  },
+  {
+    "id": "ponte_una_gamba",
+    "name": "Ponte su una gamba",
+    "category": "forza",
+    "minLevel": 4,
+    "zones": [
+      "anche",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Come il ponte, ma con una gamba tesa in aria",
+      "Solleva il bacino spingendo con il piede a terra",
+      "Tieni il bacino dritto, senza ruotare",
+      "Fai le ripetizioni, poi cambia gamba"
+    ],
+    "commonMistakes": [
+      "Bacino che si inclina da un lato",
+      "Spingere con la schiena"
+    ],
+    "regression": "ponte_glutei",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "plank_muro",
+    "name": "Plank al muro",
+    "category": "forza",
+    "minLevel": 1,
+    "zones": [
+      "spalle",
+      "braccia"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 20
+    },
+    "instructions": [
+      "Avambracci al muro, all'altezza delle spalle",
+      "Fai un passo indietro, corpo dritto e inclinato",
+      "Stringi pancia e glutei",
+      "Resta fermo e respira"
+    ],
+    "commonMistakes": [
+      "Bacino all'indietro",
+      "Trattenere il fiato"
+    ],
+    "regression": null,
+    "progression": "plank_ginocchia",
+    "formCheck": false
+  },
+  {
+    "id": "plank_ginocchia",
+    "name": "Plank sulle ginocchia",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "spalle",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 20
+    },
+    "instructions": [
+      "Avambracci a terra, gomiti sotto le spalle",
+      "Ginocchia sul tappetino",
+      "Corpo in linea dalle ginocchia alla testa",
+      "Resta fermo e respira"
+    ],
+    "commonMistakes": [
+      "Schiena che si inarca",
+      "Testa che cade"
+    ],
+    "regression": "plank_muro",
+    "progression": "plank",
+    "formCheck": false
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Avambracci a terra, gomiti sotto le spalle",
+      "Gambe tese, sulle punte dei piedi",
+      "Corpo dritto come una tavola, pancia attiva",
+      "Resta fermo e respira"
+    ],
+    "commonMistakes": [
+      "Bacino troppo alto o troppo basso",
+      "Spalle che collassano"
+    ],
+    "regression": "plank_ginocchia",
+    "progression": "plank_tocchi_spalla",
+    "formCheck": false
+  },
+  {
+    "id": "plank_tocchi_spalla",
+    "name": "Plank con tocco della spalla",
+    "category": "forza",
+    "minLevel": 5,
+    "zones": [
+      "spalle",
+      "polsi",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 12
+    },
+    "instructions": [
+      "Posizione di piegamento, mani sotto le spalle",
+      "Piedi un po' larghi per stabilità",
+      "Tocca la spalla opposta con una mano, poi con l'altra",
+      "Il bacino resta fermo"
+    ],
+    "commonMistakes": [
+      "Bacino che dondola",
+      "Andare veloci perdendo il controllo"
+    ],
+    "regression": "plank",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "plank_laterale_ginocchia",
+    "name": "Plank laterale sulle ginocchia",
+    "category": "forza",
+    "minLevel": 3,
+    "zones": [
+      "spalle",
+      "anche"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 20
+    },
+    "instructions": [
+      "Sdraiati su un fianco, avambraccio a terra sotto la spalla",
+      "Ginocchia piegate, una sopra l'altra",
+      "Solleva il bacino fino a fare una linea dritta",
+      "Resta fermo, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Bacino che scende",
+      "Spalla schiacciata verso l'orecchio"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "bird_dog",
+    "name": "Braccio e gamba opposti a quattro zampe",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "polsi",
+      "schiena_bassa",
+      "ginocchia"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "A quattro zampe sul tappetino",
+      "Allunga un braccio avanti e la gamba opposta indietro",
+      "Fermati 2 secondi, schiena piatta",
+      "Torna giù e cambia lato"
+    ],
+    "commonMistakes": [
+      "Alzare troppo la gamba e inarcare la schiena",
+      "Bacino che ruota"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "dead_bug",
+    "name": "Dead bug",
+    "category": "forza",
+    "minLevel": 2,
+    "zones": [
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Sdraiati sulla schiena, braccia verso il soffitto",
+      "Ginocchia piegate in alto, sopra le anche",
+      "Allunga un braccio dietro e la gamba opposta in avanti, piano",
+      "Torna al centro e cambia lato"
+    ],
+    "commonMistakes": [
+      "Schiena che si stacca dal pavimento",
+      "Andare troppo veloci"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "gatto_mucca",
+    "name": "Gatto e mucca",
+    "category": "mobilita",
+    "minLevel": 1,
+    "zones": [
+      "schiena_bassa",
+      "schiena_alta",
+      "polsi"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "A quattro zampe sul tappetino",
+      "Inspira e lascia scendere la pancia, sguardo avanti",
+      "Espira e arrotonda la schiena verso l'alto",
+      "Muoviti lento, seguendo il respiro"
+    ],
+    "commonMistakes": [
+      "Movimenti bruschi",
+      "Muovere solo il collo"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "rotazioni_busto_seduto",
+    "name": "Rotazioni del busto da seduto",
+    "category": "mobilita",
+    "minLevel": 1,
+    "zones": [
+      "schiena_alta"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Seduto, piedi a terra, schiena dritta",
+      "Braccia incrociate sul petto",
+      "Ruota piano il busto verso un lato",
+      "Torna al centro e ruota dall'altro"
+    ],
+    "commonMistakes": [
+      "Ruotare anche il bacino",
+      "Forzare con le braccia"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "angeli_al_muro",
+    "name": "Angeli al muro",
+    "category": "mobilita",
+    "minLevel": 2,
+    "zones": [
+      "spalle",
+      "schiena_alta"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Schiena e testa appoggiate al muro",
+      "Braccia a candelabro, dorsi delle mani verso il muro",
+      "Fai scivolare le braccia in alto e poi giù",
+      "Vai solo fin dove resti appoggiato"
+    ],
+    "commonMistakes": [
+      "Inarcare la schiena per arrivare più in alto",
+      "Staccare i polsi dal muro forzando"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "flessori_anca_ginocchio",
+    "name": "Allungamento dell'anca in ginocchio",
+    "category": "mobilita",
+    "minLevel": 2,
+    "zones": [
+      "anche",
+      "ginocchia"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Un ginocchio sul tappetino, l'altro piede avanti",
+      "Stringi il gluteo della gamba dietro",
+      "Porta piano il bacino in avanti",
+      "Senti l'allungamento davanti all'anca, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Inarcare la schiena",
+      "Ginocchio davanti oltre la punta del piede"
+    ],
+    "regression": null,
+    "progression": "allungamento_completo",
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_completo",
+    "name": "Affondo con rotazione",
+    "category": "mobilita",
+    "minLevel": 3,
+    "zones": [
+      "anche",
+      "schiena_alta",
+      "ginocchia"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 5
+    },
+    "instructions": [
+      "Fai un affondo lungo e appoggia le mani a terra",
+      "Porta il gomito vicino al piede davanti",
+      "Ruota il busto e alza il braccio verso il soffitto",
+      "Torna e cambia lato"
+    ],
+    "commonMistakes": [
+      "Fretta tra un passaggio e l'altro",
+      "Ginocchio dietro che collassa"
+    ],
+    "regression": "flessori_anca_ginocchio",
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "mobilita_caviglia_muro",
+    "name": "Ginocchio verso il muro",
+    "category": "mobilita",
+    "minLevel": 1,
+    "zones": [
+      "caviglie",
+      "ginocchia"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 8
+    },
+    "instructions": [
+      "Di fronte al muro, un piede a un palmo di distanza",
+      "Porta il ginocchio verso il muro",
+      "Il tallone resta a terra",
+      "Fai le ripetizioni, poi cambia piede"
+    ],
+    "commonMistakes": [
+      "Tallone che si alza",
+      "Ginocchio che va verso l'interno"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "collo_dolce",
+    "name": "Mobilità dolce del collo",
+    "category": "mobilita",
+    "minLevel": 1,
+    "zones": [
+      "collo"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 5
+    },
+    "instructions": [
+      "Seduto o in piedi, spalle rilassate",
+      "Porta piano l'orecchio verso una spalla",
+      "Torna al centro e vai dall'altro lato",
+      "Poi gira lo sguardo a destra e a sinistra"
+    ],
+    "commonMistakes": [
+      "Fare cerchi completi con la testa",
+      "Alzare le spalle"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "camminata_defaticamento",
+    "name": "Camminata lenta",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "caviglie"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 180
+    },
+    "instructions": [
+      "Cammina piano, anche in casa",
+      "Lascia scendere il fiato",
+      "Rilassa spalle e braccia"
+    ],
+    "commonMistakes": [
+      "Fermarsi di colpo dopo lo sforzo"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "respirazione_profonda",
+    "name": "Respirazione con la pancia",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 60
+    },
+    "instructions": [
+      "Siediti o sdraiati comodo",
+      "Una mano sul petto e una sulla pancia",
+      "Inspira dal naso gonfiando la pancia",
+      "Espira piano dalla bocca, più a lungo"
+    ],
+    "commonMistakes": [
+      "Alzare le spalle quando inspiri",
+      "Respirare troppo in fretta"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_polpacci",
+    "name": "Allungamento dei polpacci al muro",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "caviglie"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Mani al muro, una gamba dietro tesa",
+      "Tallone dietro ben a terra",
+      "Piega il ginocchio davanti finché senti tirare il polpaccio",
+      "Respira, poi cambia gamba"
+    ],
+    "commonMistakes": [
+      "Tallone che si stacca",
+      "Molleggiare"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_quadricipiti",
+    "name": "Allungamento della coscia al muro",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "ginocchia"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Una mano al muro per l'equilibrio",
+      "Piega una gamba e prendi la caviglia con la mano",
+      "Avvicina il tallone al gluteo, ginocchia vicine",
+      "Respira, poi cambia gamba"
+    ],
+    "commonMistakes": [
+      "Inarcare la schiena",
+      "Tirare forte il piede"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_femorali_sedia",
+    "name": "Allungamento dietro la coscia con la sedia",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "schiena_bassa"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Seduto sul bordo della sedia, una gamba tesa davanti",
+      "Tallone a terra, punta verso l'alto",
+      "Piegati in avanti dalle anche, schiena dritta",
+      "Respira, poi cambia gamba"
+    ],
+    "commonMistakes": [
+      "Arrotondare la schiena",
+      "Forzare fino al dolore"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_glutei_sedia",
+    "name": "Allungamento dei glutei da seduto",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "anche",
+      "ginocchia"
+    ],
+    "equipment": [
+      "sedia"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Seduto, appoggia una caviglia sul ginocchio opposto",
+      "Schiena dritta",
+      "Piegati un po' in avanti finché senti allungare il gluteo",
+      "Respira, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Spingere il ginocchio verso il basso con forza",
+      "Incurvare la schiena"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_petto_muro",
+    "name": "Allungamento del petto al muro",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "petto",
+      "spalle"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Di fianco al muro, avambraccio appoggiato all'altezza della spalla",
+      "Ruota piano il corpo dalla parte opposta",
+      "Senti allungare il petto",
+      "Respira, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Ruotare troppo e forzare la spalla"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "posizione_bambino",
+    "name": "Posizione del bambino",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "schiena_bassa",
+      "ginocchia"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 45
+    },
+    "instructions": [
+      "In ginocchio sul tappetino, siediti sui talloni",
+      "Porta le braccia avanti e la fronte verso terra",
+      "Lascia andare la schiena",
+      "Respira lento"
+    ],
+    "commonMistakes": [
+      "Forzare se le ginocchia fanno male: metti un cuscino"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  },
+  {
+    "id": "allungamento_collo_spalle",
+    "name": "Allungamento di collo e spalle",
+    "category": "defaticamento",
+    "minLevel": 1,
+    "zones": [
+      "collo",
+      "spalle"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Seduto o in piedi, spalle basse",
+      "Inclina piano la testa di lato",
+      "Lascia pesare la spalla opposta verso il basso",
+      "Respira, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Tirare la testa con la mano",
+      "Alzare la spalla"
+    ],
+    "regression": null,
+    "progression": null,
+    "formCheck": false
+  }
+]

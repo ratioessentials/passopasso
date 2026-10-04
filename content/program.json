@@ -1,0 +1,120 @@
+{
+  "totalWeeks": [10, 15],
+  "notes": "Si passa di livello per prontezza, non per calendario. Il percorso non si azzera mai. La durata tipica complessiva è di circa 12 settimane.",
+  "levels": [
+    {
+      "n": 1,
+      "name": "Attivazione",
+      "verb": "Cammina",
+      "goal": "Muoversi 3 volte a settimana senza fatica eccessiva",
+      "cardioGuide": "Camminata a ritmo comodo: riesci a parlare senza fiatone. Chi ha dolori alle gambe può usare la boxe sul posto.",
+      "weeks": [2, 3],
+      "sessionsPerWeek": 3,
+      "sessionTemplate": {
+        "minutes": 20,
+        "blocks": [
+          { "category": "riscaldamento", "count": 2 },
+          { "category": "cardio", "count": 1, "seconds": 600 },
+          { "category": "forza", "count": 2 },
+          { "category": "defaticamento", "count": 1 }
+        ]
+      },
+      "readiness": { "minSessions": 6, "minConsistency": 60, "maxHardFeedbackLast3": 1 }
+    },
+    {
+      "n": 2,
+      "name": "Fondamenta",
+      "verb": "Passo svelto",
+      "goal": "Camminare 15 minuti a passo svelto e fare le basi della forza con buona tecnica",
+      "cardioGuide": "Passo svelto: riesci a parlare ma non a cantare. Lo scalino è un'alternativa in casa.",
+      "weeks": [2, 3],
+      "sessionsPerWeek": 3,
+      "sessionTemplate": {
+        "minutes": 25,
+        "blocks": [
+          { "category": "riscaldamento", "count": 2 },
+          { "category": "cardio", "count": 1, "seconds": 900 },
+          { "category": "forza", "count": 3 },
+          { "category": "mobilita", "count": 1 },
+          { "category": "defaticamento", "count": 1 }
+        ]
+      },
+      "readiness": { "minSessions": 7, "minConsistency": 65, "maxHardFeedbackLast3": 1 }
+    },
+    {
+      "n": 3,
+      "name": "Costruzione",
+      "verb": "Corsetta",
+      "goal": "Alternare corsetta e camminata per 20 minuti",
+      "cardioGuide": "Cammina e corri: 1 minuto di corsetta lenta e 2 di camminata. Si aumenta la corsa solo quando il minuto è comodo.",
+      "weeks": [2, 3],
+      "sessionsPerWeek": 3,
+      "sessionTemplate": {
+        "minutes": 30,
+        "blocks": [
+          { "category": "riscaldamento", "count": 2 },
+          { "category": "cardio", "count": 1, "seconds": 1200 },
+          { "category": "forza", "count": 3 },
+          { "category": "mobilita", "count": 1 },
+          { "category": "defaticamento", "count": 1 }
+        ]
+      },
+      "readiness": { "minSessions": 8, "minConsistency": 65, "maxHardFeedbackLast3": 1 }
+    },
+    {
+      "n": 4,
+      "name": "Slancio",
+      "verb": "Corsa",
+      "goal": "Correre 20 minuti di fila a ritmo comodo",
+      "cardioGuide": "Prima 2 minuti di corsa e 1 di camminata, poi corsa continua lenta. Ritmo con cui potresti parlare.",
+      "weeks": [2, 3],
+      "sessionsPerWeek": 3,
+      "sessionTemplate": {
+        "minutes": 35,
+        "blocks": [
+          { "category": "riscaldamento", "count": 3 },
+          { "category": "cardio", "count": 1, "seconds": 1500 },
+          { "category": "forza", "count": 3 },
+          { "category": "mobilita", "count": 1 },
+          { "category": "defaticamento", "count": 1 }
+        ]
+      },
+      "readiness": { "minSessions": 9, "minConsistency": 70, "maxHardFeedbackLast3": 1 }
+    },
+    {
+      "n": 5,
+      "name": "Autonomia",
+      "verb": "Sprint",
+      "goal": "Correre con continuità e aggiungere allunghi e scatti brevi in sicurezza",
+      "cardioGuide": "Corsa comoda con allunghi, poi scatti brevi con recuperi lunghi. Mai scatti senza riscaldamento.",
+      "weeks": [2, 3],
+      "sessionsPerWeek": 3,
+      "sessionTemplate": {
+        "minutes": 40,
+        "blocks": [
+          { "category": "riscaldamento", "count": 3 },
+          { "category": "cardio", "count": 1, "seconds": 1500 },
+          { "category": "forza", "count": 3 },
+          { "category": "mobilita", "count": 1 },
+          { "category": "defaticamento", "count": 2 }
+        ]
+      },
+      "readiness": null
+    }
+  ],
+  "restartSession": {
+    "title": "Seduta di ripartenza",
+    "intensity": 0.8,
+    "bonusPoints": 10,
+    "note": "Esercizi del livello attuale, preferendo le versioni più facili (regression) quando esistono.",
+    "sessionTemplate": {
+      "minutes": 15,
+      "blocks": [
+        { "category": "riscaldamento", "count": 2 },
+        { "category": "cardio", "count": 1, "seconds": 420 },
+        { "category": "forza", "count": 1 },
+        { "category": "defaticamento", "count": 1 }
+      ]
+    }
+  }
+}
