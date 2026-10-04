@@ -1,6 +1,6 @@
 # Testi per la consegna
 
-Da copiare nel modulo dell'hackathon. Deadline: **domenica 4 ottobre 2026, ore 15:00**.
+Da copiare nel modulo dell'hackathon.
 
 ---
 
@@ -13,58 +13,60 @@ PassoPasso
 ## Tagline
 Da zero a dove vuoi arrivare.
 
-## Descrizione breve (1 frase)
-Un coach fitness con l'AI che porta il principiante dalla camminata alla corsa in 5 livelli, adattando ogni seduta a come stai oggi e senza mai farti sentire in colpa.
+## Descrizione breve (circa 300 caratteri)
+Un coach fitness con l'AI che porta chi parte da zero dalla camminata alla corsa in 5 livelli. Ogni seduta si adatta a tempo, energia e dolori; il coach cambia il piano quando cambia la tua vita; una seduta saltata non azzera niente. Sicuro: esercizi verificati e bandiere rosse.
 
-## Descrizione (lunga)
-Il 70% delle persone abbandona un'app fitness entro 100 giorni. Chi parte da zero trova piani rigidi, streak che si azzerano al primo giorno saltato, chatbot che danno piani generici senza fare domande e diete basate sul conteggio delle calorie.
+## Descrizione lunga
+Il 70% delle persone abbandona un'app fitness entro 100 giorni (JMIR 2024). Chi parte da zero trova piani rigidi, streak che si azzerano al primo giorno saltato, chatbot che danno piani generici senza fare domande e diete basate sul conteggio delle calorie.
 
-PassoPasso è una PWA che accompagna il principiante in un percorso progressivo di 5 livelli in circa 12 settimane: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Dalla camminata allo sprint. Si sale di livello per prontezza, non per calendario, e il percorso non si azzera mai. Anche l'icona dell'app evolve con te.
+PassoPasso è una PWA che accompagna il principiante in un percorso di 5 livelli in circa 12 settimane: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Dalla camminata allo sprint. Si sale di livello quando sei pronto, non quando lo dice il calendario, e il percorso non si azzera mai. Anche l'icona dell'app cresce con te.
 
-Il motore adattivo usa Claude:
-- **Onboarding a conversazione** invece di un modulo.
-- **Check-in prima di ogni seduta** (tempo, energia, mappa del corpo per i dolori) che rigenera la seduta al momento.
-- **Seduta saltata?** La settimana si riorganizza e arriva una seduta di ripartenza con bonus. Lo dice la ricerca (Milkman, Nature 2021): premiare chi riprende funziona meglio che punire chi si ferma.
+Il piano si adatta grazie a Claude:
+- **Onboarding a conversazione** al posto di un modulo.
+- **Check-in prima di ogni seduta** (tempo, energia, mappa del corpo): la seduta si rigenera e l'AI spiega perché.
+- **Coach sempre disponibile:** gli scrivi cosa è cambiato e il piano si aggiorna, dicendoti cosa ha cambiato.
+- **Calendario collegato** con un link iCal: le sedute vanno negli spazi liberi.
+- **Seduta saltata?** La settimana si riorganizza e arriva una ripartenza con 10 punti di bonus, perché premiare chi riprende funziona meglio che punire chi si ferma (Milkman, Nature 2021).
 - **Feedback dopo la seduta** (facile / giusto / duro) che regola l'intensità.
+- **Omino animato** per ogni esercizio e controllo della forma con la fotocamera sullo squat.
 
-Sicurezza prima di tutto: l'AI sceglie solo da un catalogo di esercizi verificati, non li inventa. Con sintomi da bandiera rossa niente allenamento e il consiglio di sentire un medico.
+Sicurezza prima di tutto: le bandiere rosse si controllano con regole fisse prima dell'AI, e per i sintomi urgenti l'app indica il 112. L'AI sceglie solo da un catalogo di 60 esercizi verificati, e ogni risposta è JSON validato. Se l'AI non risponde, il motore costruisce la seduta a regole.
 
-Alimentazione senza calorie: un'abitudine a settimana e la foto del piatto con un feedback qualitativo. Motivazione senza ansia: punteggio di costanza al posto della streak, vittorie che non dipendono dalla bilancia, tono mai colpevolizzante.
+Niente calorie: un'abitudine a settimana e la foto del piatto con un feedback qualitativo. Niente colpa: punteggio di costanza al posto della streak, vittorie che non dipendono dalla bilancia, widget sul telefono.
 
-Il principiante è la porta d'ingresso, ma l'app cresce con l'utente fino al livello intermedio.
+L'abbiamo costruita con 5 sessioni di Claude Code in parallelo, più una di regia che custodisce il contratto API.
 
 ## Link alla demo
 https://passopasso.andreavallieri.com
 
 ## Repository
-<!-- TODO: inserire l'URL del repository se pubblico -->
+https://github.com/ratioessentials/passopasso
 
 ## Istruzioni per la demo
-Apri il link dal telefono (o dal browser in vista mobile). Non serve registrarsi.
-<!-- TODO: verificare che non serva login; se serve, indicare credenziali demo -->
+Non serve registrarsi. Meglio dal telefono; su desktop l'app compare dentro una cornice iPhone.
 
-1. Fai l'onboarding rispondendo come un principiante vero.
-2. Apri la seduta di oggi, fai il check-in e segna un dolore sulla mappa del corpo: la seduta cambia.
-3. Prova a segnalare un sintomo serio (es. dolore al petto): l'app non ti fa allenare.
-4. Segna una seduta come saltata: guarda come si riorganizza la settimana.
-5. Completa una seduta e dai un feedback: la prossima si adatta.
-6. Carica la foto di un piatto nella sezione alimentazione.
+1. Apri il link e tocca **"Prova con l'utente demo"** (Giulia, livello 2, tre settimane di storico).
+2. Inizia la seduta di oggi: nel check-in scegli 15 minuti e tocca le ginocchia sulla mappa del corpo. Leggi perché la seduta è cambiata.
+3. Completa la seduta e dai un feedback: ti viene proposto il livello 3.
+4. Apri il **Coach** e scrivi come va la tua settimana (es. "questa settimana lavoro di sera"): guarda cosa cambia nel piano.
+5. Carica la foto di un piatto nella sezione **Cibo**.
+6. Vuoi partire da zero? Apri il link in una finestra in incognito e fai l'onboarding.
 
-Puoi installarla come app: dal browser, "Aggiungi a schermata Home".
+Il demo torna da solo allo stato iniziale dopo 30 minuti senza modifiche. Puoi installare l'app con "Aggiungi a schermata Home".
 
 ## Dockerfile
-Sì, nel repository. Istruzioni nel `README.md`.
+Sì, nella radice del repository, con `docker-compose.yml`. Avvio: `cp .env.example .env` (inserisci una credenziale Claude, facoltativa) e `docker compose up -d --build`. Senza credenziali l'app funziona con le regole di riserva. Dettagli nel README.
 
 ## Tecnologie
-- Frontend: PWA con React, Vite, Tailwind. Mobile-first, installabile.
-- Backend: Node.js, SQLite.
-- AI: Claude chiamato dal server, con output JSON strutturato validato sul catalogo degli esercizi.
-- Deploy: Docker su server Contabo, esposto con un tunnel Cloudflare.
+- **Frontend:** PWA con React, Vite, Tailwind, Motion. Mobile-first, installabile. MediaPipe per il controllo della forma.
+- **Backend:** Node 22, TypeScript, Fastify, SQLite (`better-sqlite3`), zod.
+- **AI:** Claude Sonnet 5.5 chiamato dal server con il Claude Agent SDK, output JSON validato con zod e regole di riserva.
+- **Deploy:** Docker e Docker Compose su un server Contabo, esposto con un tunnel Cloudflare.
 
 ## AI agents usati
-- **Claude Code** per tutto lo sviluppo: più sessioni in parallelo sullo stesso repository, ognuna con la sua area (app, backend, brand, pitch), coordinate da un `CLAUDE.md` condiviso con specifica e vincoli.
-- **Claude** dentro il prodotto: onboarding a conversazione, rigenerazione delle sedute, riorganizzazione della settimana, feedback sulle foto dei piatti.
+- **Claude Code, 6 sessioni:** 5 chat in parallelo sullo stesso repository (frontend, backend e AI, contenuti e QA, deploy, pitch) più una chat di regia. Ognuna ha il suo prompt e le sue cartelle. Si coordinano con un contratto API condiviso (`docs/api.md`), una bacheca delle richieste e uno stato dei lavori (`docs/agenti/`). La chat dei contenuti ha fatto anche il QA con Playwright.
+- **Claude dentro il prodotto:** onboarding a conversazione, rigenerazione delle sedute con la spiegazione, coach che modifica il piano, feedback sulle foto dei piatti.
 
 ## Video pitch
-<!-- TODO: inserire link al video -->
-Script in `pitch/script-video.md`.
+<!-- TODO: inserire il link al video -->
+Script: `pitch/script.md`. Scaletta della registrazione: `pitch/demo.md`.
