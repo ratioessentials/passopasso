@@ -31,6 +31,35 @@ La PWA mobile-first di PassoPasso: bella, chiara, tono gentile. Durante la demo 
 
 Navigazione: tab bar in basso (Oggi, Settimana, Percorso, Cibo, Progressi).
 
+## Direzione estetica e motion (PRIORITÀ ALTA: dobbiamo vincere)
+L'app deve sembrare un prodotto premium del 2026, non un prototipo da hackathon. Riferimenti: Apple Fitness+, Arc, Linear, Headspace. Ogni interazione ha una risposta fisica.
+
+**Strumenti**: `motion` (Framer Motion) per tutto il movimento, con molle (spring) e non curve lineari. Per i coriandoli `canvas-confetti`. Nient'altro di pesante.
+
+**Linguaggio visivo**
+- Superfici "glass" leggere (backdrop-blur e bordi a 1px semitrasparenti) sopra sfumature vive del brand; card grandi con angoli di 24-28px, ombre morbide e profonde con un tocco di colore (petrolio).
+- Tipografia molto espressiva: numeri grandi in Archivo corsivo extrabold (costanza, minuti, livello) e testi ariosi.
+- Sfondo della home che "respira": un gradiente mesh animato lentamente (blob sfocati che si muovono in 20-30 secondi) con i colori del livello attuale.
+
+**Momenti chiave da curare (in ordine)**
+1. **Transizioni tra schermate**: slide e fade con molla, shared element con `layoutId` (la card "Seduta di oggi" si espande nel check-in e poi nel player; l'icona del livello vola dalla home al percorso).
+2. **Anello della costanza**: si disegna all'apertura (stroke-dashoffset con molla) e il numero sale con un contatore animato.
+3. **Onboarding**: le bolle entrano a cascata con una piccola molla, l'indicatore "sta scrivendo" ha tre puntini che rimbalzano e le risposte rapide compaiono una dopo l'altra. Alla fine **rivelazione del livello**: l'icona appare con scala, rotazione e un alone, e il nome si scrive lettera per lettera.
+4. **Mappa del corpo**: le zone si illuminano al passaggio e al tocco, con una pulsazione morbida in corallo tenue (non rosso allarme) e un'etichetta che compare.
+5. **Generazione AI della seduta**: invece di uno spinner, un'animazione "l'AI ci sta pensando": le card degli esercizi si mescolano o si compongono con effetto shimmer, con microtesti che si alternano (`copy.json`). Quando arriva la risposta, gli esercizi entrano a cascata e la `reason` compare con un effetto di scrittura.
+6. **Player della seduta**: timer circolare grande e fluido, passaggio tra esercizi con slide, conto alla rovescia del recupero con battito, vibrazione (`navigator.vibrate`) a fine serie su Android.
+7. **Feedback e risultato**: i tre pulsanti (facile/giusto/duro) con scala sulla pressione; la schermata di risultato fa salire la costanza con un contatore e le nuove vittorie entrano come badge che "cadono" in posizione.
+8. **Passaggio di livello: il momento wow della demo.** Schermata a tutto schermo, il colore di sfondo passa da quello del livello vecchio a quello del nuovo, l'**omino si trasforma** dall'icona del livello N a quella di N+1 (crossfade con scala, poi le scie di velocità che entrano da sinistra), coriandoli con la palette del brand e il titolo "Livello 3: Costruzione".
+9. **Seduta saltata**: niente rosso, niente "streak persa". Un'animazione morbida che riorganizza i giorni (i pallini della settimana scorrono nelle nuove posizioni con `layout`) e la card della ripartenza entra con un badge "+10" luminoso.
+10. **Microinterazioni ovunque**: pressione dei pulsanti (scale 0.96), tab bar con indicatore che scorre (`layoutId`), skeleton con shimmer al posto degli spinner, pull e drag con elasticità, toast che entrano a molla.
+11. **Cornice desktop**: leggero tilt 3D della cornice dell'iPhone al movimento del mouse (pochi gradi), riflesso sullo schermo, le icone dei livelli a sinistra che fluttuano lentamente, QR code con un bagliore sottile.
+
+**Regole**
+- Solo `transform` e `opacity` per le animazioni frequenti: 60fps anche su un telefono medio.
+- Durate brevi (150-400ms per le interazioni); le animazioni lunghe solo nei momenti celebrativi. Non bloccare mai l'utente in attesa di un'animazione.
+- `prefers-reduced-motion` → animazioni ridotte a fade.
+- Coerenza: una sola configurazione delle molle in `src/ui/motion.ts` (per esempio `snappy`, `gentle`, `bouncy`), usata ovunque.
+
 ## Layout desktop (la demo si mostra da desktop)
 L'app resta **mobile**. Su desktop (≥1024px) si mostra dentro una **cornice da iPhone**, non con un layout desktop:
 - Componente `DesktopShell`: sfondo con la sfumatura del brand (petrolio → salvia); al centro la cornice dell'iPhone **390×844** (angoli arrotondati, bordo scuro, Dynamic Island) con l'app dentro; a sinistra logotipo in Archivo corsivo, tagline "Da zero a dove vuoi arrivare", i 5 livelli con le icone e un **QR code** al link pubblico (`https://passopasso.andreavallieri.com`, libreria `qrcode`) con la scritta "Provala sul tuo telefono"; a destra (≥1280px) anteprima dei widget iPhone (riusa i componenti di `/widget`).
