@@ -60,3 +60,33 @@ Nessuna scadenza fissa: la gestisce l'utente. Lavora per dare una demo bella da 
   - **chat-3**: aggiungi a ogni esercizio `impact: true|false` (salti, corsa, scatti, jumping jack → true); aggiorna validate.mjs; in copy.json i testi della scheda (frasi sul peso, sul PAR-Q+, messaggio di prudenza).
   - **chat-5**: nello script, una riga: "Prima di tutto PassoPasso vuole sapere chi sei: età, corpo, salute, con lo screening PAR-Q+ usato dai professionisti. Il peso serve solo a tarare il carico: non te lo rinfacceremo mai."
 - [chat-2] 11:16 — seconda ondata, per chat-1: attivi `POST /api/coach/message`, `POST /api/calendar/connect`, `DELETE /api/calendar` come da api.md. Errori del calendario: status 422 con `error.code` (bad_url, fetch_failed, not_ical, timeout, too_large) e messaggio pronto da mostrare. Per la demo c'è un calendario di esempio: `https://passopasso.andreavallieri.com/api/calendar/demo.ics` (va bene come link d'esempio o pulsante "Prova con un calendario di esempio"). Il profilo in `/api/me` contiene `calendarUrl` quando è collegato. Il coach risponde in 5-10 s; con una bandiera rossa nel testo risponde subito con `redFlag` e mette in pausa la seduta di oggi (chip "Seduta di oggi in pausa").
+
+## Quarta ondata (12:00): prodotto poliedrico, pronto alle domande della giuria
+Contratto aggiornato in schema.md (track, runner, food, segments, impact, elastico/manubri, percorsi) e api.md (alimentazione 2.0, test di prontezza, i miei dati, week.ics, science, regole onboarding per corridori, percorsi e minorenni). Ordine di valore per la demo: A, B, C, D, poi il resto.
+
+→ [regia] 12:00 — per **chat-3** (Contenuti), per prima, pubblica a blocchi:
+  A. `program.json`: i tre percorsi (`tracks`: corsa, forza, mobilita) con verbo, obiettivo, `sessionTemplate` e `readiness` per ogni livello. Per `corsa` livelli 4-5: modelli settimanali da podista (facile, qualità, lungo + 1-2 forza di supporto) e **sedute a segmenti** (`segments`, in minuti e RPE: facile, ripetute, progressivo, lungo; il lungo cresce 5 min a settimana, ogni quarta settimana scarico). Per `forza`: progressione sedia → corpo libero → elastici/manubri. Per `mobilita`: schiena, anche, collo, spalle; adatta a chi lavora seduto.
+  B. `exercises.json`: campo `impact`; **+12 esercizi con elastico e manubri** (remata, pressa sopra la testa, stacco rumeno con manubri, curl, hip thrust con manubrio, ecc.) con regressioni a corpo libero; `motion` per tutti.
+  C. `fuel.json`: consigli prima/dopo la seduta per orario (mattina, pranzo, sera), tipo di seduta (leggera, forza, corsa lunga) e percorso; qualitativi, mai quantità. `habits.json`: aggiungi a ogni abitudine `signals` (quali risposte del mini-onboarding alimentare la rendono prioritaria) così l'AI sceglie con criterio.
+  D. `tests.json`: sit-to-stand 30 s (target per età e sesso, dalle tabelle Rikli & Jones) e marcia 1 min (sforzo percepito); istruzioni e cosa misura.
+  E. `science.json`: 8-10 scelte di design con fonte e link (da docs/ricerca.md e FONTI.md): ripartenza premiata (Milkman), abitudini in 66 giorni (Lally), PAR-Q+, piatto in tre parti (Harvard), progressione 10%, cammina-corri, costanza vs streak, niente calorie (sicurezza alimentare), test funzionali.
+  F. `copy.json`: testi per percorsi, test, dati, alimentazione, minorenni. `validate.mjs` aggiornato.
+
+→ [regia] 12:00 — per **chat-2** (Backend):
+  A. Percorsi e collocazione: `track` dall'obiettivo, `runner` con le 3 domande extra, livello 4-5 per chi corre, minorenni (regole in api.md). Pianificazione da `tracks.<track>`; sedute di corsa con `segments` (l'AI adatta i segmenti al check-in: poco tempo o gamba pesante → corsa facile corta; la regola 10% e lo scarico sono deterministiche).
+  B. Alimentazione 2.0: `POST /api/food/profile`, `GET /api/food/today`, `plate` nella foto, `GET /api/food/recap`; prompt del coach con regole di sicurezza alimentare (condizioni mediche → dietista, segnali di restrizione → cura e professionista; mai diete, mai numeri).
+  C. Test di prontezza: `GET/POST /api/level/test`, target da `tests.json`, passaggio di livello con readiness + test.
+  D. I miei dati: export, delete, `week.ics`. `GET /api/science`.
+  E. Demo: Giulia resta sul percorso corsa livello 2; aggiungi un secondo utente demo `demo-runner` (Luca, 43 anni, 25 km/sett., livello 4, settimana da podista con un lungo domenica) per la domanda "e se sono già allenato?". Smoke test aggiornato.
+
+→ [regia] 12:00 — per **chat-1** (Frontend):
+  A. Onboarding: la scelta dell'obiettivo mostra il percorso assegnato nella rivelazione finale ("Percorso Corsa · Livello 4"); le 3 domande da corridore arrivano dall'AI (niente da fare oltre a mostrarle). Minorenni: schermata dedicata.
+  B. **Player a segmenti** per le sedute di corsa: timer grande per il segmento, barra dei segmenti in alto, ripetizioni "3/6", l'omino cambia `motion` per segmento, vibrazione al cambio. RPE spiegato in una riga ("7 = respiro corto, parli a fatica").
+  C. Cibo: mini-onboarding alimentare (5 domande a chip), card "Prima e dopo" nei giorni di seduta, **piatto in tre parti animato** nella risposta alla foto (tre spicchi che si riempiono), riepilogo settimanale con l'abitudine nuova.
+  D. Test di prontezza: schermata con timer 30 s e contatore grande per il sit-to-stand, poi marcia 1 min con la scala dello sforzo; risultato → passaggio di livello (il momento wow esistente).
+  E. Coach → "I miei dati": esporta (apre `/api/me/export`), "Aggiungi la settimana al calendario" (`/api/week.ics`), "Cancella tutto" con conferma nell'app; nota privacy in una frase ("Niente account, niente pubblicità: i tuoi dati stanno su un server in Europa e li cancelli quando vuoi"). "Perché funziona": lista delle scelte con la fonte, dal Percorso.
+  F. Percorso: mostra il nome del percorso; i verbi dei livelli cambiano con il percorso.
+
+→ [regia] 12:00 — per **chat-4** (Deploy): quando l'omino è pronto, deploy; poi verifica che `week.ics` ed export passino da Cloudflare con i Content-Type giusti. Opzionale: `formcheck` anche per l'affondo.
+
+→ [regia] 12:00 — per **chat-5** (Pitch): aggiorna script e consegna con la tabella "domande della giuria → risposte" (percorsi, già allenato, progressi senza bilancia, alimentazione, attrezzatura, dati, calendario, perché funziona, minorenni) e una sezione **Roadmap** onesta (wearable, altre lingue, community, notifiche native con app store). Nel README la stessa tabella.

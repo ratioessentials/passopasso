@@ -18,10 +18,11 @@ collo | spalle | schiena_alta | schiena_bassa | petto | braccia | polsi | anche 
   "category": "forza",              // riscaldamento | cardio | forza | mobilita | defaticamento
   "minLevel": 1,                    // 1-5
   "zones": ["ginocchia", "anche"],  // zone sollecitate: se l'utente ha dolore lì, l'esercizio è escluso
-  "equipment": [],                  // [] = corpo libero; altrimenti "sedia" | "muro" | "tappetino" | "scalino"
+  "equipment": [],                  // [] = corpo libero; altrimenti "sedia" | "muro" | "tappetino" | "scalino" | "elastico" | "manubri"
   "prescription": { "type": "reps", "default": 8 },   // type: reps | seconds
   "instructions": ["Siediti sul bordo della sedia", "Alzati spingendo coi talloni", "Torna giù piano"],
   "commonMistakes": ["Ginocchia che cadono verso l'interno"],
+  "impact": false,                  // true per salti, corsa, scatti (esclusi se impactAllowed = false)
   "regression": "squat_sedia_assistito",   // id oppure null
   "progression": "squat_libero",           // id oppure null
   "formCheck": false,                      // true solo per gli esercizi supportati da MediaPipe (squat)
@@ -35,6 +36,13 @@ L'omino del brand viene animato in SVG per questi movimenti; ogni esercizio ne i
 marcia | camminata_veloce | corsetta | corsa | scatto | squat | affondo | ponte | plank | flessioni_muro |
 polpacci | rotazioni_braccia | rotazioni_anche | allungamento | respirazione | jumping_jack | step
 ```
+
+## Percorsi (`content/program.json` → `tracks{}`)
+Tre percorsi con gli stessi 5 livelli e le stesse icone; cambiano verbo, obiettivo e `sessionTemplate` per livello:
+- `corsa` (cammina → sprint; livelli 4-5 con sedute di corsa a segmenti),
+- `forza` (dalla sedia al corpo libero avanzato, con elastici e manubri se ci sono),
+- `mobilita` (schiena, anche e postura per chi lavora seduto; dolce ma progressivo).
+`levels[]` resta la struttura base; `tracks.<track>.levels[n]` sovrascrive `verb`, `goal`, `sessionTemplate`, `readiness`.
 
 ## Livello (`content/program.json` → `levels[]`)
 ```json
@@ -85,7 +93,12 @@ polpacci | rotazioni_braccia | rotazioni_anche | allungamento | respirazione | j
       "note": "Lento in discesa"
     }
   ],
-  "bonusPoints": 0                // > 0 solo per le sedute di ripartenza
+  "bonusPoints": 0,               // > 0 solo per le sedute di ripartenza
+  "segments": null | [            // solo sedute di corsa (track corsa, livelli 4-5): timer a segmenti
+    { "label": "Facile", "minutes": 10, "motion": "corsetta", "rpe": 3 },
+    { "label": "Svelto", "minutes": 1, "motion": "corsa", "rpe": 7, "repeat": 6, "recovery": { "label": "Cammina", "minutes": 1, "motion": "marcia", "rpe": 2 } },
+    { "label": "Defaticamento", "minutes": 5, "motion": "marcia", "rpe": 2 }
+  ]
 }
 ```
 
@@ -150,6 +163,9 @@ Tono: dai del tu, frasi brevi, mai colpa.
   "limitations": ["ginocchia"],     // BodyZone da tenere d'occhio
   "preferredTime": "sera",          // mattina | pausa_pranzo | sera
   "calendarUrl": null,
+  "track": "corsa",                 // corsa | forza | mobilita (scelto dall'obiettivo nell'onboarding)
+  "runner": null | { "kmPerWeek": 25, "longestRunMin": 50, "easyPaceMinKm": 6.0 | null, "runGoal": "10 km" },   // solo se corre già
+  "food": null | { "breakfast": true, "veggiesPerDay": 1, "sugaryDrinks": "spesso", "mealsOut": 3, "cooks": "a_volte" },   // mini-onboarding alimentare
   "startLevel": 1,
   "caution": false                  // true se almeno un "sì" nel PAR-Q+ (tranne jointIssue da solo): modalità prudenza
 }

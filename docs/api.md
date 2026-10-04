@@ -28,7 +28,7 @@ Conversazione stateless: il client rimanda tutta la cronologia.
 // ultima risposta: il server salva il profilo e genera la prima settimana
 { "reply": "Perfetto, si parte dal livello 1.", "done": true, "profile": { /* Profile */ } }
 ```
-Il primo messaggio dell'assistente lo mostra il client in modo fisso (`copy.json` → `onboarding.hello`) e non richiede chiamate. L'onboarding si chiude in circa 6 domande.
+Con esperienza "corro regolarmente" (o simili) l'AI fa 3 domande in più (km a settimana, corsa più lunga, ritmo comodo o "non lo so") e compila `runner`; il server colloca al livello 4 (< 20 km/sett.) o 5 (≥ 20). L'obiettivo decide `track`: correre → `corsa`; forza, tono, "sentirmi più forte" → `forza`; schiena, postura, rigidità, "lavoro seduto" → `mobilita`; in dubbio → `corsa`. Età < 16 → `{ done: true, minor: true }` con messaggio che invita a usare l'app con un adulto e nessun piano; 16-17 → livelli massimo 3. Il primo messaggio dell'assistente lo mostra il client in modo fisso (`copy.json` → `onboarding.hello`) e non richiede chiamate. L'onboarding si chiude in circa 6 domande.
 
 ### `POST /api/onboarding/profile`
 La **scheda** compilata nel form prima della conversazione (chi sei + salute PAR-Q+). Il server la salva come profilo parziale; la conversazione che segue completa obiettivo e preferenze.
@@ -151,6 +151,24 @@ Collega un calendario tramite il suo **link iCal** (Google Calendar: Impostazion
 { "ok": true, "eventsNext7Days": 14, "freeSlots": [ { "date": "2026-10-05", "start": "07:00", "end": "08:30" }, ... ], "suggestion": "Vedo spazio lunedì, mercoledì e venerdì mattina: sposto lì le sedute?" }
 ```
 Il server salva l'URL nel profilo (`calendarUrl`), lo rilegge a ogni pianificazione (cache 15 min) e cerca spazi liberi di almeno `minutesPerSession + 15` tra le 6:30 e le 22:00. `DELETE /api/calendar` scollega. Gli eventi non vengono salvati né mandati all'AI per intero: solo gli spazi liberi.
+
+### Alimentazione 2.0
+- `POST /api/food/profile` → salva `profile.food` (mini-onboarding, 5 domande) e risponde `{ "habit": { /* Habit scelta dall'AI per questa persona */ }, "why": "Bevi già abbastanza: partiamo dalla colazione, che salti spesso." }`.
+- `GET /api/food/today` → `{ "habit": {...}, "doneDays": 3, "training": null | { "sessionAt": "19:00", "before": "Uno spuntino leggero verso le 17.", "after": "Cena normale, con una fonte di proteine." } }` (consigli di tempistica da `content/fuel.json`, scelti in base a orario, tipo di seduta e percorso; mai quantità).
+- `POST /api/meals/photo` risponde in più con `"plate": { "veggies": 0.5, "protein": 0.25, "grains": 0.25 }` (stima qualitativa delle tre parti, 0-1, per il disegno del piatto) e salva la foto solo come valutazione (non l'immagine).
+- `GET /api/food/recap` → `{ "photos": 5, "strengths": ["Tanta verdura"], "gaps": ["Colazioni senza proteine"], "nextHabit": { /* Habit */ }, "why": "..." }` (riepilogo degli ultimi 7 giorni; l'abitudine della settimana dopo nasce da qui).
+
+### Test di prontezza
+- `GET /api/level/test` → `{ "tests": [ { "id": "sit_to_stand_30s", "title": "Alzati e siediti per 30 secondi", "instructions": [...], "unit": "ripetizioni", "target": 12 }, { "id": "marcia_1min", "title": "Marcia sul posto 1 minuto", "unit": "sforzo", "target": 5 } ] }` (target in base a età, sesso e percorso, da `content/tests.json`).
+- `POST /api/level/test` `{ "results": { "sit_to_stand_30s": 14, "marcia_1min": 4 } }` → `{ "passed": true, "message": "...", "levelUp": {...} | null }`. Il passaggio di livello richiede `readiness` **e** test superato (o saltato con un "Non oggi", che rimanda di una settimana).
+
+### I miei dati
+- `GET /api/me/export` → JSON completo dell'utente (profilo, sedute, feedback, vittorie, valutazioni dei piatti). Header `Content-Disposition: attachment`.
+- `DELETE /api/me` → cancella tutto, subito, senza conferma lato server (la conferma è nell'app). → `204`.
+- `GET /api/week.ics` → la settimana pianificata in formato iCalendar (una voce per seduta, 30 min, con il link all'app), per aggiungerla a Google/Apple Calendar.
+
+### Perché funziona
+- `GET /api/science` → `[ { "id": "ripartenza", "claim": "Premiare chi riprende funziona più di premiare chi non salta mai", "source": "Milkman et al., Nature 2021", "url": "...", "inApp": "La seduta di ripartenza con bonus" }, ... ]` da `content/science.json`.
 
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
