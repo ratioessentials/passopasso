@@ -19,6 +19,8 @@ node content/validate.mjs
 | `tests.json` | test di prontezza: `sit_to_stand_30s` (fasce per età e sesso) e `marcia_1min` (scala dello sforzo 0-10) |
 | `readiness.json` | prontezza del giorno: segnali (sonno < 6 h, battito a riposo +8%, HRV −15% sulla baseline di 14 giorni), punteggio, livelli, energia suggerita, riposo consigliato dopo 3 giorni, giorno attivo dai passi, fonti |
 | `plans.json` | piani Free e Plus, cosa resta sempre gratis, promesse anti-dark-pattern (`demo: true` → tutto sbloccato) |
+| `education.json` | 12 card "Cosa aspettarti" per le prime 2 settimane (`day` 1-14, una al giorno; `source`/`url` o `null`) |
+| `glossary.json` | 16 termini del glossario inline (`id`, `term`, `definition` di una riga) |
 | `science.json` | le scelte di design con la fonte (per `GET /api/science`) |
 
 ## Note per il backend (chat 2)
@@ -28,6 +30,7 @@ node content/validate.mjs
 - **Prescrizione**: `prescription.default` è il valore base (ripetizioni o secondi), da moltiplicare per `intensity`. Nei blocchi cardio di `sessionTemplate`, `seconds` sostituisce il default.
 - **Catene**: `regression` e `progression` puntano a id esistenti e sono simmetriche; la regressione ha `minLevel` uguale o più basso.
 - **`formCheck: true`**: solo sulla famiglia degli squat (`alzate_sedia_mani`, `squat_sedia`, `squat_libero`, `squat_pausa`, `squat_salto`).
+- **Seduta zero**: `program.json` → `sessionZero` (`title`, `minutes`, `reason`, `items` già dosati come in Session: `exerciseId`, `sets`, `reps` o `seconds`, `restSec`, `note`). Esercizi di livello 1 senza impatto.
 - **Livello 5**: `readiness` è `null` (ultimo livello).
 - **Ripartenza**: `restartSession` ha un suo `sessionTemplate` (15 minuti), `intensity` 0.8 e `bonusPoints` 10. Usa esercizi del livello attuale preferendo le regressioni.
 - **Bandiere rosse**: controllo deterministico, nessuna chiamata all'AI.
@@ -70,6 +73,7 @@ Ogni vittoria ha `condition` (testo per l'utente) e `rule` (per il calcolo). Si 
 | `level_reached` | 2-5 | il livello attuale è almeno `value` |
 | `habit_week_done` | numero | le settimane di abitudine completate (almeno 4 giorni segnati su 7) sono almeno `value` |
 | `meal_photos` | numero | le foto del piatto inviate sono almeno `value` |
+| `session_zero_done` | — | l'utente ha completato la seduta zero (`POST /api/session-zero/done`) |
 | `feedback_count` | numero | le sedute con feedback uguale a `rule.feedback` (`facile` / `giusto` / `duro`) sono almeno `value` |
 
 Icone usate (`icon`): `star`, `flag`, `heart`, `bolt`, `leaf`, `trophy`, `sun`, `sprout`, `shoe`, `clock`, `camera`, `water`, `calendar`, `shield`, `medal`, `smile`.

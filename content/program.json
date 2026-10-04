@@ -1097,5 +1097,47 @@
       ]
     }
   },
-  "defaultTrack": "corsa"
+  "defaultTrack": "corsa",
+  "sessionZero": {
+    "title": "Primi 5 minuti",
+    "minutes": 5,
+    "reason": "Niente domande: cinque minuti per sentire come si muove il corpo. Vai piano, va benissimo così.",
+    "items": [
+      {
+        "exerciseId": "marcia_sul_posto",
+        "sets": 1,
+        "seconds": 60,
+        "restSec": 15,
+        "note": "Ritmo comodo, braccia che si muovono"
+      },
+      {
+        "exerciseId": "squat_sedia",
+        "sets": 1,
+        "reps": 6,
+        "restSec": 20,
+        "note": "Puoi anche sederti del tutto e rialzarti"
+      },
+      {
+        "exerciseId": "ponte_glutei",
+        "sets": 1,
+        "reps": 6,
+        "restSec": 20,
+        "note": "Va bene anche sul tappeto o sul letto"
+      },
+      {
+        "exerciseId": "marcia_sul_posto",
+        "sets": 1,
+        "seconds": 60,
+        "restSec": 10,
+        "note": "Un po' più svelto, se ti va"
+      },
+      {
+        "exerciseId": "respirazione_profonda",
+        "sets": 1,
+        "seconds": 45,
+        "restSec": 0,
+        "note": "Hai finito: respira e goditela"
+      }
+    ]
+  }
 }

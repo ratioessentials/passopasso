@@ -11,7 +11,7 @@ const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino', 'elastico', 'manubri
 const WIN_TYPES = {
   sessions_done: true, restart_done: false, level_reached: true, habit_week_done: true,
   minutes_total: true, consistency_at_least: true, week_complete: true, meal_photos: true,
-  adapted_session_done: false, feedback_count: true,
+  adapted_session_done: false, feedback_count: true, session_zero_done: false,
 };
 const MOTIONS = ['marcia', 'camminata_veloce', 'corsetta', 'corsa', 'scatto', 'squat', 'affondo', 'ponte', 'plank', 'flessioni_muro', 'polpacci', 'rotazioni_braccia', 'rotazioni_anche', 'allungamento', 'respirazione', 'jumping_jack', 'step'];
 const ICONS = ['star', 'flag', 'heart', 'bolt', 'leaf', 'trophy', 'sun', 'sprout', 'shoe', 'clock', 'camera', 'water', 'calendar', 'shield', 'medal', 'smile'];
@@ -221,6 +221,20 @@ if (program) {
     }
     for (const n of [4, 5]) if (!tracks.corsa?.levels?.[n - 1]?.runSessions) err('program.json[tracks.corsa]', `il livello ${n} deve avere runSessions`);
   }
+  const sz = program.sessionZero;
+  if (!sz) err('program.json', 'sessionZero mancante');
+  else {
+    if (!isStr(sz.title) || sz.minutes !== 5) err('program.json[sessionZero]', 'title e minutes 5 obbligatori');
+    let tot = 0;
+    for (const it of sz.items ?? []) {
+      const ex = exById.get(it.exerciseId);
+      if (!ex) { err('program.json[sessionZero]', `esercizio sconosciuto: ${it.exerciseId}`); continue; }
+      if (ex.minLevel !== 1 || ex.impact) err('program.json[sessionZero]', `${it.exerciseId}: deve essere di livello 1 e senza impatto`);
+      if ((it.reps === undefined) === (it.seconds === undefined)) err('program.json[sessionZero]', `${it.exerciseId}: reps oppure seconds`);
+      tot += (it.seconds ?? it.reps * 4) * (it.sets ?? 1) + (it.restSec ?? 0);
+    }
+    if (tot < 200 || tot > 360) err('program.json[sessionZero]', `durata stimata ${Math.round(tot)} s: deve stare intorno ai 5 minuti`);
+  }
   const rs = program.restartSession;
   if (!rs) err('program.json', 'restartSession mancante');
   else {
@@ -344,6 +358,31 @@ if (plans) {
   if (typeof plans.demo !== 'boolean') err('plans.json', 'demo deve essere booleano');
 }
 
+// --- education.json e glossary.json ---
+const education = load('education.json');
+if (education) {
+  if (!Array.isArray(education) || education.length < 10 || education.length > 12) err('education.json', 'servono 10-12 card');
+  else {
+    uniqueIds('education.json', education);
+    for (const x of education) {
+      const w = `education.json[${x.id}]`;
+      if (!isInt(x.day, 1, 14)) err(w, 'day 1-14 (prime due settimane)');
+      if (!isStr(x.title) || !isStr(x.body)) err(w, 'title e body obbligatori');
+      if (x.body.length > 240) err(w, 'body troppo lungo (max 240 caratteri)');
+      if ((x.source === null) !== (x.url === null)) err(w, 'source e url vanno insieme');
+    }
+  }
+}
+const glossary = load('glossary.json');
+if (glossary) {
+  if (!Array.isArray(glossary) || glossary.length < 15) err('glossary.json', 'servono almeno 15 termini');
+  else {
+    uniqueIds('glossary.json', glossary);
+    for (const x of glossary) if (!isStr(x.term) || !isStr(x.definition) || x.definition.length > 120) err(`glossary.json[${x.id}]`, 'term e definition (una riga, max 120 caratteri)');
+    for (const t of ['rpe', 'serie', 'recupero', 'defaticamento', 'intensita']) if (!glossary.some((x) => x.id === t)) err('glossary.json', `termine mancante: ${t}`);
+  }
+}
+
 // --- red_flags.json ---
 const flags = load('red_flags.json');
 const allKeywords = [];
@@ -379,7 +418,7 @@ if (flags) {
 // --- wins.json ---
 const wins = load('wins.json');
 if (wins) {
-  if (!Array.isArray(wins) || wins.length < 15 || wins.length > 20) err('wins.json', 'servono 15-20 vittorie');
+  if (!Array.isArray(wins) || wins.length < 15 || wins.length > 25) err('wins.json', 'servono 15-25 vittorie');
   else {
     uniqueIds('wins.json', wins);
     for (const v of wins) {

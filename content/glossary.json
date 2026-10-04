@@ -1,0 +1,82 @@
+[
+  {
+    "id": "serie",
+    "term": "Serie",
+    "definition": "Un gruppo di ripetizioni fatte di fila, prima di una pausa."
+  },
+  {
+    "id": "ripetizioni",
+    "term": "Ripetizioni",
+    "definition": "Quante volte ripeti il movimento in una serie."
+  },
+  {
+    "id": "recupero",
+    "term": "Recupero",
+    "definition": "La pausa tra una serie e l'altra: serve a ripartire con energia."
+  },
+  {
+    "id": "riscaldamento",
+    "term": "Riscaldamento",
+    "definition": "Movimenti leggeri all'inizio per preparare muscoli e articolazioni."
+  },
+  {
+    "id": "defaticamento",
+    "term": "Defaticamento",
+    "definition": "La parte finale, lenta, che riporta piano il corpo a riposo."
+  },
+  {
+    "id": "rpe",
+    "term": "RPE",
+    "definition": "Quanto senti faticoso lo sforzo, da 1 (facilissimo) a 10 (massimo)."
+  },
+  {
+    "id": "intensita",
+    "term": "Intensità",
+    "definition": "Quanto è impegnativa la seduta: il piano la alza o la abbassa in base ai tuoi feedback."
+  },
+  {
+    "id": "cardio",
+    "term": "Cardio",
+    "definition": "Attività che fa lavorare cuore e fiato, come camminare svelti o correre."
+  },
+  {
+    "id": "mobilita",
+    "term": "Mobilità",
+    "definition": "Muovere le articolazioni in tutta la loro ampiezza, senza forzare."
+  },
+  {
+    "id": "regressione",
+    "term": "Versione più facile",
+    "definition": "Lo stesso movimento semplificato, per quando serve andare più piano."
+  },
+  {
+    "id": "progressione",
+    "term": "Versione più difficile",
+    "definition": "Il passo successivo di un esercizio, quando quello di adesso è comodo."
+  },
+  {
+    "id": "costanza",
+    "term": "Costanza",
+    "definition": "Quante sedute previste hai fatto nelle ultime 4 settimane, in percentuale. Un giorno saltato non la azzera."
+  },
+  {
+    "id": "ripartenza",
+    "term": "Ripartenza",
+    "definition": "Una seduta più corta dopo una pausa, che vale punti bonus."
+  },
+  {
+    "id": "prontezza",
+    "term": "Prontezza",
+    "definition": "Quanto sei recuperato oggi, secondo sonno e battito, se colleghi i tuoi dati."
+  },
+  {
+    "id": "scarico",
+    "term": "Settimana di scarico",
+    "definition": "Una settimana più leggera ogni tanto, per assorbire il lavoro fatto."
+  },
+  {
+    "id": "impatto",
+    "term": "Impatto",
+    "definition": "Esercizi con salti o corsa, che caricano di più le articolazioni."
+  }
+]

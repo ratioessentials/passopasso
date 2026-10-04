@@ -1,0 +1,98 @@
+[
+  {
+    "id": "benvenuto",
+    "day": 1,
+    "title": "Si parte piano, apposta",
+    "body": "Le prime sedute sembrano facili. È voluto: il corpo si abitua meglio se si sale per gradi.",
+    "source": "OMS, Linee guida 2020",
+    "url": "https://www.who.int/publications/i/item/9789240015128"
+  },
+  {
+    "id": "indolenzimento",
+    "day": 2,
+    "title": "Indolenzimento o dolore?",
+    "body": "Muscoli un po' indolenziti il giorno dopo sono normali e passano in 2-3 giorni. Un dolore acuto, a una articolazione o che peggiora muovendoti, invece è un segnale per fermarti.",
+    "source": "ACSM",
+    "url": "https://www.acsm.org/education-resources/books/guidelines-exercise-testing-prescription"
+  },
+  {
+    "id": "talk_test",
+    "day": 3,
+    "title": "Il test della chiacchiera",
+    "body": "Se riesci a parlare ma non a cantare, sei al ritmo giusto. Non serve un cardiofrequenzimetro.",
+    "source": "CDC, misurare l'intensità",
+    "url": "https://www.cdc.gov/physical-activity-basics/measuring/index.html"
+  },
+  {
+    "id": "saltare_un_giorno",
+    "day": 4,
+    "title": "Saltare un giorno non rompe niente",
+    "body": "Uno studio sulle abitudini ha visto che saltare un giorno non cambia il risultato. Conta tornare, non essere perfetti.",
+    "source": "Lally et al., 2010",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674"
+  },
+  {
+    "id": "riposo",
+    "day": 5,
+    "title": "Anche il riposo è allenamento",
+    "body": "I giorni senza seduta servono: è lì che il corpo si adatta e diventa più forte.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "primi_cambiamenti",
+    "day": 6,
+    "title": "I primi cambiamenti non sono numeri",
+    "body": "Prima arrivano fiato, sonno e umore. Le scale pesano meno. Sono vittorie vere, anche se non le vedi su nessuna bilancia.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "settimana_2",
+    "day": 8,
+    "title": "La settimana 2 è la più dura",
+    "body": "L'entusiasmo dell'inizio cala e la novità finisce. È normale: se ti sembra pesante, scegli la seduta corta. Conta esserci.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "scarpe",
+    "day": 9,
+    "title": "Scarpe comode, niente di più",
+    "body": "Per iniziare non serve attrezzatura: scarpe comode da camminare e vestiti in cui ti muovi bene.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "acqua",
+    "day": 10,
+    "title": "Bere senza pensarci troppo",
+    "body": "Un bicchiere d'acqua prima e uno dopo la seduta basta. Se fa caldo, qualche sorso in più.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "forma",
+    "day": 11,
+    "title": "Meglio pochi e fatti bene",
+    "body": "Una ripetizione lenta e controllata vale più di tre fatte di corsa. Se perdi la forma, fermati: la serie è finita.",
+    "source": null,
+    "url": null
+  },
+  {
+    "id": "abitudine_tempo",
+    "day": 12,
+    "title": "Le abitudini hanno i loro tempi",
+    "body": "Per diventare automatica un'abitudine ci mette in media un paio di mesi, con grandi differenze tra persone. Sei nel mezzo del viaggio.",
+    "source": "Lally et al., 2010",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674"
+  },
+  {
+    "id": "ascoltarsi",
+    "day": 14,
+    "title": "Il check-in è il tuo strumento",
+    "body": "Dire che hai poco tempo o poca energia non è barare: è così che il piano resta tuo. Dillo sempre.",
+    "source": null,
+    "url": null
+  }
+]
