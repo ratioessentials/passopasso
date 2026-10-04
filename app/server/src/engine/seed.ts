@@ -57,7 +57,7 @@ const DEMO_PROFILE: Profile = {
   startLevel: 1,
 };
 
-type Ev = { d: number; level: number; status: 'done' | 'skipped' | 'planned'; feedback?: Feedback; kind?: 'ripartenza'; skip?: string; checkin?: object };
+type Ev = { d: number; level: number; status: 'done' | 'skipped' | 'planned'; feedback?: Feedback; kind?: 'ripartenza'; skip?: string; checkin?: object; cardioMin?: number };
 
 /**
  * Storico di Giulia, relativo a oggi: ~3 settimane, livello 1 → 2, una seduta saltata e recuperata con la ripartenza,
@@ -65,17 +65,17 @@ type Ev = { d: number; level: number; status: 'done' | 'skipped' | 'planned'; fe
  * scatta la proposta di passare al livello 3: è il momento wow della demo.
  */
 const TIMELINE: Ev[] = [
-  { d: -22, level: 1, status: 'done', feedback: 'giusto' },
-  { d: -20, level: 1, status: 'done', feedback: 'facile' },
+  { d: -22, level: 1, status: 'done', feedback: 'giusto', cardioMin: 8 },
+  { d: -20, level: 1, status: 'planned' },                       // dimenticata (all'inizio una a settimana)
   { d: -18, level: 1, status: 'planned' },                       // dimenticata
-  { d: -16, level: 2, status: 'done', feedback: 'giusto' },
+  { d: -15, level: 2, status: 'done', feedback: 'giusto' },
   { d: -13, level: 2, status: 'done', feedback: 'giusto', checkin: { minutes: 20, energy: 2, pain: ['ginocchia'], redFlags: [] } },
   { d: -11, level: 2, status: 'planned' },                       // dimenticata
   { d: -9, level: 2, status: 'done', feedback: 'duro' },
   { d: -6, level: 2, status: 'skipped', skip: 'tempo' },
   { d: -5, level: 2, status: 'done', feedback: 'giusto', kind: 'ripartenza' },
   { d: -4, level: 2, status: 'done', feedback: 'giusto' },
-  { d: -2, level: 2, status: 'done', feedback: 'facile', checkin: { minutes: 25, energy: 4, pain: [], redFlags: [] } },
+  { d: -2, level: 2, status: 'done', feedback: 'facile', cardioMin: 20, checkin: { minutes: 28, energy: 4, pain: [], redFlags: [] } },
   { d: 0, level: 2, status: 'planned' },
 ];
 
@@ -90,7 +90,7 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v10`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v12`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
   if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID) && getUser(RUNNER_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();
@@ -130,6 +130,8 @@ function seedGiulia(t: string, stamp: string) {
           ? 'Energia bassa e ginocchia sensibili: oggi camminata tranquilla e forza per la parte alta, niente affondi.'
           : 'Sei in forma e hai tempo: camminata svelta un po\' più lunga e una serie in più di forza.';
       }
+      // "Allora / Adesso": 8 minuti di camminata continua la prima settimana, 20 adesso
+      if (ev.cardioMin) draft.items = draft.items.map((i) => (content.exercise(i.exerciseId)?.category === 'cardio' && i.seconds && i.seconds >= 300 ? { ...i, seconds: ev.cardioMin! * 60 } : i));
       const id = insertSession(DEMO_ID, {
         date, level: ev.level, ...draft, status: ev.status, feedback: ev.feedback ?? null, skip_reason: ev.skip ?? null,
         recovers: ev.kind === 'ripartenza' ? skippedId : null, checkin: ev.checkin ? JSON.stringify(ev.checkin) : null,
@@ -140,6 +142,10 @@ function seedGiulia(t: string, stamp: string) {
       db.prepare('UPDATE users SET intensity = ? WHERE id = ?').run(intensity, DEMO_ID);
       if (ev.status === 'done') evaluateWins(getUser(DEMO_ID)!, date);
     }
+
+    // test di prontezza: 9 alzate all'inizio, 14 al passaggio al livello 2
+    db.prepare("INSERT INTO level_tests (user_id, date, to_level, results, passed, skipped) VALUES (?, ?, 2, '{\"sit_to_stand_30s\":9,\"marcia_1min\":6}', 0, 0)").run(DEMO_ID, addDays(t, -22));
+    db.prepare("INSERT INTO level_tests (user_id, date, to_level, results, passed, skipped) VALUES (?, ?, 2, '{\"sit_to_stand_30s\":14,\"marcia_1min\":4}', 1, 0)").run(DEMO_ID, addDays(t, -17));
 
     // settimane già pianificate: non aggiungere altre sedute a quelle dello storico
     for (let d = -22; d <= 0; d += 1) db.prepare('INSERT OR IGNORE INTO planned_weeks (user_id, week_start) VALUES (?, ?)').run(DEMO_ID, weekStart(addDays(t, d)));
@@ -255,8 +261,8 @@ function seedHealth(t: string) {
   saveMessage(DEMO_ID, { trigger: 'ripartenza_fatta', key: restartRow?.id ?? 'demo_restart', because: 'Ti scrivo perché hai completato la ripartenza', facts: {} },
     'Di nuovo in pista, e senza fare drammi: è così che si costruisce l\'abitudine. Ripartire è la parte più difficile, ed è fatta.', at(-5, 20, 5));
   db.prepare("UPDATE coach_messages SET read = 1 WHERE user_id = ? AND trigger = 'ripartenza_fatta'").run(DEMO_ID);
-  saveMessage(DEMO_ID, { trigger: 'record_personale', key: 'demo_record', because: 'Ti scrivo perché hai camminato 17 minuti di fila: il tuo record', facts: { minuti: 17 } },
-    '17 minuti di passo svelto senza fermarti: è il tuo record. Te lo dico perché due settimane fa erano otto.', at(-2, 20, 10));
+  saveMessage(DEMO_ID, { trigger: 'record_personale', key: 'demo_record', because: 'Ti scrivo perché hai camminato 20 minuti di fila: il tuo record', facts: { minuti: 20 } },
+    '20 minuti di passo svelto senza fermarti: è il tuo record. Te lo dico perché tre settimane fa erano otto.', at(-2, 20, 10));
 
   // Luca: Strava "collegato" (simulato) con le corse importate al posto delle sedute pianificate
   touchSource(RUNNER_ID, 'strava', { demo: true, athlete: { id: 0, firstname: 'Luca' } });

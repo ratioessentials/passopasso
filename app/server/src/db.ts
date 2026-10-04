@@ -82,6 +82,8 @@ const migrations: string[] = [
      mode TEXT NOT NULL, model TEXT, latency_ms INTEGER, valid_first_try INTEGER, repaired INTEGER NOT NULL DEFAULT 0,
      fallback INTEGER NOT NULL DEFAULT 0, violations_before TEXT NOT NULL DEFAULT '[]', violations_after TEXT NOT NULL DEFAULT '[]', explain TEXT);
    CREATE INDEX ai_calls_session ON ai_calls(session_id);`,
+  // 9: seduta zero (prima di qualsiasi domanda)
+  `CREATE TABLE session_zero (user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, done_at TEXT NOT NULL);`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');

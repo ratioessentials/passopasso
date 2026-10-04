@@ -12,6 +12,7 @@ import { acceptLevel, checkin, complete, completeShort, shortSession, skip, SHOR
 import { mealFeedback } from './engine/meals.js';
 import { submitTest, testsFor } from './engine/tests.js';
 import { authorizeUrl, disconnectStrava, handleCallback, stravaConfigured, syncStravaIfStale, verifyState } from './engine/strava.js';
+import { markZeroDone, sessionZero, thenNow } from './engine/zero.js';
 import { lastExplain, stats as aiStats } from './engine/ailog.js';
 import { explainRow } from './engine/explain.js';
 import { sendTo, subscribe, unsubscribe, vapid } from './engine/push.js';
@@ -158,6 +159,14 @@ export async function buildServer() {
   app.get('/api/red-flags', async () => content.redFlags());
 
   app.post('/api/users', async (_req, reply) => reply.status(201).send({ userId: createUser().id }));
+
+  // ---------- Seduta zero: 5 minuti, nessuna domanda ----------
+  app.get('/api/session-zero', async () => sessionZero());
+  app.post('/api/session-zero/done', async (req) => {
+    const id = String(req.headers['x-user-id'] ?? '').trim();
+    const user = (id && !isDemo(id) ? getUser(id) : undefined) ?? createUser();
+    return { userId: user.id, win: markZeroDone(user.id) };
+  });
 
   app.post('/api/onboarding/message', async (req) => {
     const user = requireUser(req, { profile: false });
@@ -465,6 +474,7 @@ export async function buildServer() {
       minutesTotal: done.reduce((a, s) => a + s.minutes, 0),
       wins: listWins(user.id),
       levelHistory,
+      thenNow: thenNow(user),
     };
   });
 

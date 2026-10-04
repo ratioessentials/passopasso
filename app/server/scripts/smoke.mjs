@@ -158,6 +158,14 @@ const c3 = await api('POST', '/api/onboarding/profile', { user: u3, body: { name
 const o3 = await api('POST', '/api/onboarding/message', { user: u3, body: { messages: [{ role: 'assistant', content: 'Ciao!' }, { role: 'user', content: 'Voglio correre' }] } });
 check('minore di 16 anni → nessun piano', c3.json?.minor === true && o3.json?.minor === true && o3.json.done === true, o3.json?.reply);
 
+// --- Settima ondata: seduta zero e "Allora / Adesso" ---
+const zero = await api('GET', '/api/session-zero');
+check('seduta zero senza utente', zero.status === 200 && zero.json.minutes === 5 && zero.json.items.length >= 4);
+const zd = await api('POST', '/api/session-zero/done');
+check('seduta zero fatta → utente e vittoria', zd.status === 200 && /^u_/.test(zd.json.userId) && !!zd.json.win?.title, zd.json?.win?.title);
+const prog = await api('GET', '/api/progress', { user: 'demo' });
+check('demo: Allora / Adesso', JSON.stringify(prog.json?.thenNow?.map((x) => [x.then, x.now])) === '[[9,14],[8,20],[1,3]]', JSON.stringify(prog.json?.thenNow?.map((x) => `${x.then}→${x.now}`)));
+
 // --- Ottava ondata: perché, 10 minuti invece di niente, coach proattivo, percorso alimentare ---
 check('onboarding: il perché nel profilo', typeof onboarding.json?.profile?.why === 'string' || onboarding.json?.profile?.why === null, onboarding.json?.profile?.why ?? '(non detto)');
 const annaToday = (await api('GET', '/api/me', { user: u2 })).json?.today;

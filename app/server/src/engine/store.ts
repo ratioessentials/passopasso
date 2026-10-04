@@ -302,6 +302,7 @@ export function evaluateWins(user: UserRow, at = today()): Win[] {
     week_complete: (v = 1) => [...weeks.entries()].filter(([w, e]) => addDays(w, 6) <= at && e.planned > 0 && e.done >= e.planned).length >= v,
     hard_done: (v = 1) => done.filter((s) => s.feedback === 'duro').length >= v,
     checkin_done: (v = 1) => done.filter((s) => s.checkin).length >= v,
+    session_zero_done: () => !!db.prepare('SELECT 1 FROM session_zero WHERE user_id = ?').get(user.id),
     pain_adapted: (v = 1) => done.filter((s) => s.checkin && (JSON.parse(s.checkin).pain ?? []).length > 0).length >= v,
   };
   const have = new Set((db.prepare('SELECT win_id FROM wins WHERE user_id = ?').all(user.id) as { win_id: string }[]).map((r) => r.win_id));
