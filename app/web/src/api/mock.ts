@@ -85,6 +85,10 @@ function initialWeek(): Session[] {
     out.push(mkSession(todayOffset, 'planned', 'Passo svelto e forza'))
     out.sort((a, b) => a.date.localeCompare(b.date))
   }
+  // una corsa importata da Strava nel primo giorno libero già passato
+  const freeDay = [1, 3, 5].find((d) => d < todayOffset)
+  if (freeDay !== undefined) out.push(mkSession(freeDay, 'done', 'Corsetta al parco', { kind: 'importata', source: 'strava', minutes: 32, items: [] }))
+  out.sort((a, b) => a.date.localeCompare(b.date))
   // e almeno una saltata nella settimana, se oggi è lunedì la mettiamo sulla domenica prima
   if (!out.some((s) => s.status === 'skipped')) {
     out.unshift(mkSession(-1, 'skipped', 'Gambe e respiro'))

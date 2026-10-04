@@ -245,6 +245,8 @@ function CalendarSheet({ onClose, onMove }: { onClose: () => void; onMove: () =>
 export const COACH_MENU: { to: string; icon: string; title: string; sub: string }[] = [
   { to: '/coach/scheda', icon: '🪪', title: 'La mia scheda', sub: 'Età, corpo, lavoro, sonno e salute' },
   { to: '/coach/salute', icon: '❤️', title: 'Salute e dispositivi', sub: 'Apple Salute, Strava e altri: sonno e battito nel check-in' },
+  { to: '/coach/notifiche', icon: '🔔', title: 'Promemoria gentile', sub: 'Una notifica prima della seduta, mai più di una al giorno' },
+  { to: '/coach/piano', icon: '⭐', title: 'Il tuo piano', sub: 'Free e Plus, senza trucchi' },
   { to: '/coach/dati', icon: '🔒', title: 'I miei dati', sub: 'Scarica, aggiungi al calendario, cancella' },
   { to: '/scienza', icon: '🔬', title: 'Perché funziona', sub: 'Le scelte dell\'app, con le fonti' },
 ]

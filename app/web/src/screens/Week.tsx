@@ -124,6 +124,7 @@ export default function WeekScreen() {
                       <div className={`text-xs font-semibold ${st.text}`}>{st.label} · {s.minutes} min</div>
                     </div>
                     {s.bonusPoints > 0 && <BonusBadge points={s.bonusPoints} />}
+                    {(s.kind === 'importata' || s.source) && <SourceBadge source={s.source} />}
                   </div>
                   {(canSkip || canStart) && (
                     <div className="mt-3 flex gap-2">
@@ -162,4 +163,14 @@ export default function WeekScreen() {
       </AnimatePresence>
     </div>
   )
+}
+
+const SOURCE_BADGE: Record<string, { label: string; icon: string; cls: string }> = {
+  strava: { label: 'Strava', icon: '🟧', cls: 'bg-[#fc4c02]/12 text-[#c23c00]' },
+  apple_health: { label: 'Salute', icon: '❤️', cls: 'bg-[#ff2d55]/10 text-[#c2183c]' },
+}
+
+function SourceBadge({ source }: { source?: string | null }) {
+  const b = SOURCE_BADGE[source ?? ''] ?? { label: 'Importata', icon: '⌚', cls: 'bg-salvia text-petrolio' }
+  return <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${b.cls}`}>{b.icon} {b.label}</span>
 }
