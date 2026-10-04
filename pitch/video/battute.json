@@ -1,0 +1,118 @@
+[
+  {
+    "id": "B01",
+    "scene": "slide:1",
+    "text": "Giulia ha trentaquattro anni, lavora seduta tutto il giorno e vorrebbe ricominciare a muoversi. Ha scaricato tre app di fitness. Le ha abbandonate tutte entro un mese."
+  },
+  {
+    "id": "B02",
+    "scene": "slide:2",
+    "text": "Non è sola: sette persone su dieci lasciano un'app fitness entro cento giorni. I piani sono rigidi, le serie di giorni colpevolizzano, e nessuno chiede mai come stai oggi."
+  },
+  {
+    "id": "B03",
+    "scene": "slide:3",
+    "text": "PassoPasso nasce per lei. Da zero a dove vuoi arrivare: un percorso in cinque livelli, che cresce con te. E parte da tre cose: un piano che si adatta ogni giorno, un modo semplice di mangiare meglio, e una motivazione che non ti fa sentire in colpa."
+  },
+  {
+    "id": "B04",
+    "scene": "app:sedutazero",
+    "hold": 4,
+    "text": "Si comincia senza compilare niente. Cinque minuti, subito: PassoPasso ti guida con la voce, conta con te, e l'omino ti mostra ogni movimento. Alla fine hai già fatto la prima cosa."
+  },
+  {
+    "id": "B05",
+    "scene": "app:scheda",
+    "text": "Poi PassoPasso vuole sapere chi sei. Età, corpo, sonno, lavoro. E la salute, con lo screening PAR-Q più, lo stesso che usano i professionisti. Il peso serve solo a tarare il carico: non te lo rinfaccerà mai.",
+    "say": "Poi PassoPasso vuole sapere chi sei. Età, corpo, sonno, lavoro. E la salute, con lo screening par-chiù-plus, lo stesso che usano i professionisti. Il peso serve solo a tarare il carico: non te lo rinfaccerà mai."
+  },
+  {
+    "id": "B06",
+    "scene": "app:onboarding",
+    "text": "Il resto è una conversazione: l'obiettivo, quanto tempo hai, cosa hai in casa, dove ti fa male. E una domanda che le altre app non fanno: perché conta per te."
+  },
+  {
+    "id": "B07",
+    "scene": "app:checkin",
+    "text": "Ogni giorno, prima della seduta, un check-in. Quanto tempo hai, come stai di energia, e dove senti fastidio. Oggi Giulia ha dormito poco, e le fanno male le ginocchia.",
+    "say": "Ogni giorno, prima della seduta, un cèc-in. Quanto tempo hai, come stai di energia, e dove senti fastidio. Oggi Giulia ha dormito poco, e le fanno male le ginocchia."
+  },
+  {
+    "id": "B08",
+    "scene": "app:rigenerata",
+    "hold": 3,
+    "text": "La seduta si rigenera in pochi secondi. Niente squat, più camminata, quindici minuti esatti. E ti spiega perché, in una frase.",
+    "say": "La seduta si rigenera in pochi secondi. Niente scuat, più camminata, quindici minuti esatti. E ti spiega perché, in una frase."
+  },
+  {
+    "id": "B09",
+    "scene": "slide:4",
+    "text": "Come fa a non inventare? Il codice calcola prima cosa è sicuro: sintomi che bloccano tutto, dolori, livello, impatto. PassoPasso sceglie gli esercizi e li spiega solo dentro quello spazio. Poi sette controlli verificano ogni seduta prima di mostrarla. Se uno fallisce, la seduta non esce. E i numeri che contano, costanza, prontezza, livello, non passano mai dalla generazione automatica."
+  },
+  {
+    "id": "B10",
+    "scene": "app:perche",
+    "text": "Nell'app lo vedi: cosa ha considerato, quali esercizi ha escluso e perché, i sette controlli superati. E con un dolore al petto, PassoPasso non prepara nessuna seduta: ti ferma e ti consiglia un medico."
+  },
+  {
+    "id": "B11",
+    "scene": "app:livello",
+    "text": "A fine seduta dici com'è andata: facile, giusta o dura. E la prossima si regola. Quando sei pronta, un test di prontezza: trenta secondi, e si decide se salire di livello."
+  },
+  {
+    "id": "B11b",
+    "scene": "app:test",
+    "hold": 1,
+    "text": "Alzati e siediti per trenta secondi: ogni volta conta, e PassoPasso confronta il risultato con la soglia per la tua età. Poi un minuto di marcia sul posto, e dici quanto è stato faticoso. Superato: il livello tre si apre, e l'icona dell'app cambia. L'omino inizia a correre. Il livello lo guadagni, non te lo regala un contatore."
+  },
+  {
+    "id": "B12",
+    "scene": "app:perche-personale",
+    "text": "E nei giorni in cui vuoi mollare? Prima di saltare, PassoPasso ti ricorda perché hai iniziato, con le tue parole. E ti propone dieci minuti invece di niente."
+  },
+  {
+    "id": "B13",
+    "scene": "app:ripartenza",
+    "text": "Se salti davvero, capita. Nessuna serie persa, nessun rimprovero. La settimana si riorganizza e chi riparte prende un bonus: perché premiare chi riprende funziona più che punire chi si ferma. Lo dice uno studio su sessantamila persone."
+  },
+  {
+    "id": "B14",
+    "scene": "app:coach",
+    "text": "Il coach ti scrive da solo, ma non a calendario: ti scrive quando c'è un motivo. Sei tornata dopo una pausa, hai dormito poco, hai fatto un record. E te lo dice."
+  },
+  {
+    "id": "B15",
+    "scene": "app:cibo",
+    "hold": 2,
+    "text": "Per mangiare meglio, niente calorie da contare. Un percorso in tre fasi: prima togli, poi aggiungi, poi impari come mangi. Una cosa alla volta. E la foto del piatto ti dice come va, senza numeri e senza giudizi."
+  },
+  {
+    "id": "B16",
+    "scene": "app:cresce",
+    "text": "PassoPasso cresce con te. Tre percorsi: corsa, forza o mobilità. Chi corre già parte dal livello quattro, con sedute vere a segmenti. Sonno e battito arrivano dai dati di salute del telefono e dal tuo orologio, ed entrano nel check-in. Il calendario trova gli spazi liberi. E l'icona dell'app cambia con te, dal camminare allo sprint.",
+    "say": "PassoPasso cresce con te. Tre percorsi: corsa, forza o mobilità. Chi corre già parte dal livello quattro, con sedute vere a segmenti. Sonno e battito arrivano dai dati di salute del telefono e dal tuo orologio, ed entrano nel cèc-in. Il calendario trova gli spazi liberi. E l'icona dell'app cambia con te, dal camminare allo sprint."
+  },
+  {
+    "id": "B17",
+    "scene": "app:fonti",
+    "text": "Ogni scelta ha una fonte, e la trovi nell'app. I tuoi dati restano tuoi: niente account, niente pubblicità, esporti e cancelli quando vuoi.",
+    "say": "Ogni scelta ha una fonte, e la trovi nell'app. I tuoi dati restano tuoi: niente account, niente pubblicità, esporti e cancelli quando vuoi."
+  },
+  {
+    "id": "B18",
+    "scene": "slide:5",
+    "text": "Oggi PassoPasso è un'app web, la provi da un link. Lo stesso server e lo stesso contratto servono l'app nativa: accesso con account, dati di salute del telefono, notifiche di sistema. E un abbonamento senza trappole: prezzo chiaro, cancellazione in un tocco.",
+    "say": "Oggi PassoPasso è un'app web, la provi da un link. Lo stesso server e lo stesso contratto servono l'app nativa: accesso con account, dati di salute del telefono, notifiche di sistema. E un abbonamento senza trappole: prezzo chiaro, cancellazione in un tocco."
+  },
+  {
+    "id": "B19",
+    "scene": "slide:6",
+    "text": "PassoPasso è stato costruito in ventiquattro ore con Claude Code. Sei agenti in parallelo: frontend, backend e intelligenza artificiale, contenuti, deploy, pitch, motivazione. E una regia che custodisce il contratto delle API e distribuisce il lavoro a ondate. Gli agenti hanno progettato, scritto il codice, fatto debugging, scritto i test, costruito Docker e il deploy. E hanno montato anche questo video.",
+    "say": "PassoPasso è stato costruito in ventiquattro ore con Clod Cod. Sei agenti in parallelo: front-end, back-end e intelligenza artificiale, contenuti, deploy, pitch, motivazione. E una regia che custodisce il contratto delle A-P-I e distribuisce il lavoro a ondate. Gli agenti hanno progettato, scritto il codice, fatto debugging, scritto i test, costruito Docker e il deploy. E hanno montato anche questo video."
+  },
+  {
+    "id": "B20",
+    "scene": "slide:7",
+    "text": "Il principiante è la porta d'ingresso. Ma PassoPasso cresce con te. Un passo alla volta. Da zero a dove vuoi arrivare."
+  }
+]
