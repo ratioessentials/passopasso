@@ -131,3 +131,17 @@ const realApi = {
 
 export type Api = typeof realApi
 export const api: Api = USE_MOCK ? mockApi : realApi
+
+// ---- Aggiunte della regia (seduta zero, trasparenza dell'AI) ----
+export interface ExplainCheck { id: string; label: string; passed: boolean }
+export interface ExplainResponse {
+  inputs: Record<string, unknown>
+  candidates?: number
+  excluded: { exerciseId: string; name?: string; reason: string }[]
+  excludedCount?: number
+  checks: ExplainCheck[]
+  ai?: { model?: string; latencyMs?: number; validFirstTry?: boolean; repaired?: boolean; fallback?: boolean }
+}
+export const sessionZero = () => request<Session>('GET', '/session-zero')
+export const sessionZeroDone = () => request<{ userId: string; win?: { title: string } }>('POST', '/session-zero/done', {})
+export const explainSession = (id: string) => request<ExplainResponse>('GET', `/sessions/${id}/explain`)

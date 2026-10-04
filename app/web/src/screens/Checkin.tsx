@@ -8,6 +8,7 @@ import { useStore } from '../lib/store'
 import { amountLabel, useSession } from '../lib/useSession'
 import { BodyMap } from '../ui/BodyMap'
 import { Button, Card, ErrorBox, Header, RotatingText, Skeleton, Typewriter } from '../ui/kit'
+import { ExplainLink } from './ExplainSheet'
 import { press, spring, stagger } from '../ui/motion'
 import { BonusBadge } from './Home'
 import { RPE } from './SegmentPlayer'
@@ -225,6 +226,7 @@ export function SessionPreview({ s }: { s: Session }) {
               Perché questa seduta
             </div>
             <Typewriter text={s.reason} delay={350} />
+            {s.id !== 'zero' && <ExplainLink sessionId={s.id} />}
           </div>
         )}
       </motion.div>

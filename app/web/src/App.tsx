@@ -12,6 +12,7 @@ import Onboarding from './screens/Onboarding'
 import Home from './screens/Home'
 import Checkin from './screens/Checkin'
 import Player from './screens/Player'
+import SessionZeroDone from './screens/SessionZeroDone'
 import FeedbackScreen from './screens/Feedback'
 import WeekScreen from './screens/Week'
 import Path from './screens/Path'
@@ -76,6 +77,7 @@ export function AppRoutes() {
               <Route path="/" element={r(<Home />)} />
               <Route path="/checkin/:id" element={r(<Checkin />)} />
               <Route path="/seduta/:id" element={r(<Player />)} />
+              <Route path="/seduta-zero/fatto" element={r(<SessionZeroDone />)} />
               <Route path="/feedback/:id" element={r(<FeedbackScreen />)} />
               <Route path="/settimana" element={r(<WeekScreen />)} />
               <Route path="/percorso" element={r(<Path />)} />

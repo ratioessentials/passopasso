@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { api, setUserId } from '../api/client'
+import { api, getUserId, setUserId } from '../api/client'
 import { copy, LEVELS } from '../content/copy'
 import { useStore } from '../lib/store'
 import { Button, LevelIcon, MeshBackground } from '../ui/kit'
@@ -10,7 +10,7 @@ import { spring, stagger } from '../ui/motion'
 export default function Welcome() {
   const nav = useNavigate()
   const { loadMe, toast } = useStore()
-  const [busy, setBusy] = useState<'new' | 'demo' | null>(null)
+  const [busy, setBusy] = useState<'new' | 'demo' | 'zero' | null>(null)
 
   async function start() {
     setBusy('new')
@@ -18,6 +18,18 @@ export default function Welcome() {
       const { userId } = await api.createUser()
       setUserId(userId)
       nav('/scheda')
+    } catch (e) {
+      toast((e as Error).message, '🌿')
+      setBusy(null)
+    }
+  }
+
+  // Seduta zero: 5 minuti senza nessuna domanda
+  async function zero() {
+    setBusy('zero')
+    try {
+      if (!getUserId()) { const { userId } = await api.createUser(); setUserId(userId) }
+      nav('/seduta/zero')
     } catch (e) {
       toast((e as Error).message, '🌿')
       setBusy(null)
@@ -69,8 +81,11 @@ export default function Welcome() {
           </motion.p>
         </div>
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.gentle, delay: 0.75 }} className="flex flex-col gap-3">
-          <Button variant="light" className="py-4 text-lg" onClick={start} disabled={!!busy}>
-            {busy === 'new' ? 'Un attimo…' : 'Iniziamo'}
+          <Button variant="light" className="py-4 text-lg" onClick={zero} disabled={!!busy}>
+            {busy === 'zero' ? 'Un attimo…' : 'Prova 5 minuti adesso'}
+          </Button>
+          <Button variant="glass" className="py-3.5 text-base text-white" onClick={start} disabled={!!busy}>
+            {busy === 'new' ? 'Un attimo…' : 'Costruisci il mio percorso'}
           </Button>
           <Button variant="ghost" className="text-white/90 underline decoration-white/40 underline-offset-4" onClick={demo} disabled={!!busy}>
             {busy === 'demo' ? 'Carico Giulia…' : 'Prova con l\'utente demo'}

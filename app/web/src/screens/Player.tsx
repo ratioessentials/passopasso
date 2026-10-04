@@ -7,6 +7,8 @@ import { hasFormCheck } from '../lib/formcheck'
 import { ExerciseFigure } from '../lib/motionFigure'
 import { useStore } from '../lib/store'
 import { useSession } from '../lib/useSession'
+import { say, setVoiceEnabled, stop as stopVoice, voiceEnabled, voiceSupported } from '../lib/voice'
+import { sessionZeroDone } from '../api/client'
 import { Button, ErrorBox, Skeleton } from '../ui/kit'
 import SegmentPlayer from './SegmentPlayer'
 import { press, spring, vibrate } from '../ui/motion'
@@ -24,8 +26,20 @@ export default function Player() {
   const [phase, setPhase] = useState<Phase>('work')
   const [dir, setDir] = useState(1)
   const startedAt = useRef(Date.now())
+  const [voice, setVoice] = useState(voiceEnabled())
 
   useEffect(() => { if (session && !items) setItems(session.items) }, [session, items])
+
+  // Guida vocale: annuncia l'esercizio, il recupero e l'ultima serie.
+  useEffect(() => {
+    if (!items || !voice) return
+    const cur = items[idx]
+    if (!cur) return
+    if (phase === 'rest') say('Recupero. Respira.')
+    else if (set > 1) say(set === cur.sets ? 'Ultima serie.' : `Serie ${set}.`)
+    else say(`${cur.exercise.name}. ${cur.exercise.instructions[0] ?? ''}`)
+  }, [items, idx, set, phase, voice])
+  useEffect(() => () => stopVoice(), [])
 
   if (error) return <div className="pt-24"><ErrorBox message={error} /></div>
   if (!session || !items) return <div className="space-y-4 px-5 pt-20"><Skeleton className="h-64" /><Skeleton className="h-24" /></div>
@@ -37,6 +51,12 @@ export default function Player() {
 
   function finish() {
     const minutes = Math.max(1, Math.round((Date.now() - startedAt.current) / 60000))
+    if (voice) say('Fatto. Bravo, ci siamo.')
+    if (id === 'zero') {
+      // seduta di prova: la vittoria resta anche dopo l'onboarding
+      sessionZeroDone().then((r) => nav('/seduta-zero/fatto', { replace: true, state: { win: r.win } })).catch(() => nav('/seduta-zero/fatto', { replace: true }))
+      return
+    }
     nav(`/feedback/${session!.id}`, { replace: true, state: { minutes } })
   }
 
@@ -91,6 +111,12 @@ export default function Player() {
           ))}
         </div>
         <span className="font-title w-10 text-right text-sm text-petrolio">{idx + 1}/{total}</span>
+        {voiceSupported && (
+          <motion.button whileTap={press} aria-label={voice ? 'Spegni la voce' : 'Accendi la voce'} onClick={() => { setVoiceEnabled(!voice); setVoice(!voice) }}
+            className={`glass grid h-10 w-10 place-items-center rounded-full ${voice ? 'text-petrolio' : 'text-inchiostro/40'}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4z" />{voice ? <><path d="M15.5 8.5a5 5 0 010 7" /><path d="M18.5 5.5a9 9 0 010 13" /></> : <path d="M16 9l5 6M21 9l-5 6" />}</svg>
+          </motion.button>
+        )}
       </div>
 
       <div className="relative flex-1 overflow-hidden">
