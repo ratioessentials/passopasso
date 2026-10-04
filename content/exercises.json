@@ -23,6 +23,7 @@
       "Trattenere il fiato",
       "Piegarsi in avanti con il busto"
     ],
+    "impact": false,
     "regression": null,
     "progression": "ginocchia_al_petto_in_piedi",
     "formCheck": false,
@@ -52,6 +53,7 @@
       "Incurvare la schiena per tirare su il ginocchio",
       "Andare troppo veloce e perdere l'equilibrio"
     ],
+    "impact": false,
     "regression": "marcia_sul_posto",
     "progression": "skip_basso",
     "formCheck": false,
@@ -80,6 +82,7 @@
       "Atterrare pesante sui talloni",
       "Spalle contratte verso le orecchie"
     ],
+    "impact": true,
     "regression": "ginocchia_al_petto_in_piedi",
     "progression": null,
     "formCheck": false,
@@ -108,6 +111,7 @@
       "Alzare le spalle verso le orecchie",
       "Cerchi troppo ampi da subito"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -137,6 +141,7 @@
       "Muovere la testa insieme alle spalle",
       "Andare di fretta"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -165,6 +170,7 @@
       "Piegare troppo le ginocchia",
       "Movimenti a scatti"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -191,6 +197,7 @@
     "commonMistakes": [
       "Muovere tutta la gamba invece della caviglia"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -221,6 +228,7 @@
       "Calciare forte",
       "Inarcare la schiena quando la gamba va indietro"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -249,6 +257,7 @@
       "Ruotare il busto in avanti",
       "Spingere oltre il fastidio"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -279,6 +288,7 @@
       "Partire troppo forte",
       "Scarpe scomode o senza ammortizzazione"
     ],
+    "impact": false,
     "regression": null,
     "progression": "camminata_svelta",
     "formCheck": false,
@@ -309,6 +319,7 @@
       "Allungare troppo il passo",
       "Rallentare dopo pochi minuti: tieni un ritmo che riesci a mantenere"
     ],
+    "impact": false,
     "regression": "camminata_tranquilla",
     "progression": "cammina_corri_1_2",
     "formCheck": false,
@@ -339,6 +350,7 @@
       "Correre troppo veloce nel primo minuto",
       "Fermarsi del tutto invece di camminare"
     ],
+    "impact": true,
     "regression": "camminata_svelta",
     "progression": "cammina_corri_2_1",
     "formCheck": false,
@@ -369,6 +381,7 @@
       "Accelerare quando ti senti bene",
       "Passo lungo e atterraggio sul tallone"
     ],
+    "impact": true,
     "regression": "cammina_corri_1_2",
     "progression": "corsa_continua",
     "formCheck": false,
@@ -399,6 +412,7 @@
       "Andare troppo forte all'inizio",
       "Fare passi lunghi invece che frequenti"
     ],
+    "impact": true,
     "regression": "cammina_corri_2_1",
     "progression": "corsa_con_allunghi",
     "formCheck": false,
@@ -429,6 +443,7 @@
       "Trasformare gli allunghi in sprint massimali",
       "Non recuperare abbastanza tra un allungo e l'altro"
     ],
+    "impact": true,
     "regression": "corsa_continua",
     "progression": "scatti_brevi",
     "formCheck": false,
@@ -460,6 +475,7 @@
       "Recuperi troppo corti",
       "Irrigidire spalle e collo mentre scatti"
     ],
+    "impact": true,
     "regression": "corsa_con_allunghi",
     "progression": null,
     "formCheck": false,
@@ -489,6 +505,7 @@
       "Restare sulle punte troppo a lungo",
       "Trattenere il fiato"
     ],
+    "impact": false,
     "regression": null,
     "progression": "corsa_sul_posto",
     "formCheck": false,
@@ -518,6 +535,7 @@
       "Atterraggi rumorosi e pesanti",
       "Busto piegato in avanti"
     ],
+    "impact": true,
     "regression": "marcia_veloce_casa",
     "progression": null,
     "formCheck": false,
@@ -547,6 +565,7 @@
       "Braccia rigide e spalle contratte",
       "Perdere il ritmo del respiro"
     ],
+    "impact": false,
     "regression": null,
     "progression": "jumping_jack",
     "formCheck": false,
@@ -578,6 +597,7 @@
       "Atterrare con le ginocchia rigide",
       "Ginocchia che cadono verso l'interno"
     ],
+    "impact": true,
     "regression": "step_jack",
     "progression": null,
     "formCheck": false,
@@ -610,6 +630,7 @@
       "Appoggiare solo la punta sul gradino",
       "Usare uno scalino troppo alto"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -639,6 +660,7 @@
       "Bloccare il gomito a braccio teso",
       "Trattenere il fiato"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -670,6 +692,7 @@
       "Lasciarsi cadere sulla sedia",
       "Piedi troppo avanti rispetto alle ginocchia"
     ],
+    "impact": false,
     "regression": null,
     "progression": "squat_sedia",
     "formCheck": true,
@@ -702,6 +725,7 @@
       "Talloni che si staccano da terra",
       "Scendere di colpo"
     ],
+    "impact": false,
     "regression": "alzate_sedia_mani",
     "progression": "squat_libero",
     "formCheck": true,
@@ -732,6 +756,7 @@
       "Schiena che si arrotonda",
       "Peso sulle punte"
     ],
+    "impact": false,
     "regression": "squat_sedia",
     "progression": "squat_pausa",
     "formCheck": true,
@@ -761,6 +786,7 @@
       "Rimbalzare in basso",
       "Perdere la tensione durante la pausa"
     ],
+    "impact": false,
     "regression": "squat_libero",
     "progression": "squat_salto",
     "formCheck": true,
@@ -791,6 +817,7 @@
       "Atterrare a gambe rigide",
       "Ginocchia che si chiudono all'atterraggio"
     ],
+    "impact": true,
     "regression": "squat_pausa",
     "progression": null,
     "formCheck": true,
@@ -822,6 +849,7 @@
       "Ginocchio davanti che va verso l'interno",
       "Busto che cade in avanti"
     ],
+    "impact": false,
     "regression": null,
     "progression": "affondo_indietro",
     "formCheck": false,
@@ -851,6 +879,7 @@
       "Passo troppo corto",
       "Ginocchio davanti che crolla verso l'interno"
     ],
+    "impact": false,
     "regression": "affondo_assistito",
     "progression": null,
     "formCheck": false,
@@ -879,6 +908,7 @@
       "Scendere di colpo",
       "Caviglie che si piegano verso l'esterno"
     ],
+    "impact": false,
     "regression": null,
     "progression": "polpacci_una_gamba",
     "formCheck": false,
@@ -909,6 +939,7 @@
       "Spingere con la mano invece che con il polpaccio",
       "Movimento troppo veloce"
     ],
+    "impact": false,
     "regression": "polpacci_muro",
     "progression": null,
     "formCheck": false,
@@ -942,6 +973,7 @@
       "Bacino che va avanti prima del petto",
       "Gomiti troppo aperti"
     ],
+    "impact": false,
     "regression": null,
     "progression": "piegamenti_sedia",
     "formCheck": false,
@@ -976,6 +1008,7 @@
       "Sedia non bloccata",
       "Pancia che cede verso il basso"
     ],
+    "impact": false,
     "regression": "piegamenti_muro",
     "progression": "piegamenti_ginocchia",
     "formCheck": false,
@@ -1009,6 +1042,7 @@
       "Bacino alto",
       "Testa che cade verso il pavimento"
     ],
+    "impact": false,
     "regression": "piegamenti_sedia",
     "progression": "piegamenti_classici",
     "formCheck": false,
@@ -1042,6 +1076,7 @@
       "Schiena che si inarca",
       "Gomiti aperti a 90 gradi"
     ],
+    "impact": false,
     "regression": "piegamenti_ginocchia",
     "progression": null,
     "formCheck": false,
@@ -1073,6 +1108,7 @@
       "Inarcare la schiena invece di usare i glutei",
       "Piedi troppo lontani dal bacino"
     ],
+    "impact": false,
     "regression": null,
     "progression": "ponte_una_gamba",
     "formCheck": false,
@@ -1104,6 +1140,7 @@
       "Bacino che si inclina da un lato",
       "Spingere con la schiena"
     ],
+    "impact": false,
     "regression": "ponte_glutei",
     "progression": null,
     "formCheck": false,
@@ -1135,6 +1172,7 @@
       "Bacino all'indietro",
       "Trattenere il fiato"
     ],
+    "impact": false,
     "regression": null,
     "progression": "plank_ginocchia",
     "formCheck": false,
@@ -1166,6 +1204,7 @@
       "Schiena che si inarca",
       "Testa che cade"
     ],
+    "impact": false,
     "regression": "plank_muro",
     "progression": "plank",
     "formCheck": false,
@@ -1197,6 +1236,7 @@
       "Bacino troppo alto o troppo basso",
       "Spalle che collassano"
     ],
+    "impact": false,
     "regression": "plank_ginocchia",
     "progression": "plank_tocchi_spalla",
     "formCheck": false,
@@ -1229,6 +1269,7 @@
       "Bacino che dondola",
       "Andare veloci perdendo il controllo"
     ],
+    "impact": false,
     "regression": "plank",
     "progression": null,
     "formCheck": false,
@@ -1260,6 +1301,7 @@
       "Bacino che scende",
       "Spalla schiacciata verso l'orecchio"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1292,6 +1334,7 @@
       "Alzare troppo la gamba e inarcare la schiena",
       "Bacino che ruota"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1322,6 +1365,7 @@
       "Schiena che si stacca dal pavimento",
       "Andare troppo veloci"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1354,6 +1398,7 @@
       "Movimenti bruschi",
       "Muovere solo il collo"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1384,6 +1429,7 @@
       "Ruotare anche il bacino",
       "Forzare con le braccia"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1415,6 +1461,7 @@
       "Inarcare la schiena per arrivare più in alto",
       "Staccare i polsi dal muro forzando"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1446,6 +1493,7 @@
       "Inarcare la schiena",
       "Ginocchio davanti oltre la punta del piede"
     ],
+    "impact": false,
     "regression": null,
     "progression": "allungamento_completo",
     "formCheck": false,
@@ -1478,6 +1526,7 @@
       "Fretta tra un passaggio e l'altro",
       "Ginocchio dietro che collassa"
     ],
+    "impact": false,
     "regression": "flessori_anca_ginocchio",
     "progression": null,
     "formCheck": false,
@@ -1509,6 +1558,7 @@
       "Tallone che si alza",
       "Ginocchio che va verso l'interno"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1537,6 +1587,7 @@
       "Fare cerchi completi con la testa",
       "Alzare le spalle"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1563,6 +1614,7 @@
     "commonMistakes": [
       "Fermarsi di colpo dopo lo sforzo"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1589,6 +1641,7 @@
       "Alzare le spalle quando inspiri",
       "Respirare troppo in fretta"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1619,6 +1672,7 @@
       "Tallone che si stacca",
       "Molleggiare"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1649,6 +1703,7 @@
       "Inarcare la schiena",
       "Tirare forte il piede"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1680,6 +1735,7 @@
       "Arrotondare la schiena",
       "Forzare fino al dolore"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1711,6 +1767,7 @@
       "Spingere il ginocchio verso il basso con forza",
       "Incurvare la schiena"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1741,6 +1798,7 @@
     "commonMistakes": [
       "Ruotare troppo e forzare la spalla"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1771,6 +1829,7 @@
     "commonMistakes": [
       "Forzare se le ginocchia fanno male: metti un cuscino"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,
@@ -1800,6 +1859,7 @@
       "Tirare la testa con la mano",
       "Alzare la spalla"
     ],
+    "impact": false,
     "regression": null,
     "progression": null,
     "formCheck": false,

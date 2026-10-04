@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const DIR = dirname(fileURLToPath(import.meta.url));
 const ZONES = ['collo', 'spalle', 'schiena_alta', 'schiena_bassa', 'petto', 'braccia', 'polsi', 'anche', 'ginocchia', 'caviglie'];
 const CATEGORIES = ['riscaldamento', 'cardio', 'forza', 'mobilita', 'defaticamento'];
-const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino'];
+const EQUIPMENT = ['sedia', 'muro', 'tappetino', 'scalino', 'elastico', 'manubri'];
 const WIN_TYPES = {
   sessions_done: true, restart_done: false, level_reached: true, habit_week_done: true,
   minutes_total: true, consistency_at_least: true, week_complete: true, meal_photos: true,
@@ -65,6 +65,8 @@ if (exercises) {
       if (!strArr(x.commonMistakes, 1)) err(w, 'commonMistakes mancante');
       if (typeof x.formCheck !== 'boolean') err(w, 'formCheck deve essere booleano');
       if (x.formCheck && !/squat|alzat/.test(x.id)) err(w, 'formCheck: true solo sugli squat');
+      if (typeof x.impact !== 'boolean') err(w, 'impact deve essere booleano');
+      else if (['corsetta', 'corsa', 'scatto'].includes(x.motion) && !x.impact) err(w, 'corsa e scatti devono avere impact: true');
       if (!('motion' in x)) err(w, 'motion mancante (usa null)');
       else if (x.motion !== null && !MOTIONS.includes(x.motion)) err(w, `motion non valido: ${x.motion}`);
       for (const k of ['regression', 'progression']) {
@@ -120,6 +122,9 @@ function checkCoverage(where, level, t) {
     // senza attrezzatura
     const free = pool.filter((x) => x.equipment.length === 0);
     if (free.length < 1) warn(where, `${b.category}: nessun esercizio a corpo libero`);
+    // senza impatto (impactAllowed = false) deve restare abbastanza scelta
+    const soft = pool.filter((x) => !x.impact);
+    if (soft.length < b.count) err(where, `${b.category} senza impatto: restano ${soft.length} esercizi su ${b.count}`);
     // con dolore in una zona deve restare almeno un esercizio
     for (const z of ZONES) {
       const left = pool.filter((x) => !x.zones.includes(z));
