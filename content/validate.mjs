@@ -14,7 +14,7 @@ const WIN_TYPES = {
   adapted_session_done: false, feedback_count: true,
 };
 const ICONS = ['star', 'flag', 'heart', 'bolt', 'leaf', 'trophy', 'sun', 'sprout', 'shoe', 'clock', 'camera', 'water', 'calendar', 'shield', 'medal', 'smile'];
-const FORBIDDEN_FOOD_WORDS = /calori|kcal|\bpeso\b|chil[oi]|dimagr|bilancia|grass[oi] corpore/i;
+const FORBIDDEN_FOOD_WORDS = /calori|kcal|\bpeso\b|chil[oi]|dimagr|bilancia\b|grass[oi] corpore/i;
 const ID_RE = /^[a-z0-9]+(_[a-z0-9]+)*$/;
 
 const errors = [];
@@ -203,6 +203,7 @@ if (wins) {
       const r = v.rule;
       if (!r || !(r.type in WIN_TYPES)) { err(w, `rule.type non valido: ${r?.type}`); continue; }
       if (WIN_TYPES[r.type] && !(typeof r.value === 'number' && r.value > 0)) err(w, `rule.value obbligatorio per ${r.type}`);
+      if (r.type === 'feedback_count' && !['facile', 'giusto', 'duro'].includes(r.feedback)) err(w, 'feedback_count: serve feedback facile | giusto | duro');
       if (r.type === 'level_reached' && !isInt(r.value, 2, 5)) err(w, 'level_reached: value 2-5');
       if (FORBIDDEN_FOOD_WORDS.test(JSON.stringify(v))) err(w, 'niente vittorie legate alla bilancia');
     }

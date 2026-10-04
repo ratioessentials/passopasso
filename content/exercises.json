@@ -1316,7 +1316,7 @@
   },
   {
     "id": "rotazioni_busto_seduto",
-    "name": "Rotazioni del busto da seduto",
+    "name": "Rotazioni del busto da seduti",
     "category": "mobilita",
     "minLevel": 1,
     "zones": [
@@ -1330,7 +1330,7 @@
       "default": 8
     },
     "instructions": [
-      "Seduto, piedi a terra, schiena dritta",
+      "Siediti con i piedi a terra, schiena dritta",
       "Braccia incrociate sul petto",
       "Ruota piano il busto verso un lato",
       "Torna al centro e ruota dall'altro"
@@ -1478,7 +1478,7 @@
       "default": 5
     },
     "instructions": [
-      "Seduto o in piedi, spalle rilassate",
+      "Da seduti o in piedi, spalle rilassate",
       "Porta piano l'orecchio verso una spalla",
       "Torna al centro e vai dall'altro lato",
       "Poi gira lo sguardo a destra e a sinistra"
@@ -1616,7 +1616,7 @@
       "default": 30
     },
     "instructions": [
-      "Seduto sul bordo della sedia, una gamba tesa davanti",
+      "Siediti sul bordo della sedia, una gamba tesa davanti",
       "Tallone a terra, punta verso l'alto",
       "Piegati in avanti dalle anche, schiena dritta",
       "Respira, poi cambia gamba"
@@ -1631,7 +1631,7 @@
   },
   {
     "id": "allungamento_glutei_sedia",
-    "name": "Allungamento dei glutei da seduto",
+    "name": "Allungamento dei glutei da seduti",
     "category": "defaticamento",
     "minLevel": 1,
     "zones": [
@@ -1646,7 +1646,7 @@
       "default": 30
     },
     "instructions": [
-      "Seduto, appoggia una caviglia sul ginocchio opposto",
+      "Sulla sedia, appoggia una caviglia sul ginocchio opposto",
       "Schiena dritta",
       "Piegati un po' in avanti finché senti allungare il gluteo",
       "Respira, poi cambia lato"
@@ -1732,7 +1732,7 @@
       "default": 30
     },
     "instructions": [
-      "Seduto o in piedi, spalle basse",
+      "Da seduti o in piedi, spalle basse",
       "Inclina piano la testa di lato",
       "Lascia pesare la spalla opposta verso il basso",
       "Respira, poi cambia lato"

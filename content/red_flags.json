@@ -1,0 +1,56 @@
+[
+  {
+    "id": "dolore_petto",
+    "label": "Dolore, peso o oppressione al petto",
+    "message": "Oggi niente allenamento. Questo sintomo va sentito da un medico prima di riprendere. Se è forte, improvviso o si allarga a braccio, mandibola o schiena, chiama subito il 112.",
+    "urgent": true
+  },
+  {
+    "id": "svenimento_capogiri",
+    "label": "Svenimento o capogiri forti",
+    "message": "Oggi niente allenamento. Siediti o sdraiati in un posto sicuro. Parlane con un medico prima di riprendere. Se sei svenuto o il capogiro non passa, chiama il 112.",
+    "urgent": true
+  },
+  {
+    "id": "fiato_corto_riposo",
+    "label": "Fiato corto anche da fermo",
+    "message": "Oggi niente allenamento. Il fiato corto a riposo va sentito da un medico prima di riprendere. Se peggiora o fai fatica a parlare, chiama il 112.",
+    "urgent": true
+  },
+  {
+    "id": "palpitazioni",
+    "label": "Battito irregolare o palpitazioni insolite",
+    "message": "Oggi niente allenamento. Un battito irregolare va controllato da un medico prima di riprendere. Se è accompagnato da dolore al petto, capogiri o fiato corto, chiama il 112.",
+    "urgent": true
+  },
+  {
+    "id": "debolezza_improvvisa",
+    "label": "Debolezza, formicolio o difficoltà a parlare improvvisi",
+    "message": "Oggi niente allenamento. Questi sintomi, se arrivano all'improvviso, vanno valutati subito: chiama il 112. Poi parlane con il tuo medico prima di riprendere.",
+    "urgent": true
+  },
+  {
+    "id": "trauma_articolare",
+    "label": "Dolore acuto o gonfiore a un'articolazione dopo un colpo o una storta",
+    "message": "Oggi niente allenamento. Metti a riposo la zona. Se il dolore è forte, la zona è gonfia o non riesci a caricarci il peso, fatti vedere da un medico prima di riprendere.",
+    "urgent": false
+  },
+  {
+    "id": "febbre",
+    "label": "Febbre o sintomi influenzali",
+    "message": "Oggi niente allenamento: il corpo ha bisogno di energie per guarire. Riprendi quando stai bene da almeno un giorno. Se la febbre è alta o dura più di qualche giorno, senti il tuo medico.",
+    "urgent": false
+  },
+  {
+    "id": "dolore_schiena_gamba",
+    "label": "Mal di schiena forte che scende lungo la gamba",
+    "message": "Oggi niente allenamento. Un dolore che scende lungo la gamba, con formicolio o perdita di forza, va valutato da un medico prima di riprendere.",
+    "urgent": false
+  },
+  {
+    "id": "gravidanza_senza_ok",
+    "label": "Gravidanza senza il via libera del medico per l'attività fisica",
+    "message": "Muoversi in gravidanza fa bene, ma serve prima il via libera del tuo medico o della tua ostetrica. Oggi niente allenamento: chiedi a loro e poi ripartiamo insieme.",
+    "urgent": false
+  }
+]
