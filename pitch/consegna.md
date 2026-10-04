@@ -35,7 +35,7 @@ Il piano si adatta grazie a Claude:
 - **Test di prontezza** (sit-to-stand 30 s e marcia di 1 minuto) per salire di livello.
 - **Omino animato** per ogni esercizio e controllo della forma con la fotocamera sullo squat.
 
-Sicurezza prima di tutto: le bandiere rosse si controllano con regole fisse prima dell'AI, e per i sintomi urgenti l'app indica il 112. L'AI sceglie solo da un catalogo di 60 esercizi verificati, e ogni risposta è JSON validato. Se l'AI non risponde, il motore costruisce la seduta a regole.
+Un'AI che non allucina: il codice calcola lo spazio delle soluzioni sicure (bandiere rosse prima dell'AI, filtri su livello, dolori, impatto e attrezzatura), Claude sceglie e spiega dentro quello spazio, e il codice ricontrolla ogni seduta con 7 invarianti prima di mostrarla. Ogni seduta ha il suo foglio "Perché questa seduta" con il badge "verificata 7/7". Costanza, prontezza e passaggi di livello non passano dall'AI. Per i sintomi urgenti l'app indica il 112. Il catalogo ha 79 esercizi verificati.
 
 Niente calorie: un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta e la foto del piatto con il piatto in tre parti. Niente colpa: punteggio di costanza al posto della streak, vittorie che non dipendono dalla bilancia, widget sul telefono, promemoria push gentili (mai più di uno al giorno). Niente account né pubblicità: esporti o cancelli i tuoi dati in un tocco.
 
@@ -70,7 +70,7 @@ Sì, nella radice del repository, con `docker-compose.yml`. Avvio: `cp .env.exam
 - **Frontend:** PWA con React, Vite, Tailwind, Motion. Mobile-first, installabile, Web Push. MediaPipe per il controllo della forma.
 - **Backend:** Node 22, TypeScript, Fastify, SQLite (`better-sqlite3`), zod, node-ical, web-push.
 - **Health Bridge:** Apple Salute tramite Comando rapido (token personale), Strava con OAuth; prontezza del giorno calcolata con regole fisse sulla media di 14 giorni.
-- **AI:** Claude Sonnet 5.5 chiamato dal server con il Claude Agent SDK, output JSON validato con zod e regole di riserva.
+- **AI:** Claude Sonnet 5.5 chiamato dal server con il Claude Agent SDK. Tre strati: regole prima (bandiere rosse, filtri), scelta vincolata durante (JSON con schema, testo dell'utente trattato come dati), 7 invarianti dopo, con correzione o seduta di riserva. Ogni chiamata è registrata; laboratorio di valutazione con 30 scenari × 3 (`npm run eval`) e test unitari sui calcoli deterministici.
 - **Deploy:** Docker e Docker Compose su un server Contabo, esposto con un tunnel Cloudflare.
 
 ## AI agents usati
@@ -85,7 +85,7 @@ Sì, nella radice del repository, con `docker-compose.yml`. Avvio: `cp .env.exam
 | E se sono già allenato? | Con 3 domande da corridore parti dal livello 4 o 5, con una settimana da podista: facile, ripetute, lungo. I km reali da Strava aggiustano il volume. | Utente `demo-runner` (Luca, 43 anni, 25 km a settimana) |
 | Come vedo i progressi senza bilancia? | Punteggio di costanza, livelli, test di prontezza (sit-to-stand), minuti e sedute, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Home, Progressi, test di prontezza |
 | E l'alimentazione? | Un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo |
-| Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 12 esercizi in più. | La tua scheda, Coach |
+| Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 15 esercizi in più. | La tua scheda, Coach |
 | Si collega allo smartwatch? | Sì: Apple Salute (con un Comando rapido) e Strava sono attivi oggi. Sonno e battito calcolano la prontezza del giorno e precompilano il check-in. Health Connect, Garmin, Fitbit e Oura arrivano con l'app nativa. | Home → Come stai oggi; Coach → Salute e dispositivi |
 | Come guadagnate? | Free e Plus, con promesse precise: niente rinnovi a tradimento, prezzo visibile prima, disdetta in un tocco. | Coach → Il tuo piano |
 | Che cosa fate con i miei dati? | Niente account e niente pubblicità. Server in Europa, export in un tocco, cancellazione immediata. Dal calendario leggiamo solo gli spazi liberi. | Coach → I miei dati |
