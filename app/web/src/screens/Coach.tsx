@@ -97,8 +97,8 @@ export default function Coach() {
             </div>
             {m.redFlag && (
               <div className="mt-2 max-w-[86%] rounded-[20px] border border-acqua/40 bg-salvia-chiaro p-3 text-sm text-inchiostro">
-                <div className="mb-1 font-semibold">🌿 Oggi niente allenamento</div>
-                {m.redFlag.message}
+                <div className="mb-1 font-semibold">🌿 {m.redFlag.label}</div>
+                {m.redFlag.message !== m.content && m.redFlag.message}
                 {m.redFlag.urgent && <a href="tel:112" className="mt-2 block font-semibold text-petrolio underline">Chiama il 112</a>}
               </div>
             )}
