@@ -122,11 +122,26 @@ L'elenco delle vittorie possibili sta in `content/wins.json` (`id`, `title`, `co
 Un oggetto chiave → testo per i microtesti, per esempio `{ "skip.title": "Capita. Riprendiamo da qui, con calma." }`.
 Tono: dai del tu, frasi brevi, mai colpa.
 
-## Profile (risultato dell'onboarding)
+## Profile (scheda + conversazione di onboarding)
 ```json
 {
   "name": "Giulia",
   "age": 34,
+  "sex": "f",                       // f | m | altro | non_dico
+  "heightCm": 168,
+  "weightKg": 74,                   // solo per tarare il carico: MAI mostrato come obiettivo né rimostrato all'utente
+  "job": "seduto",                  // seduto | in_piedi | fisico
+  "sleepHours": 6.5,
+  "health": {                       // screening PAR-Q+ (sì/no)
+    "heartCondition": false,        // problema cardiaco o pressione alta diagnosticati
+    "chestPain": false,             // dolore al petto a riposo o durante lo sforzo
+    "dizziness": false,             // perdite di equilibrio o svenimenti negli ultimi 12 mesi
+    "jointIssue": true,             // problema osseo o articolare che potrebbe peggiorare
+    "medication": false,            // farmaci per cuore o pressione
+    "pregnancy": false,
+    "otherCondition": false,
+    "notes": "Lieve condromalacia al ginocchio destro"   // condizioni, farmaci, note libere (può essere "")
+  },
   "goal": "Riuscire a correre 20 minuti senza fermarmi",
   "experience": "nessuna",          // nessuna | poca | qualche_volta
   "daysPerWeek": 3,
@@ -134,6 +149,9 @@ Tono: dai del tu, frasi brevi, mai colpa.
   "equipment": ["sedia"],
   "limitations": ["ginocchia"],     // BodyZone da tenere d'occhio
   "preferredTime": "sera",          // mattina | pausa_pranzo | sera
-  "startLevel": 1
+  "calendarUrl": null,
+  "startLevel": 1,
+  "caution": false                  // true se almeno un "sì" nel PAR-Q+ (tranne jointIssue da solo): modalità prudenza
 }
 ```
+Derivati dal server (non salvati): `bmi`, `impactAllowed` (false se bmi ≥ 30, jointIssue, età ≥ 65 o caution), `cardioCap` (minuti massimi di cardio continuo all'inizio).

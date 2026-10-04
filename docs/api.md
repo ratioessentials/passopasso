@@ -30,6 +30,16 @@ Conversazione stateless: il client rimanda tutta la cronologia.
 ```
 Il primo messaggio dell'assistente lo mostra il client in modo fisso (`copy.json` → `onboarding.hello`) e non richiede chiamate. L'onboarding si chiude in circa 6 domande.
 
+### `POST /api/onboarding/profile`
+La **scheda** compilata nel form prima della conversazione (chi sei + salute PAR-Q+). Il server la salva come profilo parziale; la conversazione che segue completa obiettivo e preferenze.
+```json
+// richiesta: i campi "chi sei" e "health" di Profile (schema.md)
+{ "name": "Giulia", "age": 34, "sex": "f", "heightCm": 168, "weightKg": 74, "job": "seduto", "sleepHours": 6.5, "health": { ... } }
+// risposta
+{ "ok": true, "caution": false, "cautionMessage": null | "Hai segnalato un problema al cuore: prima di iniziare ti consigliamo di parlarne con il tuo medico. Nel frattempo ti proponiamo solo camminata e mobilità." }
+```
+`POST /api/onboarding/message` riceve quindi un profilo già parziale: la conversazione non richiede nome né dati fisici e si chiude in 4-5 domande (obiettivo, esperienza, giorni e minuti, attrezzatura, dolori, momento). Il profilo può essere aggiornato in seguito dal coach (`POST /api/coach/message`) e da `PATCH /api/me/profile` (stessi campi della scheda).
+
 ### `GET /api/me`
 ```json
 {
@@ -161,6 +171,7 @@ Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 2. L'AI sceglie **solo** esercizi da `content/exercises.json`: gli id della risposta vengono verificati, quelli sconosciuti scartati e sostituiti.
 3. Esercizi con `zones` che coincidono con `pain` → esclusi; si usa la `regression` se non coinvolge quelle zone.
 4. `exercise.minLevel` ≤ livello dell'utente; `equipment` ⊆ attrezzatura del profilo.
+4b. **Taratura sulla persona**: con `impactAllowed = false` niente esercizi `impact: true` (salti, corsa, scatti → sostituiti con camminata veloce o step); con `caution = true` solo camminata, mobilità e respirazione finché l'utente conferma il parere medico dal coach; età ≥ 65 o sonno < 6 h → intensità iniziale 0.9; BMI e sesso entrano nel prompt come contesto per i dosaggi, mai nei testi mostrati.
 5. Se l'AI fallisce o va oltre i 25 secondi → **seduta di riserva** costruita a regole da `sessionTemplate`.
 6. Feedback: `facile` → intensità +0.1; `giusto` → invariata; `duro` → −0.1 (limiti 0.7-1.3).
 7. Costanza: sedute fatte / sedute pianificate negli ultimi 28 giorni, più i `bonusPoints` delle ripartenze completate (massimo 100). Una seduta saltata e poi recuperata non pesa.
