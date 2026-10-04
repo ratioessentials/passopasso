@@ -43,7 +43,7 @@ Come si usa:
 *Schermo:* logotipo PassoPasso (Archivo corsivo extrabold) con la tagline.
 
 **B05 · 0:35-0:48 · 13 s**
-> Cinque livelli in circa dodici settimane, dalla camminata allo sprint. Si sale quando sei pronto, non quando lo dice il calendario. E il percorso non si azzera mai.
+> Cinque livelli in circa dodici settimane, su tre percorsi: corsa, forza o mobilità. Si sale quando sei pronto, non quando lo dice il calendario. E il percorso non si azzera mai.
 
 *Schermo:* `pitch/screens/mobile-percorso.png`, oppure le 5 icone in fila (`brand/icons/level-1..5.svg`) con i nomi: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia.
 
@@ -77,9 +77,9 @@ Come si usa:
 > *Alternativa se c'è tempo (+6 s): "E sullo squat, la fotocamera controlla la tua forma." Schermo: `/formcheck` con lo scheletro sovrapposto. In quel caso accorcia B13.*
 
 **B11 · 1:42-1:58 · 16 s** — feedback e livello
-> Fine seduta: facile, giusto o duro, e la prossima si regola. Giulia è costante da settimane: è pronta per il livello tre. E l'omino nell'icona inizia a correre.
+> Fine seduta: facile, giusto o duro, e la prossima si regola. Giulia è costante da settimane: un test di trenta secondi, ed è pronta per il livello tre. E l'omino nell'icona inizia a correre.
 
-*Schermo:* feedback "giusto", anello della costanza. Poi la proposta del livello 3 (Costruzione), tocco su "accetta", icona che passa dal livello 2 al 3.
+*Schermo:* feedback "giusto", anello della costanza. Poi il test di prontezza accelerato (timer di 30 s e contatore grande del sit-to-stand), la proposta del livello 3 (Costruzione), tocco su "accetta", icona che passa dal livello 2 al 3.
 
 **B12 · 1:58-2:13 · 15 s** — coach
 > Quando la vita cambia, parli col coach. "Questa settimana lavoro di sera." Il piano si sistema da solo, e ti dice cosa ha cambiato.
@@ -102,9 +102,9 @@ Come si usa:
 *Schermo:* ciak 5. Nel coach, il messaggio sul dolore al petto e la risposta di blocco con il 112.
 
 **B16 · 2:46-2:55 · 9 s** — alimentazione
-> Per mangiare meglio, un'abitudine a settimana e la foto del piatto. Zero calorie da contare.
+> Per mangiare meglio, un'abitudine a settimana scelta per te, e la foto del piatto: verdura, proteine, cereali. Zero calorie da contare.
 
-*Schermo:* ciak 6. Abitudine della settimana, foto caricata, feedback dell'AI senza numeri (`pitch/screens/mobile-cibo.png` come riserva).
+*Schermo:* ciak 6. Abitudine della settimana, foto caricata, il piatto in tre parti che si riempie, feedback dell'AI senza numeri (`pitch/screens/mobile-cibo.png` come riserva).
 
 **B17 · 2:55-3:02 · 7 s** — widget
 > E PassoPasso ti aspetta anche sulla schermata del telefono.
@@ -136,6 +136,18 @@ Come si usa:
 *Schermo:* le 5 icone, poi logotipo e `passopasso.andreavallieri.com` con il QR (riprendi la colonna sinistra di `pitch/screens/desktop-home.png`).
 
 ---
+
+## Q&A dopo il video: risposte in una frase
+La tabella completa, con dove mostrarlo nell'app, è in [consegna.md](consegna.md) e nel README.
+- **Solo per chi cammina?** No: tre percorsi, corsa, forza e mobilità, sugli stessi 5 livelli.
+- **E se sono già allenato?** Parti dal livello 4 o 5 con una settimana da podista. Mostra `demo-runner` (Luca).
+- **Progressi senza bilancia?** Costanza, livelli, test di prontezza, minuti e vittorie. Il peso non si rivede mai.
+- **Alimentazione?** Un'abitudine a settimana, quando mangiare rispetto alla seduta, il piatto in tre parti. Mai calorie.
+- **Attrezzatura?** Basta una sedia. Elastici e manubri sbloccano esercizi in più.
+- **Dati?** Niente account, niente pubblicità, export e cancellazione in un tocco. Dal calendario solo gli spazi liberi.
+- **Perché funziona?** Ogni scelta ha una fonte: è nella schermata "Perché funziona".
+- **E se l'AI sbaglia?** Catalogo verificato, bandiere rosse con regole fisse prima dell'AI, regole di riserva.
+- **Minorenni?** Sotto i 16 anni niente piano; a 16-17 al massimo livello 3.
 
 ## Se il video è troppo lungo
 Taglia in quest'ordine: B17 (widget), poi B13 (calendario) diventa una frase dentro B12: "…e se colleghi il calendario, trova anche gli spazi liberi."

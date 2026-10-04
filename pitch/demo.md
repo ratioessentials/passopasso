@@ -29,12 +29,14 @@ I ciak sono separati perché alcune azioni si escludono a vicenda: dopo aver com
 |---|---|---|---|---|
 | 1 | B07 | incognito, nuovo utente | Benvenuto → "Inizia" → **La tua scheda**: Chi sei (nome, 34 anni, 168 cm, peso, lavoro seduto, 6,5 h di sonno) → Salute (7 interruttori PAR-Q+, tutti "no") → chat da principiante: "Non faccio sport da anni", "20 minuti, 3 volte", "Ho una sedia e un muro", "A volte le ginocchia" | La frase sul peso ben leggibile; barra di avanzamento; 4-5 domande in chat (3-4 s a risposta), senza richiedere il nome; prima settimana al livello 1 |
 | 1b | (dal vivo) | incognito | Nella scheda Salute, accendi "Ti hanno mai detto che hai un problema al cuore?" | Schermata calma con il messaggio di prudenza: solo camminata e mobilità finché non senti il medico |
-| 2 | B08-B11 | reset, utente demo | Home → "Inizia" → check-in: 15 minuti, energia bassa, ginocchia sulla mappa → "Prepara la mia seduta" → player → completa → "giusto" → accetta il livello 3 | `reason` dell'AI in "Perché questa seduta"; marcia in casa al posto della camminata; omino animato nel player; anello della costanza; proposta del livello 3 (Costruzione); icona nuova |
+| 2 | B08-B11 | reset, utente demo | Home → "Inizia" → check-in: 15 minuti, energia bassa, ginocchia sulla mappa → "Prepara la mia seduta" → player → completa → "giusto" → test di prontezza (sit-to-stand 30 s, marcia 1 min) → accetta il livello 3 | `reason` dell'AI in "Perché questa seduta"; marcia in casa al posto della camminata; omino animato nel player; anello della costanza; proposta del livello 3 (Costruzione); icona nuova |
 | 3 | B12-B13 | stato dopo il ciak 2 (va bene) | Tab Coach → scrivi "Questa settimana lavoro di sera" → poi "Collega il calendario" → incolla il link iCal → "Sì, sposta" | Risposta del coach con i chip verdi (`applied`); spazi liberi; settimana spostata |
 | 4 | B14 | reset, utente demo | Settimana → seduta di oggi → "Oggi non ce la faccio" → motivo "tempo" | "Capita. Riprendiamo da qui, con calma." e la ripartenza con +10 |
 | 5 | B15 | qualsiasi | Tab Coach → scrivi "Da ieri ho un dolore al petto" | Blocco senza AI, consiglio di sentire un medico e il 112 |
-| 6 | B16 | qualsiasi | Tab Cibo → segna l'abitudine di oggi → carica la foto del piatto | Feedback qualitativo, nessun numero |
+| 6 | B16 | qualsiasi | Tab Cibo → (se serve, mini-onboarding di 5 domande) → segna l'abitudine di oggi → carica la foto del piatto | Card "Prima e dopo"; piatto in tre parti che si riempie; feedback qualitativo, nessun numero |
 | 7 | B17 | qualsiasi | Apri `/widget` | Widget piccolo e grande con livello, costanza e seduta di oggi |
+| Q&A | — | utente `demo-runner` (Luca) | Home → seduta di oggi (corsa a segmenti) → player | Settimana da podista con il lungo la domenica; timer grande, barra dei segmenti, "3/6", RPE spiegato |
+| Q&A | — | qualsiasi | Coach → I miei dati; Percorso → Perché funziona | Export, settimana nel calendario, cancella tutto; scelte di design con la fonte |
 | bonus | B10 alt. | qualsiasi, telefono vero | Apri `/formcheck`, consenti la fotocamera, fai due squat | Scheletro sovrapposto e indicazioni sulla forma |
 
 Bandiera rossa dal check-in, in alternativa al ciak 5: nel check-in, in fondo, "Oggi hai qualche sintomo insolito?" → spunta "Dolore al petto" → schermata di blocco con il 112. Poi reset.

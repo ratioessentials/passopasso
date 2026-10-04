@@ -35,6 +35,14 @@ In circa 12 settimane. Si sale per prontezza, non per calendario, e il percorso 
 | <img src="brand/icons/level-4.svg" width="40"> | 4. Slancio | corsa |
 | <img src="brand/icons/level-5.svg" width="40"> | 5. Autonomia | sprint |
 
+### Tre percorsi, gli stessi 5 livelli
+L'obiettivo scelto nell'onboarding decide il percorso. Livelli e icone restano uguali; cambiano verbi, obiettivi e struttura delle sedute.
+- **Corsa:** dalla camminata allo sprint. Ai livelli 4-5 la settimana è quella di un podista (facile, qualità, lungo, più forza di supporto) con **sedute a segmenti**: timer grande, ripetute "3/6", sforzo percepito (RPE) spiegato in una riga. Il lungo cresce di 5 minuti a settimana e ogni quarta settimana c'è lo scarico.
+- **Forza:** dalla sedia al corpo libero, poi elastici e manubri se li hai.
+- **Mobilità:** schiena, anche, collo e spalle, pensato per chi lavora seduto.
+
+Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, ritmo) e parte dal livello 4 o 5. Sotto i 16 anni l'app non crea un piano e invita a usarla con un adulto; a 16-17 anni si arriva al massimo al livello 3.
+
 ### Un piano che si adatta
 - **La tua scheda:** età, sesso, altezza, peso, lavoro, sonno e le 7 domande di salute del PAR-Q+. Il peso serve solo a tarare il carico: non è mai un obiettivo e l'app non lo mostra più. Con una risposta a rischio, l'app propone solo camminata e mobilità e consiglia di sentire il medico.
 - **Onboarding a conversazione:** dopo la scheda, 4-5 domande in chat (obiettivo, esperienza, tempo, attrezzatura, dolori), poi la prima settimana.
@@ -43,6 +51,7 @@ In circa 12 settimane. Si sale per prontezza, non per calendario, e il percorso 
 - **Calendario:** colleghi il tuo calendario con un link iCal e PassoPasso sposta le sedute negli spazi liberi. Gli eventi non vengono salvati né passati all'AI: solo gli spazi liberi.
 - **Seduta saltata:** la settimana si riorganizza e arriva una seduta di ripartenza con 10 punti di bonus. Premiare chi riprende funziona meglio che punire chi si ferma [7].
 - **Feedback dopo la seduta** (facile / giusto / duro): l'intensità della prossima si regola.
+- **Test di prontezza:** per salire di livello non basta il calendario. Alzati e siediti per 30 secondi (con i valori di riferimento per età e sesso di Rikli & Jones [12]) e un minuto di marcia con la scala dello sforzo. Se oggi non va, "Non oggi" e si riprova la settimana dopo.
 - **Omino animato** per ogni esercizio e **controllo della forma** sullo squat con la fotocamera (MediaPipe).
 
 ### Motivazione senza colpa
@@ -52,7 +61,29 @@ In circa 12 settimane. Si sale per prontezza, non per calendario, e il percorso 
 - Widget per la schermata del telefono (galleria su `/widget`, script per Scriptable su iPhone).
 
 ### Alimentazione senza calorie
-Un'abitudine a settimana, ispirata alle linee guida CREA [9]. Fotografi il piatto e ricevi un feedback qualitativo: cosa va bene e un suggerimento. Mai calorie né numeri.
+- **Mini-onboarding** di 5 domande: l'AI sceglie la prima abitudine tra 12, ispirate alle linee guida CREA [9], e spiega perché ("Bevi già abbastanza: partiamo dalla colazione").
+- **Prima e dopo:** nei giorni di seduta, quando mangiare rispetto all'allenamento, in base all'orario e al tipo di seduta. Mai quantità.
+- **Foto del piatto:** il feedback dice cosa va bene e cosa aggiungere, e disegna il piatto in tre parti (verdura, proteine, cereali) come nell'Healthy Eating Plate di Harvard [11]. Mai calorie né numeri; l'immagine non viene salvata.
+- **Riepilogo della settimana:** punti forti, cosa manca e l'abitudine della settimana dopo.
+- Se dici di avere una condizione medica, il coach ti indirizza a un dietista. Davanti a segnali di restrizione, risponde con cura e consiglia un professionista. Niente diete.
+
+### I tuoi dati
+Niente account, niente pubblicità. I dati stanno su un server in Europa e li cancelli quando vuoi. Dal Coach, "I miei dati": esporta tutto in JSON, aggiungi la settimana al tuo calendario (`.ics`), cancella tutto con un tocco. "Perché funziona" mostra ogni scelta di design con la sua fonte scientifica.
+
+## Domande della giuria
+
+| Domanda | Risposta | Dove vederlo |
+|---|---|---|
+| È solo per chi cammina? | No. Tre percorsi (corsa, forza, mobilità) sugli stessi 5 livelli, scelti dall'obiettivo. | Percorso, onboarding |
+| E se sono già allenato? | Con 3 domande da corridore parti dal livello 4 o 5, con una settimana da podista: facile, ripetute, lungo. I km reali da Strava aggiustano il volume. | Utente `demo-runner` (Luca, 43 anni, 25 km a settimana) |
+| Come vedo i progressi senza bilancia? | Punteggio di costanza, livelli, test di prontezza (sit-to-stand), minuti e sedute, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Home, Progressi, test di prontezza |
+| E l'alimentazione? | Un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo |
+| Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 12 esercizi in più. | La tua scheda, Coach |
+| Che cosa fate con i miei dati? | Niente account e niente pubblicità. Server in Europa, export in un tocco, cancellazione immediata. Dal calendario leggiamo solo gli spazi liberi. | Coach → I miei dati |
+| Si adatta ai miei impegni? | Colleghi il calendario con un link iCal e le sedute vanno negli spazi liberi. La settimana pianificata si aggiunge al tuo calendario. | Coach → Collega il calendario |
+| Perché dovrebbe funzionare? | Ogni scelta ha una fonte: ripartenza premiata (Milkman), costanza invece della streak (Lally), PAR-Q+, progressione graduale, niente calorie. | Percorso → Perché funziona |
+| E se l'AI sbaglia? | L'AI sceglie solo da un catalogo verificato, le bandiere rosse sono controllate prima da regole fisse e ogni risposta è validata. Se l'AI non risponde, la seduta si fa a regole. | Sezione Sicurezza |
+| E i minorenni? | Sotto i 16 anni niente piano: l'app invita a usarla con un adulto. A 16-17 anni massimo livello 3. | Onboarding |
 
 ## Sicurezza
 PassoPasso non sostituisce il parere di un medico. Per questo l'AI lavora dentro confini stretti:
@@ -145,6 +176,13 @@ Come si coordinano:
 
 I prompt di tutte le chat sono in [`docs/agenti/`](docs/agenti/).
 
+## Roadmap
+La demo è una PWA, così la provi da un link senza installare niente. Prossimi passi:
+- **Notifiche native** con l'app sugli store (oggi: Web Push).
+- **Wearable** nativi: Apple Salute e Health Connect senza passaggi manuali, Garmin, Fitbit, Oura.
+- **Altre lingue**, a partire dall'inglese: testi e contenuti sono già separati dal codice.
+- **Community:** gruppi piccoli di persone allo stesso livello, senza classifiche.
+
 ## Struttura
 - `app/web/`: PWA
 - `app/server/`: API, motore e prompt dell'AI
@@ -165,5 +203,7 @@ I prompt di tutte le chat sono in [`docs/agenti/`](docs/agenti/).
 8. Formazione delle abitudini, Lally et al. 2010. https://www.researchgate.net/publication/32898894
 9. CREA, Linee guida per una sana alimentazione 2018. https://www.crea.gov.it/web/alimenti-e-nutrizione/-/linee-guida-per-una-sana-alimentazione-2018
 10. PAR-Q+ (https://eparmedx.com/) e screening ACSM, Riebe et al. 2015 (https://pubmed.ncbi.nlm.nih.gov/26473759/)
+11. Harvard T.H. Chan School of Public Health, Healthy Eating Plate. https://www.hsph.harvard.edu/nutritionsource/healthy-eating-plate/
+12. Rikli R.E., Jones C.J., *Senior Fitness Test Manual*, Human Kinetics, 2ª ed. 2013: test di 30 secondi su sedia con i valori di riferimento per età e sesso.
 
 Altri dati in [`docs/ricerca.md`](docs/ricerca.md). Fonti dei contenuti in [`content/FONTI.md`](content/FONTI.md).
