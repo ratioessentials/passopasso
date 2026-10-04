@@ -1,0 +1,12 @@
+# Placeholder "In arrivo" sulla porta 3210. Si spegne da solo quando parte deploy/deploy.sh.
+services:
+  passopasso-placeholder:
+    image: node:22-slim
+    container_name: passopasso-placeholder
+    working_dir: /site
+    volumes:
+      - ./:/site:ro
+    command: ["node", "server.mjs"]
+    ports:
+      - "127.0.0.1:3210:3210"
+    restart: unless-stopped
