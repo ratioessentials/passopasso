@@ -13,6 +13,7 @@ const WIN_TYPES = {
   minutes_total: true, consistency_at_least: true, week_complete: true, meal_photos: true,
   adapted_session_done: false, feedback_count: true,
 };
+const MOTIONS = ['marcia', 'camminata_veloce', 'corsetta', 'corsa', 'scatto', 'squat', 'affondo', 'ponte', 'plank', 'flessioni_muro', 'polpacci', 'rotazioni_braccia', 'rotazioni_anche', 'allungamento', 'respirazione', 'jumping_jack', 'step'];
 const ICONS = ['star', 'flag', 'heart', 'bolt', 'leaf', 'trophy', 'sun', 'sprout', 'shoe', 'clock', 'camera', 'water', 'calendar', 'shield', 'medal', 'smile'];
 const FORBIDDEN_FOOD_WORDS = /calori|kcal|\bpeso\b|chil[oi]|dimagr|bilancia\b|grass[oi] corpore/i;
 const ID_RE = /^[a-z0-9]+(_[a-z0-9]+)*$/;
@@ -64,6 +65,8 @@ if (exercises) {
       if (!strArr(x.commonMistakes, 1)) err(w, 'commonMistakes mancante');
       if (typeof x.formCheck !== 'boolean') err(w, 'formCheck deve essere booleano');
       if (x.formCheck && !/squat|alzat/.test(x.id)) err(w, 'formCheck: true solo sugli squat');
+      if (!('motion' in x)) err(w, 'motion mancante (usa null)');
+      else if (x.motion !== null && !MOTIONS.includes(x.motion)) err(w, `motion non valido: ${x.motion}`);
       for (const k of ['regression', 'progression']) {
         if (!(k in x)) err(w, `${k} mancante (usa null)`);
       }
@@ -175,6 +178,7 @@ if (habits) {
 
 // --- red_flags.json ---
 const flags = load('red_flags.json');
+const allKeywords = [];
 if (flags) {
   if (!Array.isArray(flags) || flags.length < 6 || flags.length > 10) err('red_flags.json', 'servono 6-10 bandiere rosse');
   else {
@@ -185,8 +189,22 @@ if (flags) {
       if (typeof f.urgent !== 'boolean') err(w, 'urgent deve essere booleano');
       if (!/medic/i.test(f.message ?? '')) err(w, 'il messaggio deve consigliare di sentire un medico');
       if (f.urgent && !/112/.test(f.message ?? '')) err(w, 'i sintomi urgenti devono citare il 112');
+      const kw = f.keywords;
+      if (!Array.isArray(kw) || kw.length < 6 || kw.length > 12) err(w, 'keywords: servono 6-12 parole o espressioni');
+      else for (const k of kw) {
+        if (!isStr(k) || k !== k.toLowerCase().trim()) err(w, `keyword non valida (minuscole, senza spazi ai bordi): ${JSON.stringify(k)}`);
+        allKeywords.push([k, f.id]);
+      }
     }
     if (!flags.some((f) => f.urgent)) err('red_flags.json', 'serve almeno una bandiera urgente');
+    const seenKw = new Map();
+    for (const [k, id] of allKeywords) {
+      if (seenKw.has(k) && seenKw.get(k) !== id) warn('red_flags.json', `keyword "${k}" in ${seenKw.get(k)} e ${id}`);
+      seenKw.set(k, id);
+    }
+    // frasi innocue che non devono far scattare un blocco
+    const SAFE = ['oggi ho poco tempo', 'questa settimana lavoro di sera', 'ho un po\' di male alle ginocchia', 'mi sento stanco', 'voglio correre di più', 'ho i muscoli indolenziti dopo ieri', 'mi fanno male le gambe dopo la corsa', 'dopo la corsa ho il fiato corto', 'ho il ginocchio un po\' gonfio', 'faccio gli allungamenti del petto', 'questa settimana ho poco tempo'];
+    for (const t of SAFE) for (const [k, id] of allKeywords) if (t.includes(k)) err('red_flags.json', `keyword "${k}" (${id}) scatta sulla frase innocua "${t}"`);
   }
 }
 
