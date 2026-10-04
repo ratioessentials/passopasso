@@ -52,6 +52,7 @@ Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, r
 - **Seduta saltata:** la settimana si riorganizza e arriva una seduta di ripartenza con 10 punti di bonus. Premiare chi riprende funziona meglio che punire chi si ferma [7].
 - **Feedback dopo la seduta** (facile / giusto / duro): l'intensità della prossima si regola.
 - **Test di prontezza:** per salire di livello non basta il calendario. Alzati e siediti per 30 secondi (con i valori di riferimento per età e sesso di Rikli & Jones [12]) e un minuto di marcia con la scala dello sforzo. Se oggi non va, "Non oggi" e si riprova la settimana dopo.
+- **I dati del tuo corpo nel check-in:** sonno, battito a riposo, HRV e passi arrivano da Apple Salute (con un Comando rapido) o da Strava. Il server confronta i dati con la tua media di 14 giorni e calcola la prontezza del giorno con regole fisse: "Hai dormito poco: oggi ti propongo una seduta leggera". Nel check-in l'energia arriva già suggerita, e gli allenamenti fatti altrove contano come sedute.
 - **Omino animato** per ogni esercizio e **controllo della forma** sullo squat con la fotocamera (MediaPipe).
 
 ### Motivazione senza colpa
@@ -59,6 +60,7 @@ Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, r
 - Vittorie che non dipendono dalla bilancia.
 - Tono sempre gentile: "Capita. Riprendiamo da qui, con calma."
 - Widget per la schermata del telefono (galleria su `/widget`, script per Scriptable su iPhone).
+- **Promemoria gentili** con le notifiche push: mai più di una al giorno, mai di sera tardi, mai colpe ("Capita. Oggi c'è una ripartenza da 15 minuti, se ti va").
 
 ### Alimentazione senza calorie
 - **Mini-onboarding** di 5 domande: l'AI sceglie la prima abitudine tra 12, ispirate alle linee guida CREA [9], e spiega perché ("Bevi già abbastanza: partiamo dalla colazione").
@@ -66,6 +68,9 @@ Chi corre già risponde a 3 domande in più (km a settimana, corsa più lunga, r
 - **Foto del piatto:** il feedback dice cosa va bene e cosa aggiungere, e disegna il piatto in tre parti (verdura, proteine, cereali) come nell'Healthy Eating Plate di Harvard [11]. Mai calorie né numeri; l'immagine non viene salvata.
 - **Riepilogo della settimana:** punti forti, cosa manca e l'abitudine della settimana dopo.
 - Se dici di avere una condizione medica, il coach ti indirizza a un dietista. Davanti a segnali di restrizione, risponde con cura e consiglia un professionista. Niente diete.
+
+### Piani senza trappole
+Free (livelli 1-2, coach e foto con un limite settimanale) e Plus (percorsi, coach illimitato, calendario, salute e wearable, test). Le promesse: niente prova che si rinnova a tradimento, prezzo visibile prima, disdetta in un tocco, i dati restano tuoi anche se smetti. Nella demo è tutto sbloccato e non ci sono pagamenti.
 
 ### I tuoi dati
 Niente account, niente pubblicità. I dati stanno su un server in Europa e li cancelli quando vuoi. Dal Coach, "I miei dati": esporta tutto in JSON, aggiungi la settimana al tuo calendario (`.ics`), cancella tutto con un tocco. "Perché funziona" mostra ogni scelta di design con la sua fonte scientifica.
@@ -79,6 +84,8 @@ Niente account, niente pubblicità. I dati stanno su un server in Europa e li ca
 | Come vedo i progressi senza bilancia? | Punteggio di costanza, livelli, test di prontezza (sit-to-stand), minuti e sedute, vittorie. Il peso serve solo a tarare il carico e non viene più mostrato. | Home, Progressi, test di prontezza |
 | E l'alimentazione? | Un'abitudine a settimana scelta per te, consigli su quando mangiare rispetto alla seduta, foto del piatto con il piatto in tre parti. Mai calorie: il conteggio fa male a molti [5]. | Tab Cibo |
 | Mi serve attrezzatura? | No. Si parte con una sedia e un muro. Elastici e manubri, se li hai, sbloccano 12 esercizi in più. | La tua scheda, Coach |
+| Si collega allo smartwatch? | Sì: Apple Salute (con un Comando rapido) e Strava sono attivi oggi. Sonno e battito calcolano la prontezza del giorno e precompilano il check-in. Health Connect, Garmin, Fitbit e Oura arrivano con l'app nativa. | Home → Come stai oggi; Coach → Salute e dispositivi |
+| Come guadagnate? | Free e Plus, con promesse precise: niente rinnovi a tradimento, prezzo visibile prima, disdetta in un tocco. | Coach → Il tuo piano |
 | Che cosa fate con i miei dati? | Niente account e niente pubblicità. Server in Europa, export in un tocco, cancellazione immediata. Dal calendario leggiamo solo gli spazi liberi. | Coach → I miei dati |
 | Si adatta ai miei impegni? | Colleghi il calendario con un link iCal e le sedute vanno negli spazi liberi. La settimana pianificata si aggiunge al tuo calendario. | Coach → Collega il calendario |
 | Perché dovrebbe funzionare? | Ogni scelta ha una fonte: ripartenza premiata (Milkman), costanza invece della streak (Lally), PAR-Q+, progressione graduale, niente calorie. | Percorso → Perché funziona |
@@ -99,17 +106,36 @@ PassoPasso non sostituisce il parere di un medico. Per questo l'AI lavora dentro
 
 ```mermaid
 flowchart LR
-  U["📱 PWA<br/>React · Vite · Tailwind"] -->|"/api · X-User-Id"| S["API Node<br/>Fastify · zod"]
+  subgraph Client
+    U["📱 PWA oggi<br/>React · Vite · Tailwind"]
+    N["📱 App nativa domani<br/>React Native"]
+    W["Widget · Scriptable"]
+  end
+  subgraph Sorgenti["Sorgenti dati"]
+    AH["Apple Salute<br/>Comando rapido"]
+    ST["Strava<br/>OAuth"]
+    FU["Health Connect · Garmin<br/>Fitbit · Oura (in arrivo)"]
+  end
+  U -->|"/api · stesso contratto"| S["API Node<br/>Fastify · zod"]
+  N -.-> S
+  W --> S
+  AH -->|"/api/health/ingest"| HB["Health Bridge<br/>baseline 14 gg · prontezza"]
+  ST --> HB
+  FU -.-> HB
+  HB --> S
   S --> E["Motore<br/>bandiere rosse · filtri · regole di riserva"]
   E -->|"prompt + JSON validato"| C["Claude<br/>Agent SDK / Messages API"]
-  E --> D[("SQLite<br/>profili · sedute · vittorie")]
-  E --> K["content/<br/>esercizi · livelli · bandiere rosse · abitudini"]
-  S -.->|"link iCal, cache 15 min"| G["Calendario<br/>dell'utente"]
-  W["Widget<br/>Scriptable"] -->|"/api/widget/:id"| S
+  E --> D[("SQLite")]
+  E --> K["content/<br/>catalogo verificato"]
+  S -.->|"link iCal"| G["Calendario"]
+  S -->|"Web Push · cron"| P["Notifiche"]
+  S --> PL["Piani<br/>Free / Plus"]
 ```
 
 - **Frontend** ([`app/web/`](app/web/)): PWA installabile, mobile-first. Su desktop l'app compare dentro una cornice iPhone, con i widget a lato.
 - **Backend** ([`app/server/`](app/server/)): Node 22, TypeScript, Fastify, `better-sqlite3`, zod. Contratto in [`docs/api.md`](docs/api.md), tipi in [`docs/schema.md`](docs/schema.md).
+- **Health Bridge:** un unico formato per i dati del corpo, qualunque sia la sorgente (token personale per il Comando rapido di Apple Salute, OAuth vero per Strava). Prontezza deterministica da `content/readiness.json`: sonno sotto le 6 ore, battito a riposo oltre +8% e HRV sotto −15% rispetto alla tua media.
+- **Notifiche:** Web Push con chiavi VAPID e uno scheduler ogni minuto. Funzionano su Android e su iPhone con l'app installata (iOS 16.4+).
 - **AI:** Claude (`claude-sonnet-5-5`) chiamato solo dal server, con il Claude Agent SDK (token dell'abbonamento) oppure l'SDK Anthropic (chiave API). Usato per onboarding, rigenerazione delle sedute, coach, feedback sulle foto dei piatti.
 - **Contenuti** ([`content/`](content/)): 60 esercizi, 5 livelli, 12 abitudini, 9 bandiere rosse, 19 vittorie, con uno script di validazione.
 
@@ -155,6 +181,8 @@ L'app (API e PWA) risponde su `http://127.0.0.1:3210`. Il database SQLite sta ne
 | `AI_MODE` | `auto` | `off` = solo regole di riserva |
 | `AI_MODEL` | `claude-sonnet-5-5` | |
 | `PORT` | `3210` | |
+| `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET` | — | facoltative, per collegare Strava |
+| chiavi VAPID | — | facoltative, per le notifiche push: si generano con `npx web-push generate-vapid-keys` (nomi in `.env.example`) |
 
 ## Come l'abbiamo costruita: 6 agenti Claude Code
 PassoPasso è stata sviluppata in poche ore da **cinque sessioni di Claude Code in parallelo** sullo stesso repository, più una **chat di regia**. Ogni chat ha il suo prompt e le sue cartelle; nessuna modifica i file delle altre.
@@ -176,12 +204,19 @@ Come si coordinano:
 
 I prompt di tutte le chat sono in [`docs/agenti/`](docs/agenti/).
 
+## Visione
+Oggi PassoPasso è una PWA, così la giuria la prova da un link senza installare niente. Il prodotto è un'**app nativa (React Native) sullo stesso backend e sullo stesso contratto API**: niente da riscrivere lato server.
+- **Login e sincronizzazione** tra dispositivi (oggi non c'è account, per provarla subito).
+- **Abbonamento gentile**, Free e Plus, senza dark pattern. Noom ha pagato 56 milioni di dollari per una class action sui suoi abbonamenti [13]: noi facciamo il contrario.
+- **Notifiche push native** al posto di Web Push.
+- **HealthKit e Health Connect diretti**, poi Garmin, Fitbit e Oura, nello stesso Health Bridge che oggi riceve Apple Salute e Strava: i dati del tuo corpo entrano nel check-in.
+
 ## Roadmap
-La demo è una PWA, così la provi da un link senza installare niente. Prossimi passi:
-- **Notifiche native** con l'app sugli store (oggi: Web Push).
-- **Wearable** nativi: Apple Salute e Health Connect senza passaggi manuali, Garmin, Fitbit, Oura.
-- **Altre lingue**, a partire dall'inglese: testi e contenuti sono già separati dal codice.
-- **Community:** gruppi piccoli di persone allo stesso livello, senza classifiche.
+| Oggi, nella demo | Prossimo | Dopo |
+|---|---|---|
+| PWA, Apple Salute via Comando rapido, Strava, Web Push, schermata dei Piani | App nativa con login, HealthKit e Health Connect, pagamenti | Altre lingue (testi e contenuti sono già separati dal codice) |
+| Prontezza del giorno da sonno e battito | Garmin, Fitbit, Oura | Community: piccoli gruppi allo stesso livello, senza classifiche |
+| Coach, calendario, test di prontezza | Notifiche native | Per fisioterapisti e medici: seguono i progressi dei loro pazienti (B2B) |
 
 ## Struttura
 - `app/web/`: PWA
@@ -205,5 +240,6 @@ La demo è una PWA, così la provi da un link senza installare niente. Prossimi 
 10. PAR-Q+ (https://eparmedx.com/) e screening ACSM, Riebe et al. 2015 (https://pubmed.ncbi.nlm.nih.gov/26473759/)
 11. Harvard T.H. Chan School of Public Health, Healthy Eating Plate. https://www.hsph.harvard.edu/nutritionsource/healthy-eating-plate/
 12. Rikli R.E., Jones C.J., *Senior Fitness Test Manual*, Human Kinetics, 2ª ed. 2013: test di 30 secondi su sedia con i valori di riferimento per età e sesso.
+13. Noom, accordo da 56 milioni di dollari nella class action sugli abbonamenti. https://athletechnews.com/noom-class-action-settlement/
 
 Altri dati in [`docs/ricerca.md`](docs/ricerca.md). Fonti dei contenuti in [`content/FONTI.md`](content/FONTI.md).
