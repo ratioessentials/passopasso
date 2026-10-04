@@ -4,8 +4,6 @@ import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { getUserId } from './api/client'
 import { StoreProvider } from './lib/store'
 import { FormCheck } from './lib/formcheck'
-
-const MotionLab = lazy(() => import('./features/motion/MotionLab'))
 import { TabBar, TAB_PATHS, TABBAR_PATHS } from './ui/TabBar'
 import { spring } from './ui/motion'
 import { LevelUpOverlay } from './screens/LevelUp'
@@ -21,6 +19,8 @@ import ProgressScreen from './screens/Progress'
 import Food from './screens/Food'
 import Coach from './screens/Coach'
 import WidgetGallery from './screens/WidgetGallery'
+
+const MotionLab = lazy(() => import('./features/motion/MotionLab'))
 
 
 function RequireUser({ children }: { children: ReactNode }) {
