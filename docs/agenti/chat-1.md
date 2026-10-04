@@ -31,6 +31,13 @@ La PWA mobile-first di PassoPasso: bella, chiara, tono gentile. Durante la demo 
 
 Navigazione: tab bar in basso (Oggi, Settimana, Percorso, Cibo, Progressi).
 
+## Layout desktop (la demo si mostra da desktop)
+L'app resta **mobile**. Su desktop (≥1024px) si mostra dentro una **cornice da iPhone**, non con un layout desktop:
+- Componente `DesktopShell`: sfondo con la sfumatura del brand (petrolio → salvia); al centro la cornice dell'iPhone **390×844** (angoli arrotondati, bordo scuro, Dynamic Island) con l'app dentro; a sinistra logotipo in Archivo corsivo, tagline "Da zero a dove vuoi arrivare", i 5 livelli con le icone e un **QR code** al link pubblico (`https://passopasso.andreavallieri.com`, libreria `qrcode`) con la scritta "Provala sul tuo telefono"; a destra (≥1280px) anteprima dei widget iPhone (riusa i componenti di `/widget`).
+- Sotto i 1024px, o su un telefono vero: niente cornice, l'app a schermo intero. Su iOS rispetta le safe-area (`env(safe-area-inset-*)`).
+- **Regole per non rompere la cornice**: nelle schermate dell'app NON usare breakpoint di Tailwind (`sm:`/`md:`/`lg:`), perché si basano sulla finestra e non sulla cornice; usa misure fluide. Lo schermo della cornice ha `transform: translateZ(0)` e `overflow: hidden`, così tab bar, modali e toast `fixed` restano dentro la cornice. Lo scroll avviene dentro lo schermo, non sulla pagina.
+- Deve venire bene a 1440×900 e a 1920×1080 (le risoluzioni della registrazione del video).
+
 ## Widget iPhone (extra, dopo le schermate 1-7)
 Una PWA non può creare widget iOS veri, quindi:
 1. Pagina **`/widget`**: una schermata Home di iPhone finta (sfondo, griglia di icone, dock) con i widget di PassoPasso nelle misure iOS: piccolo 2x2, medio 4x2, grande 4x4, più uno circolare per la schermata di blocco. Stile da widget iOS (angoli 22px, padding 16px) con sfumature e font del brand.
