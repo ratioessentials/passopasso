@@ -198,6 +198,16 @@ Modello unificato dei dati del corpo. Ogni sorgente (Comando rapido di Apple Sal
 ### Piani (solo schermata, nessun pagamento nella demo)
 - `GET /api/plans` → da `content/plans.json`: Free (livelli 1-2, coach 5 messaggi/sett., foto 3/sett.), Plus (tutto: percorsi, coach illimitato, calendario, salute e wearable, test) con prezzo indicativo, e le **promesse anti-dark-pattern**: niente prova che si rinnova a tradimento, cancellazione in un tocco, prezzo visibile prima, i dati restano tuoi anche se smetti. Nella demo tutto è sbloccato (`"demo": true`).
 
+### Trasparenza dell'AI
+- `GET /api/sessions/:id/explain` →
+  ```json
+  { "inputs": { "minutes": 15, "energy": 2, "pain": ["ginocchia"], "readiness": "media", "impactAllowed": false, "caution": false },
+    "candidates": 31, "excluded": [ { "exerciseId": "squat_libero", "reason": "coinvolge le ginocchia" }, { "exerciseId": "jumping_jack", "reason": "impatto non consentito" } ],
+    "checks": [ { "id": "no_pain_zones", "label": "Nessun esercizio sulle zone doloranti", "passed": true }, ... ],   // 7 invarianti
+    "ai": { "model": "claude-sonnet-5-5", "latencyMs": 9800, "validFirstTry": true, "repaired": false, "fallback": false } }
+  ```
+- `GET /api/ai/stats` → `{ "generations": 212, "validFirstTry": 0.96, "repaired": 0.03, "fallback": 0.01, "invariantViolationsBeforeValidation": 0.07, "invariantViolationsShown": 0, "p50LatencyMs": 9100 }` (dalla tabella `ai_calls`).
+
 ### `GET /api/widget/:userId`
 Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 ```json
@@ -220,4 +230,5 @@ Pubblico (serve a Scriptable e alla galleria dei widget). Dati compatti:
 4b. **Taratura sulla persona**: con `impactAllowed = false` niente esercizi `impact: true` (salti, corsa, scatti → sostituiti con camminata veloce o step); con `caution = true` solo camminata, mobilità e respirazione finché l'utente conferma il parere medico dal coach; età ≥ 65 o sonno < 6 h → intensità iniziale 0.9; BMI e sesso entrano nel prompt come contesto per i dosaggi, mai nei testi mostrati.
 5. Se l'AI fallisce o va oltre i 25 secondi → **seduta di riserva** costruita a regole da `sessionTemplate`.
 6. Feedback: `facile` → intensità +0.1; `giusto` → invariata; `duro` → −0.1 (limiti 0.7-1.3).
+7b. **Invarianti** (`src/engine/invariants.ts`), verificati su OGNI seduta prima di salvarla, AI o riserva: (1) nessun esercizio con `zones` ∩ `pain`; (2) durata entro ±10% dei minuti disponibili; (3) riscaldamento e defaticamento presenti; (4) dosaggi entro i limiti del catalogo; (5) nessun `impact` se `impactAllowed = false`; (6) `reason` senza numeri sul peso/BMI e senza colpa (lista di parole vietate); (7) nessuna seduta se bandiera rossa. Una violazione → correzione automatica se possibile (rimozione dell'esercizio), altrimenti seduta di riserva. Tutto loggato in `ai_calls`.
 7. Costanza: sedute fatte / sedute pianificate negli ultimi 28 giorni, più i `bonusPoints` delle ripartenze completate (massimo 100). Una seduta saltata e poi recuperata non pesa.
