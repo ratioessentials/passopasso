@@ -92,7 +92,7 @@ export const CLIPS: Record<Archetype, Clip> = {
   corsa: { label: 'Corsa', duration: 700, interp: 'spline', still: 0, keys: run(1.05, 9) },
   scatto: { label: 'Scatto', duration: 540, interp: 'spline', still: 0, keys: run(1.35, 15) },
   squat: {
-    label: 'Squat', duration: 2800, interp: 'ease', anchor: 'foot', anchorX: 66, still: 0.45,
+    label: 'Squat', duration: 2800, interp: 'ease', anchor: 'foot', anchorX: 60, still: 0.45,
     keys: [{ ...STAND, t: 0 }, { ...SQUAT_DOWN, t: 0.4 }, { ...SQUAT_DOWN, t: 0.55 }, { ...STAND, t: 0.9 }],
   },
   affondo: {
