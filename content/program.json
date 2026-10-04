@@ -1,6 +1,9 @@
 {
-  "totalWeeks": [10, 15],
-  "notes": "Si passa di livello per prontezza, non per calendario. Il percorso non si azzera mai. La durata tipica complessiva è di circa 12 settimane.",
+  "totalWeeks": [
+    10,
+    15
+  ],
+  "notes": "Si passa di livello per prontezza, non per calendario. Il percorso non si azzera mai. La durata tipica complessiva è di circa 12 settimane. I tre percorsi (tracks) hanno gli stessi 5 livelli e le stesse icone; ogni livello del percorso sovrascrive verb, goal, sessionTemplate e readiness della base.",
   "levels": [
     {
       "n": 1,
@@ -8,18 +11,38 @@
       "verb": "Cammina",
       "goal": "Muoversi 3 volte a settimana senza fatica eccessiva",
       "cardioGuide": "Camminata a ritmo comodo: riesci a parlare senza fiatone. Chi ha dolori alle gambe può usare la boxe sul posto.",
-      "weeks": [2, 3],
+      "weeks": [
+        2,
+        3
+      ],
       "sessionsPerWeek": 3,
       "sessionTemplate": {
         "minutes": 20,
         "blocks": [
-          { "category": "riscaldamento", "count": 2 },
-          { "category": "cardio", "count": 1, "seconds": 600 },
-          { "category": "forza", "count": 2 },
-          { "category": "defaticamento", "count": 1 }
+          {
+            "category": "riscaldamento",
+            "count": 2
+          },
+          {
+            "category": "cardio",
+            "count": 1,
+            "seconds": 600
+          },
+          {
+            "category": "forza",
+            "count": 2
+          },
+          {
+            "category": "defaticamento",
+            "count": 1
+          }
         ]
       },
-      "readiness": { "minSessions": 6, "minConsistency": 60, "maxHardFeedbackLast3": 1 }
+      "readiness": {
+        "minSessions": 6,
+        "minConsistency": 60,
+        "maxHardFeedbackLast3": 1
+      }
     },
     {
       "n": 2,
@@ -27,19 +50,42 @@
       "verb": "Passo svelto",
       "goal": "Camminare 15 minuti a passo svelto e fare le basi della forza con buona tecnica",
       "cardioGuide": "Passo svelto: riesci a parlare ma non a cantare. Lo scalino è un'alternativa in casa.",
-      "weeks": [2, 3],
+      "weeks": [
+        2,
+        3
+      ],
       "sessionsPerWeek": 3,
       "sessionTemplate": {
         "minutes": 25,
         "blocks": [
-          { "category": "riscaldamento", "count": 2 },
-          { "category": "cardio", "count": 1, "seconds": 900 },
-          { "category": "forza", "count": 3 },
-          { "category": "mobilita", "count": 1 },
-          { "category": "defaticamento", "count": 1 }
+          {
+            "category": "riscaldamento",
+            "count": 2
+          },
+          {
+            "category": "cardio",
+            "count": 1,
+            "seconds": 900
+          },
+          {
+            "category": "forza",
+            "count": 3
+          },
+          {
+            "category": "mobilita",
+            "count": 1
+          },
+          {
+            "category": "defaticamento",
+            "count": 1
+          }
         ]
       },
-      "readiness": { "minSessions": 7, "minConsistency": 65, "maxHardFeedbackLast3": 1 }
+      "readiness": {
+        "minSessions": 7,
+        "minConsistency": 65,
+        "maxHardFeedbackLast3": 1
+      }
     },
     {
       "n": 3,
@@ -47,19 +93,42 @@
       "verb": "Corsetta",
       "goal": "Alternare corsetta e camminata per 20 minuti",
       "cardioGuide": "Cammina e corri: 1 minuto di corsetta lenta e 2 di camminata. Si aumenta la corsa solo quando il minuto è comodo.",
-      "weeks": [2, 3],
+      "weeks": [
+        2,
+        3
+      ],
       "sessionsPerWeek": 3,
       "sessionTemplate": {
         "minutes": 30,
         "blocks": [
-          { "category": "riscaldamento", "count": 2 },
-          { "category": "cardio", "count": 1, "seconds": 1200 },
-          { "category": "forza", "count": 3 },
-          { "category": "mobilita", "count": 1 },
-          { "category": "defaticamento", "count": 1 }
+          {
+            "category": "riscaldamento",
+            "count": 2
+          },
+          {
+            "category": "cardio",
+            "count": 1,
+            "seconds": 1200
+          },
+          {
+            "category": "forza",
+            "count": 3
+          },
+          {
+            "category": "mobilita",
+            "count": 1
+          },
+          {
+            "category": "defaticamento",
+            "count": 1
+          }
         ]
       },
-      "readiness": { "minSessions": 8, "minConsistency": 65, "maxHardFeedbackLast3": 1 }
+      "readiness": {
+        "minSessions": 8,
+        "minConsistency": 65,
+        "maxHardFeedbackLast3": 1
+      }
     },
     {
       "n": 4,
@@ -67,19 +136,42 @@
       "verb": "Corsa",
       "goal": "Correre 20 minuti di fila a ritmo comodo",
       "cardioGuide": "Prima 2 minuti di corsa e 1 di camminata, poi corsa continua lenta. Ritmo con cui potresti parlare.",
-      "weeks": [2, 3],
+      "weeks": [
+        2,
+        3
+      ],
       "sessionsPerWeek": 3,
       "sessionTemplate": {
         "minutes": 35,
         "blocks": [
-          { "category": "riscaldamento", "count": 3 },
-          { "category": "cardio", "count": 1, "seconds": 1500 },
-          { "category": "forza", "count": 3 },
-          { "category": "mobilita", "count": 1 },
-          { "category": "defaticamento", "count": 1 }
+          {
+            "category": "riscaldamento",
+            "count": 3
+          },
+          {
+            "category": "cardio",
+            "count": 1,
+            "seconds": 1500
+          },
+          {
+            "category": "forza",
+            "count": 3
+          },
+          {
+            "category": "mobilita",
+            "count": 1
+          },
+          {
+            "category": "defaticamento",
+            "count": 1
+          }
         ]
       },
-      "readiness": { "minSessions": 9, "minConsistency": 70, "maxHardFeedbackLast3": 1 }
+      "readiness": {
+        "minSessions": 9,
+        "minConsistency": 70,
+        "maxHardFeedbackLast3": 1
+      }
     },
     {
       "n": 5,
@@ -87,16 +179,35 @@
       "verb": "Sprint",
       "goal": "Correre con continuità e aggiungere allunghi e scatti brevi in sicurezza",
       "cardioGuide": "Corsa comoda con allunghi, poi scatti brevi con recuperi lunghi. Mai scatti senza riscaldamento.",
-      "weeks": [2, 3],
+      "weeks": [
+        2,
+        3
+      ],
       "sessionsPerWeek": 3,
       "sessionTemplate": {
         "minutes": 40,
         "blocks": [
-          { "category": "riscaldamento", "count": 3 },
-          { "category": "cardio", "count": 1, "seconds": 1500 },
-          { "category": "forza", "count": 3 },
-          { "category": "mobilita", "count": 1 },
-          { "category": "defaticamento", "count": 2 }
+          {
+            "category": "riscaldamento",
+            "count": 3
+          },
+          {
+            "category": "cardio",
+            "count": 1,
+            "seconds": 1500
+          },
+          {
+            "category": "forza",
+            "count": 3
+          },
+          {
+            "category": "mobilita",
+            "count": 1
+          },
+          {
+            "category": "defaticamento",
+            "count": 2
+          }
         ]
       },
       "readiness": null
@@ -110,11 +221,881 @@
     "sessionTemplate": {
       "minutes": 15,
       "blocks": [
-        { "category": "riscaldamento", "count": 2 },
-        { "category": "cardio", "count": 1, "seconds": 420 },
-        { "category": "forza", "count": 1 },
-        { "category": "defaticamento", "count": 1 }
+        {
+          "category": "riscaldamento",
+          "count": 2
+        },
+        {
+          "category": "cardio",
+          "count": 1,
+          "seconds": 420
+        },
+        {
+          "category": "forza",
+          "count": 1
+        },
+        {
+          "category": "defaticamento",
+          "count": 1
+        }
       ]
     }
-  }
+  },
+  "tracks": {
+    "corsa": {
+      "name": "Corsa",
+      "tagline": "Dal primo passo alla corsa continua",
+      "forGoals": [
+        "correre",
+        "corsa",
+        "5 km",
+        "10 km",
+        "resistenza"
+      ],
+      "levels": [
+        {
+          "n": 1,
+          "verb": "Cammina",
+          "goal": "Muoversi 3 volte a settimana senza fatica eccessiva",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 20,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 600
+              },
+              {
+                "category": "forza",
+                "count": 2
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 6,
+            "minConsistency": 60,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 2,
+          "verb": "Passo svelto",
+          "goal": "Camminare 15 minuti a passo svelto e fare le basi della forza con buona tecnica",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 25,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 900
+              },
+              {
+                "category": "forza",
+                "count": 3
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 7,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 3,
+          "verb": "Corsetta",
+          "goal": "Alternare corsetta e camminata per 20 minuti",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 30,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 1200
+              },
+              {
+                "category": "forza",
+                "count": 3
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 8,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 4,
+          "verb": "Corsa",
+          "goal": "Correre 30 minuti di fila e reggere una settimana da podista: facile, qualità e lungo",
+          "sessionsPerWeek": 4,
+          "sessionTemplate": {
+            "minutes": 25,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "forza",
+                "count": 4
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 10,
+            "minConsistency": 70,
+            "maxHardFeedbackLast3": 1
+          },
+          "runWeek": {
+            "pattern": [
+              "facile",
+              "qualita",
+              "lungo",
+              "forza"
+            ],
+            "qualita": [
+              "ripetute",
+              "progressivo"
+            ],
+            "note": "La seduta di qualità alterna ripetute e progressivo, una settimana ciascuna. Mai due sedute dure di fila."
+          },
+          "runSessions": {
+            "facile": {
+              "title": "Corsa facile",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 20,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "ripetute": {
+              "title": "Ripetute",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 8,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Svelto",
+                  "minutes": 1,
+                  "motion": "corsa",
+                  "rpe": 7,
+                  "repeat": 6,
+                  "recovery": {
+                    "label": "Cammina",
+                    "minutes": 2,
+                    "motion": "marcia",
+                    "rpe": 2
+                  }
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "progressivo": {
+              "title": "Progressivo",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 10,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Medio",
+                  "minutes": 8,
+                  "motion": "corsa",
+                  "rpe": 5
+                },
+                {
+                  "label": "Svelto",
+                  "minutes": 3,
+                  "motion": "corsa",
+                  "rpe": 7
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "lungo": {
+              "title": "Lungo",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Lungo facile",
+                  "minutes": 35,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            }
+          },
+          "progression": {
+            "longRunStartMin": 35,
+            "longRunStepMin": 5,
+            "longRunMaxMin": 60,
+            "deloadEvery": 4,
+            "deloadFactor": 0.7,
+            "maxWeeklyIncrease": 0.1
+          }
+        },
+        {
+          "n": 5,
+          "verb": "Sprint",
+          "goal": "Correre con continuità 45-60 minuti, con ripetute, progressivi e scatti brevi in sicurezza",
+          "sessionsPerWeek": 5,
+          "sessionTemplate": {
+            "minutes": 25,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "forza",
+                "count": 4
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": null,
+          "runWeek": {
+            "pattern": [
+              "facile",
+              "qualita",
+              "forza",
+              "lungo",
+              "forza"
+            ],
+            "qualita": [
+              "ripetute",
+              "progressivo",
+              "allunghi"
+            ],
+            "note": "Due sedute di forza di supporto. Tra qualità e lungo almeno un giorno facile o di riposo."
+          },
+          "runSessions": {
+            "facile": {
+              "title": "Corsa facile",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 30,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "ripetute": {
+              "title": "Ripetute",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 10,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Svelto",
+                  "minutes": 3,
+                  "motion": "corsa",
+                  "rpe": 7,
+                  "repeat": 5,
+                  "recovery": {
+                    "label": "Corsa lenta",
+                    "minutes": 2,
+                    "motion": "corsetta",
+                    "rpe": 3
+                  }
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "progressivo": {
+              "title": "Progressivo",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 15,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Medio",
+                  "minutes": 10,
+                  "motion": "corsa",
+                  "rpe": 5
+                },
+                {
+                  "label": "Svelto",
+                  "minutes": 5,
+                  "motion": "corsa",
+                  "rpe": 7
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "allunghi": {
+              "title": "Facile con scatti",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 20,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Scatto",
+                  "minutes": 0.25,
+                  "motion": "scatto",
+                  "rpe": 8,
+                  "repeat": 6,
+                  "recovery": {
+                    "label": "Cammina",
+                    "minutes": 1.5,
+                    "motion": "marcia",
+                    "rpe": 2
+                  }
+                },
+                {
+                  "label": "Facile",
+                  "minutes": 5,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            },
+            "lungo": {
+              "title": "Lungo",
+              "segments": [
+                {
+                  "label": "Riscaldamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                },
+                {
+                  "label": "Lungo facile",
+                  "minutes": 50,
+                  "motion": "corsetta",
+                  "rpe": 3
+                },
+                {
+                  "label": "Defaticamento",
+                  "minutes": 5,
+                  "motion": "marcia",
+                  "rpe": 2
+                }
+              ]
+            }
+          },
+          "progression": {
+            "longRunStartMin": 50,
+            "longRunStepMin": 5,
+            "longRunMaxMin": 90,
+            "deloadEvery": 4,
+            "deloadFactor": 0.7,
+            "maxWeeklyIncrease": 0.1
+          }
+        }
+      ]
+    },
+    "forza": {
+      "name": "Forza",
+      "tagline": "Dalla sedia al corpo libero, poi elastici e manubri",
+      "forGoals": [
+        "forza",
+        "tonificare",
+        "tono",
+        "muscoli",
+        "sentirmi più forte",
+        "braccia",
+        "gambe"
+      ],
+      "levels": [
+        {
+          "n": 1,
+          "verb": "Alzati",
+          "goal": "Alzarti dalla sedia senza mani e tenere un plank al muro per 20 secondi",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 20,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "forza",
+                "count": 3
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 300
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 6,
+            "minConsistency": 60,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 2,
+          "verb": "Tieni",
+          "goal": "Squat a corpo libero e ponte con buona tecnica, plank sulle ginocchia",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 25,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "forza",
+                "count": 4
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 300
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 7,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 3,
+          "verb": "Spingi",
+          "goal": "Piegamenti sulle ginocchia, affondi e plank completo",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 30,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "forza",
+                "count": 5
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 8,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 4,
+          "verb": "Solleva",
+          "goal": "Allenare tutto il corpo con elastico o manubri, o con le versioni più dure a corpo libero",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 35,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 3
+              },
+              {
+                "category": "forza",
+                "count": 5
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 9,
+            "minConsistency": 70,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 5,
+          "verb": "Esplodi",
+          "goal": "Forza completa con carichi, una gamba alla volta e qualche salto controllato",
+          "sessionsPerWeek": 4,
+          "sessionTemplate": {
+            "minutes": 40,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 3
+              },
+              {
+                "category": "forza",
+                "count": 6
+              },
+              {
+                "category": "mobilita",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 1
+              }
+            ]
+          },
+          "readiness": null
+        }
+      ]
+    },
+    "mobilita": {
+      "name": "Mobilità",
+      "tagline": "Schiena, anche e postura per chi lavora seduto",
+      "forGoals": [
+        "schiena",
+        "postura",
+        "rigidità",
+        "mal di schiena",
+        "lavoro seduto",
+        "collo",
+        "sciogliermi",
+        "flessibilità"
+      ],
+      "levels": [
+        {
+          "n": 1,
+          "verb": "Respira",
+          "goal": "Sciogliere schiena e collo dopo una giornata seduti, 3 volte a settimana",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 15,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "mobilita",
+                "count": 2
+              },
+              {
+                "category": "cardio",
+                "count": 1,
+                "seconds": 300
+              },
+              {
+                "category": "defaticamento",
+                "count": 2
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 6,
+            "minConsistency": 60,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 2,
+          "verb": "Sciogli",
+          "goal": "Muovere bene anche e spalle e alzarsi più spesso dalla sedia",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 20,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "mobilita",
+                "count": 3
+              },
+              {
+                "category": "forza",
+                "count": 1
+              },
+              {
+                "category": "defaticamento",
+                "count": 2
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 7,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 3,
+          "verb": "Allunga",
+          "goal": "Una routine completa di mobilità con un po' di forza per la schiena",
+          "sessionsPerWeek": 3,
+          "sessionTemplate": {
+            "minutes": 25,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "mobilita",
+                "count": 3
+              },
+              {
+                "category": "forza",
+                "count": 2
+              },
+              {
+                "category": "defaticamento",
+                "count": 2
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 8,
+            "minConsistency": 65,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 4,
+          "verb": "Controlla",
+          "goal": "Mobilità attiva: muoversi ampio e restare stabili",
+          "sessionsPerWeek": 4,
+          "sessionTemplate": {
+            "minutes": 30,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "mobilita",
+                "count": 4
+              },
+              {
+                "category": "forza",
+                "count": 2
+              },
+              {
+                "category": "defaticamento",
+                "count": 2
+              }
+            ]
+          },
+          "readiness": {
+            "minSessions": 9,
+            "minConsistency": 70,
+            "maxHardFeedbackLast3": 1
+          }
+        },
+        {
+          "n": 5,
+          "verb": "Fluisci",
+          "goal": "Una pratica autonoma di mobilità e postura, da adattare alla giornata",
+          "sessionsPerWeek": 4,
+          "sessionTemplate": {
+            "minutes": 35,
+            "blocks": [
+              {
+                "category": "riscaldamento",
+                "count": 2
+              },
+              {
+                "category": "mobilita",
+                "count": 4
+              },
+              {
+                "category": "forza",
+                "count": 3
+              },
+              {
+                "category": "defaticamento",
+                "count": 2
+              }
+            ]
+          },
+          "readiness": null
+        }
+      ]
+    }
+  },
+  "defaultTrack": "corsa"
 }

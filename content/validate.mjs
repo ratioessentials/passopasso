@@ -51,7 +51,7 @@ if (exercises) {
   else {
     uniqueIds('exercises.json', exercises);
     for (const x of exercises) exById.set(x.id, x);
-    if (exercises.length < 45 || exercises.length > 60) warn('exercises.json', `${exercises.length} esercizi (obiettivo 45-60)`);
+    if (exercises.length < 45 || exercises.length > 90) warn('exercises.json', `${exercises.length} esercizi (obiettivo 45-90)`);
     for (const x of exercises) {
       const w = `exercises.json[${x.id}]`;
       if (!isStr(x.name)) err(w, 'name mancante');
@@ -110,6 +110,34 @@ function checkTemplate(where, t) {
     if (b.seconds !== undefined && !isInt(b.seconds, 30, 3600)) err(where, `blocco ${b.category}: seconds non valido`);
   }
 }
+function checkSegment(where, sg, inner = false) {
+  if (!isStr(sg?.label)) err(where, 'segmento senza label');
+  if (!(typeof sg?.minutes === 'number' && sg.minutes > 0 && sg.minutes <= 120)) err(where, `segmento "${sg?.label}": minutes non valido`);
+  if (!MOTIONS.includes(sg?.motion)) err(where, `segmento "${sg?.label}": motion non valido`);
+  if (!isInt(sg?.rpe, 1, 10)) err(where, `segmento "${sg?.label}": rpe 1-10`);
+  if (sg?.repeat !== undefined) {
+    if (inner) err(where, 'recovery non può avere repeat');
+    if (!isInt(sg.repeat, 2, 20)) err(where, `segmento "${sg.label}": repeat 2-20`);
+    if (!sg.recovery) err(where, `segmento "${sg.label}": con repeat serve recovery`);
+    else checkSegment(where, sg.recovery, true);
+  }
+}
+function segMinutes(sgs) { return sgs.reduce((a, s) => a + s.minutes * (s.repeat ?? 1) + (s.recovery ? s.recovery.minutes * s.repeat : 0), 0); }
+function checkRun(where, l) {
+  const kinds = new Set(Object.keys(l.runSessions));
+  for (const k of l.runWeek?.pattern ?? []) if (k !== 'forza' && k !== 'qualita' && !kinds.has(k)) err(where, `runWeek: seduta "${k}" non definita`);
+  for (const k of l.runWeek?.qualita ?? []) if (!kinds.has(k)) err(where, `runWeek.qualita: seduta "${k}" non definita`);
+  if ((l.runWeek?.pattern ?? []).length !== l.sessionsPerWeek) err(where, 'runWeek.pattern deve avere sessionsPerWeek sedute');
+  for (const [k, rsn] of Object.entries(l.runSessions)) {
+    const w = `${where}.runSessions.${k}`;
+    if (!isStr(rsn.title) || !Array.isArray(rsn.segments) || !rsn.segments.length) { err(w, 'title e segments obbligatori'); continue; }
+    rsn.segments.forEach((sg) => checkSegment(w, sg));
+    const tot = segMinutes(rsn.segments);
+    if (tot < 15 || tot > 120) err(w, `durata totale ${tot} min fuori scala`);
+  }
+  const pr = l.progression;
+  if (!pr || !(pr.longRunStartMin < pr.longRunMaxMin) || !isInt(pr.deloadEvery, 2, 8) || !(pr.maxWeeklyIncrease > 0 && pr.maxWeeklyIncrease <= 0.1)) err(where, 'progression non valida (regola del 10%, scarico)');
+}
 function checkCoverage(where, level, t) {
   if (!exercises || !Array.isArray(t?.blocks)) return;
   const avail = exercises.filter((x) => x.minLevel <= level);
@@ -154,6 +182,34 @@ if (program) {
     if (minW > 12 || maxW < 12) warn('program.json', `durata complessiva ${minW}-${maxW} settimane (obiettivo circa 12)`);
     const names = levels.map((l) => l.name).join(',');
     if (names !== 'Attivazione,Fondamenta,Costruzione,Slancio,Autonomia') err('program.json', `nomi dei livelli inattesi: ${names}`);
+  }
+  // percorsi
+  const TRACKS = ['corsa', 'forza', 'mobilita'];
+  const tracks = program.tracks;
+  if (!tracks || typeof tracks !== 'object') err('program.json', 'tracks mancante');
+  else {
+    for (const t of TRACKS) if (!tracks[t]) err('program.json', `percorso mancante: ${t}`);
+    if (!TRACKS.includes(program.defaultTrack)) err('program.json', 'defaultTrack non valido');
+    for (const [tid, tr] of Object.entries(tracks)) {
+      const tw = `program.json[tracks.${tid}]`;
+      if (!TRACKS.includes(tid)) err(tw, 'percorso sconosciuto');
+      if (!isStr(tr.name) || !isStr(tr.tagline)) err(tw, 'name e tagline obbligatori');
+      if (!Array.isArray(tr.levels) || tr.levels.length !== 5) { err(tw, 'servono 5 livelli'); continue; }
+      tr.levels.forEach((l, i) => {
+        const w = `${tw}[livello ${l.n}]`;
+        if (l.n !== i + 1) err(w, 'n deve andare da 1 a 5 in ordine');
+        if (!isStr(l.verb) || !isStr(l.goal)) err(w, 'verb e goal obbligatori');
+        if (!isInt(l.sessionsPerWeek, 2, 6)) err(w, 'sessionsPerWeek non valido');
+        checkTemplate(w, l.sessionTemplate);
+        checkCoverage(w, l.n, l.sessionTemplate);
+        if (l.n < 5) {
+          const r = l.readiness;
+          if (!r || !isInt(r.minSessions, 1, 50) || !isInt(r.minConsistency, 0, 100) || !isInt(r.maxHardFeedbackLast3, 0, 3)) err(w, 'readiness non valida');
+        }
+        if (l.runSessions) checkRun(w, l);
+      });
+    }
+    for (const n of [4, 5]) if (!tracks.corsa?.levels?.[n - 1]?.runSessions) err('program.json[tracks.corsa]', `il livello ${n} deve avere runSessions`);
   }
   const rs = program.restartSession;
   if (!rs) err('program.json', 'restartSession mancante');

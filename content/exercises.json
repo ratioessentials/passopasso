@@ -1864,5 +1864,132 @@
     "progression": null,
     "formCheck": false,
     "motion": "allungamento"
+  },
+  {
+    "id": "libro_aperto",
+    "name": "Libro che si apre",
+    "category": "mobilita",
+    "minLevel": 1,
+    "zones": [
+      "schiena_alta",
+      "spalle"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 6
+    },
+    "instructions": [
+      "Sdraiati su un fianco, ginocchia piegate, braccia tese davanti unite",
+      "Apri il braccio di sopra come la pagina di un libro",
+      "Segui la mano con lo sguardo, le ginocchia restano unite",
+      "Torna piano, fai le ripetizioni, poi cambia lato"
+    ],
+    "commonMistakes": [
+      "Staccare le ginocchia per arrivare più lontano",
+      "Forzare la spalla a terra"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "allungamento"
+  },
+  {
+    "id": "srotolamento_schiena",
+    "name": "Srotolamento della schiena",
+    "category": "mobilita",
+    "minLevel": 2,
+    "zones": [
+      "schiena_bassa",
+      "collo"
+    ],
+    "equipment": [],
+    "prescription": {
+      "type": "reps",
+      "default": 5
+    },
+    "instructions": [
+      "In piedi, ginocchia morbide",
+      "Porta il mento al petto e scendi piano, una vertebra alla volta",
+      "Lascia pendere le braccia, senza forzare",
+      "Risali srotolando, la testa arriva per ultima"
+    ],
+    "commonMistakes": [
+      "Tenere le gambe rigide",
+      "Scendere di colpo"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "allungamento"
+  },
+  {
+    "id": "anche_90_90",
+    "name": "Rotazioni delle anche a terra",
+    "category": "mobilita",
+    "minLevel": 3,
+    "zones": [
+      "anche",
+      "ginocchia"
+    ],
+    "equipment": [
+      "tappetino"
+    ],
+    "prescription": {
+      "type": "reps",
+      "default": 6
+    },
+    "instructions": [
+      "Seduti a terra, ginocchia piegate e piedi più larghi delle anche",
+      "Mani dietro sul pavimento",
+      "Lascia cadere entrambe le ginocchia da un lato, poi dall'altro",
+      "Movimento lento, schiena alta"
+    ],
+    "commonMistakes": [
+      "Forzare le ginocchia verso il pavimento",
+      "Incurvare la schiena"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "rotazioni_anche"
+  },
+  {
+    "id": "accosciata_assistita",
+    "name": "Accosciata tenuta con appoggio",
+    "category": "mobilita",
+    "minLevel": 4,
+    "zones": [
+      "ginocchia",
+      "anche",
+      "caviglie"
+    ],
+    "equipment": [
+      "muro"
+    ],
+    "prescription": {
+      "type": "seconds",
+      "default": 30
+    },
+    "instructions": [
+      "Tieniti allo stipite di una porta o a un mobile stabile",
+      "Scendi in accosciata profonda, talloni a terra se riesci",
+      "Petto alto, respira con calma",
+      "Risali aiutandoti con le mani"
+    ],
+    "commonMistakes": [
+      "Talloni che si staccano: allarga un po' i piedi",
+      "Restare giù se il ginocchio fa male"
+    ],
+    "impact": false,
+    "regression": null,
+    "progression": null,
+    "formCheck": false,
+    "motion": "squat"
   }
 ]
