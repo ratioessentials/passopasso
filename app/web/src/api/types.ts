@@ -256,7 +256,7 @@ export interface FoodProfileResponse { habit: Habit; why: string }
 export interface Plate { veggies: number; protein: number; grains: number }
 export interface FoodRecap { photos: number; strengths: string[]; gaps: string[]; nextHabit: Habit | null; why: string }
 
-export interface ReadinessTest { id: string; title: string; instructions: string[]; unit: string; target: number }
+export interface ReadinessTest { id: string; title: string; instructions: string[]; unit: string; target: number; durationSec?: number; measures?: string }
 export interface LevelTestResult { passed: boolean; message: string; levelUp: LevelUp | null }
 
 export interface ScienceItem { id: string; claim: string; source: string; url: string; inApp: string }
@@ -269,7 +269,7 @@ export interface Readiness {
   suggestedEnergy: number
   restAdvised: boolean
 }
-export interface HealthSource { id: string; connected: boolean; lastSync?: string | null; comingSoon?: boolean }
+export interface HealthSource { id: string; name?: string; connected: boolean; lastSync?: string | null; comingSoon?: boolean }
 export interface HealthMetrics { steps?: number; restingHr?: number; hrv?: number; sleepMinutes?: number }
 export interface HealthSummary {
   sources: HealthSource[]

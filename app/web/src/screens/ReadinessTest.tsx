@@ -30,7 +30,7 @@ export default function ReadinessTestScreen() {
 
   const t = tests?.[i]
   const isCount = t?.unit !== 'sforzo'
-  const dur = t ? DURATION[t.id] ?? 30 : 30
+  const dur = t ? t.durationSec ?? DURATION[t.id] ?? 30 : 30
 
   // timer del test
   const endRef = useRef(0)
@@ -76,7 +76,7 @@ export default function ReadinessTestScreen() {
                 </li>
               ))}
             </ol>
-            <p className="mt-4 text-sm text-inchiostro/60">{i === 0 ? 'Misura la forza delle gambe: serve per correre e salire le scale.' : 'Misura come risponde il fiato a uno sforzo breve.'} Se senti dolore, fermati: va bene così.</p>
+            <p className="mt-4 text-sm text-inchiostro/60">{t.measures ?? (i === 0 ? 'Misura la forza delle gambe: serve per correre e salire le scale.' : 'Misura come risponde il fiato a uno sforzo breve.')} Se senti dolore, fermati: va bene così.</p>
             <div className="flex-1" />
             <div className="safe-bottom space-y-1 pt-4">
               <Button className="w-full py-4 text-lg" onClick={start}>▶ Via, {dur} secondi</Button>

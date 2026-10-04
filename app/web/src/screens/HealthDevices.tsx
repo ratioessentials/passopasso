@@ -94,7 +94,7 @@ export default function HealthDevices() {
           <h3 className="font-title mb-2 mt-1 text-lg">Le tue sorgenti</h3>
           <div className="space-y-2">
             {sources.map((s, i) => {
-              const meta = SOURCES[s.id] ?? { name: s.id, icon: '📈' }
+              const meta = SOURCES[s.id] ?? { name: s.name ?? s.id, icon: '📈' }
               return (
                 <motion.div key={s.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={stagger(i + 3, 0.05)}
                   className={`flex items-center gap-3 rounded-[20px] p-3.5 ${s.comingSoon ? 'bg-white/45' : 'bg-white/85 shadow-[0_8px_20px_-14px_rgb(44_105_117/.6)]'}`}>

@@ -124,7 +124,7 @@ export default function WeekScreen() {
                       <div className={`text-xs font-semibold ${st.text}`}>{st.label} · {s.minutes} min</div>
                     </div>
                     {s.bonusPoints > 0 && <BonusBadge points={s.bonusPoints} />}
-                    {(s.kind === 'importata' || s.source) && <SourceBadge source={s.source} />}
+                    {s.kind === 'importata' && <SourceBadge source={s.source} />}
                   </div>
                   {(canSkip || canStart) && (
                     <div className="mt-3 flex gap-2">
