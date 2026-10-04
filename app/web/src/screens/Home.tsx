@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { api } from '../api/client'
-import type { Session } from '../api/types'
+import type { Readiness, Session } from '../api/types'
 import { levelInfo, winIcon } from '../content/copy'
 import { useStore } from '../lib/store'
 import { AnimatedNumber, Button, Card, ConsistencyRing, ErrorBox, LevelIcon, MeshBackground, Pill, Skeleton } from '../ui/kit'
@@ -14,7 +14,7 @@ function greeting() {
 }
 
 export default function Home() {
-  const { me, meError, loadMe } = useStore()
+  const { me, meError, loadMe, health } = useStore()
   const nav = useNavigate()
 
   useEffect(() => { void loadMe() }, [loadMe])
@@ -86,6 +86,13 @@ export default function Home() {
         {level.ready && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={stagger(2)} className="mt-3">
             <Pill className="bg-white/90 text-petrolio">✨ Sei quasi pront{profile?.name?.endsWith('a') ? 'a' : 'o'} per il livello {level.n + 1}</Pill>
+          </motion.div>
+        )}
+
+        {/* Come stai oggi: prontezza dai dati di sonno e battito */}
+        {health?.readiness && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={stagger(2)} className="mt-4">
+            <ReadinessCard r={health.readiness} onOpen={() => nav('/coach/salute')} />
           </motion.div>
         )}
 
@@ -230,5 +237,31 @@ function HabitCard({ title, why, doneDays }: { title: string; why: string; doneD
       </div>
       <div className="mt-1.5 text-xs text-inchiostro/60">{days} giorni su 7 questa settimana</div>
     </Card>
+  )
+}
+
+const READY_COLOR: Record<string, string> = { alta: '#68B2A0', media: '#E8B64C', bassa: '#E59A7E' }
+
+export function ReadinessCard({ r, onOpen }: { r: Readiness; onOpen?: () => void }) {
+  const color = READY_COLOR[r.level] ?? '#68B2A0'
+  const size = 64, stroke = 7, rad = (size - stroke) / 2, c = 2 * Math.PI * rad
+  return (
+    <motion.button whileTap={press} onClick={onOpen} className="glass flex w-full items-center gap-4 rounded-[26px] p-4 text-left shadow-soft">
+      <div className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90">
+          <circle cx={size / 2} cy={size / 2} r={rad} fill="none" stroke="rgb(44 105 117 / .12)" strokeWidth={stroke} />
+          <motion.circle cx={size / 2} cy={size / 2} r={rad} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c}
+            initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - r.score / 100) }} transition={{ type: 'spring', stiffness: 40, damping: 16, delay: 0.3 }} />
+        </svg>
+        <span className="font-title absolute text-lg text-inchiostro">{r.score}</span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-xs font-semibold uppercase tracking-wider text-acqua">Come stai oggi · prontezza {r.level}</div>
+        <div className="font-semibold leading-snug text-inchiostro">{r.suggestion}</div>
+        <div className="mt-1 flex flex-wrap gap-1">
+          {r.signals.slice(0, 2).map((s) => <span key={s} className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold text-inchiostro/70">{s}</span>)}
+        </div>
+      </div>
+    </motion.button>
   )
 }

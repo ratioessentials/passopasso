@@ -40,6 +40,11 @@ export default function Coach() {
   const scroller = useRef<HTMLDivElement>(null)
 
   useEffect(() => { saveHistory(messages) }, [messages])
+  // ritorno dall'OAuth di Strava: /coach?connected=strava
+  const navTo = useNavigate()
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('connected')) navTo('/coach/salute?connected=strava', { replace: true })
+  }, [navTo])
   useEffect(() => {
     const el = scroller.current
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
@@ -239,6 +244,7 @@ function CalendarSheet({ onClose, onMove }: { onClose: () => void; onMove: () =>
 
 export const COACH_MENU: { to: string; icon: string; title: string; sub: string }[] = [
   { to: '/coach/scheda', icon: '🪪', title: 'La mia scheda', sub: 'Età, corpo, lavoro, sonno e salute' },
+  { to: '/coach/salute', icon: '❤️', title: 'Salute e dispositivi', sub: 'Apple Salute, Strava e altri: sonno e battito nel check-in' },
   { to: '/coach/dati', icon: '🔒', title: 'I miei dati', sub: 'Scarica, aggiungi al calendario, cancella' },
   { to: '/scienza', icon: '🔬', title: 'Perché funziona', sub: 'Le scelte dell\'app, con le fonti' },
 ]

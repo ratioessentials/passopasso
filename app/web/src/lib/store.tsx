@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { api, getUserId } from '../api/client'
-import type { LevelUp, Me, Session } from '../api/types'
+import type { HealthSummary, LevelUp, Me, Session } from '../api/types'
 import { spring } from '../ui/motion'
 
 interface Toast { id: number; text: string; icon?: string }
@@ -17,6 +17,9 @@ interface Store {
   toast: (text: string, icon?: string) => void
   levelUp: LevelUp | null
   showLevelUp: (l: LevelUp | null) => void
+  /** Dati di salute e prontezza del giorno (null se non ci sono o il server non li ha) */
+  health: HealthSummary | null
+  loadHealth: () => Promise<void>
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -27,6 +30,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [sessions, setSessions] = useState<Record<string, Session>>({})
   const [toasts, setToasts] = useState<Toast[]>([])
   const [levelUp, showLevelUp] = useState<LevelUp | null>(null)
+  const [health, setHealth] = useState<HealthSummary | null>(null)
+  const loadHealth = useCallback(async () => {
+    if (!getUserId()) return
+    try { setHealth(await api.healthSummary()) } catch { setHealth(null) }
+  }, [])
   const tid = useRef(0)
 
   const loadMe = useCallback(async () => {
@@ -51,10 +59,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3200)
   }, [])
 
-  useEffect(() => { void loadMe() }, [loadMe])
+  useEffect(() => { void loadMe(); void loadHealth() }, [loadMe, loadHealth])
 
-  const value = useMemo(() => ({ me, meError, loadMe, setMe, sessions, putSession, toast, levelUp, showLevelUp }),
-    [me, meError, loadMe, sessions, putSession, toast, levelUp])
+  const value = useMemo(() => ({ me, meError, loadMe, setMe, sessions, putSession, toast, levelUp, showLevelUp, health, loadHealth }),
+    [me, meError, loadMe, sessions, putSession, toast, levelUp, health, loadHealth])
 
   return (
     <Ctx.Provider value={value}>

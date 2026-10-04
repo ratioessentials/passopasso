@@ -26,10 +26,12 @@ type Phase = { k: 'form' } | { k: 'loading' } | { k: 'ready'; session: Session }
 export default function Checkin() {
   const { id } = useParams()
   const nav = useNavigate()
-  const { me, putSession, toast } = useStore()
+  const { me, putSession, toast, health } = useStore()
+  const suggested = health?.readiness?.suggestedEnergy
   const { session, error } = useSession(id)
   const [minutes, setMinutes] = useState<number | null>(null)
-  const [energy, setEnergy] = useState(3)
+  const [energyPick, setEnergy] = useState<number | null>(null)
+  const energy = energyPick ?? suggested ?? 3
   const [pain, setPain] = useState<BodyZone[]>([])
   const [flags, setFlags] = useState<string[]>([])
   const [phase, setPhase] = useState<Phase>({ k: 'form' })
@@ -87,6 +89,9 @@ export default function Checkin() {
 
             <Card initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={stagger(1)}>
               <h3 className="font-title mb-3 text-lg">Come va l'energia?</h3>
+              {suggested && energyPick === null && (
+                <p className="-mt-2 mb-3 text-[12.5px] text-acqua">Suggerito dai tuoi dati di sonno e battito: cambia pure.</p>
+              )}
               <div className="flex justify-between">
                 {ENERGY.map((e) => {
                   const on = energy === e.v
