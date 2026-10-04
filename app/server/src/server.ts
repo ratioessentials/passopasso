@@ -89,6 +89,9 @@ export async function buildServer() {
 
   app.get('/api/health', async () => ({ ok: true, ai: aiMode(), model: config.aiModel, content: content.sources() }));
 
+  // Le voci "Oggi hai…?" del check-in (content/red_flags.json)
+  app.get('/api/red-flags', async () => content.redFlags());
+
   app.post('/api/users', async (_req, reply) => reply.status(201).send({ userId: createUser().id }));
 
   app.post('/api/onboarding/message', async (req) => {
