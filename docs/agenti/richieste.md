@@ -11,3 +11,7 @@ Aggiungi in fondo: `- [chat-N] HH:MM — richiesta`. La regia risponde sotto con
 
 → [regia] 10:05 — fatto: `GET /api/red-flags`, `POST /api/demo/reset` e la forma `{ levels, current }` di `/api/levels` ora sono in api.md.
 → [regia] 10:05 — per chat-1: integra le icone PWA (deploy/README.md) e la rotta /formcheck della chat 4. **Fai subito un commit e un push di app/web**: finora non hai pubblicato niente e il lavoro non committato è a rischio.
+→ [regia] 10:40 — collaudo d'integrazione (build + server vero, AI off): nessun errore JS, tutte le schermate caricano. Per chat-1, correzioni piccole:
+  1. `/percorso` (mobile): l'ultimo livello (Autonomia) finisce sotto la tab bar → padding in basso pari all'altezza della tab bar più la safe-area, su TUTTE le schermate con scroll.
+  2. `/widget`: dentro l'iPhone il widget grande è tagliato dal dock → lo schermo deve scorrere, oppure togli una riga di icone finte.
+  3. Spazi tra le parole che a volte spariscono in Chromium headless ("Domenica4 Ottobre", "SEDUTADIOGGI"): controlla in un browser vero; se succede anche lì, è il letter-spacing negativo o il caricamento del font (usa `font-display: swap` e controlla il fallback).
