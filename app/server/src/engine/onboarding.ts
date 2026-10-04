@@ -81,7 +81,7 @@ export function normalizeProfile(card: Partial<Card> & { caution?: boolean }, p:
 
 export function minorReply(): OnboardingReply {
   return {
-    reply: content.text('minor.message', 'Che bello che vuoi muoverti! Sotto i 16 anni PassoPasso si usa insieme a un adulto: chiedi a un genitore, al medico o all\'allenatore della tua scuola di seguirti.'),
+    reply: content.text('minor.body', 'Che bello che vuoi muoverti! Sotto i 16 anni PassoPasso si usa insieme a un adulto: chiedi a un genitore, al medico o all\'allenatore della tua scuola di seguirti.'),
     done: true,
     minor: true,
   };

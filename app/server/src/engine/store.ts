@@ -214,6 +214,10 @@ export function levelInfo(user: UserRow) {
 // ---------- Abitudini ----------
 
 export function currentHabit(user: UserRow): Habit {
+  // abitudine scelta per questa persona (alimentazione 2.0), altrimenti quella della settimana del percorso
+  const chosen = db.prepare('SELECT habit_id FROM user_habits WHERE user_id = ? AND week_start = ?').get(user.id, weekStart(today())) as { habit_id: string } | undefined;
+  const picked = chosen && content.habits().find((h) => h.id === chosen.habit_id);
+  if (picked) return picked;
   const habits = [...content.habits()].sort((a, b) => a.week - b.week);
   const start = weekStart(user.start_date ?? today());
   const week = Math.floor(diffDays(weekStart(today()), start) / 7) + 1;

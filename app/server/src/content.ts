@@ -82,6 +82,11 @@ export const content = {
   redFlags: () => load<RedFlag[]>('red_flags.json'),
   wins: () => load<WinDef[]>('wins.json'),
   copy: () => load<Record<string, string>>('copy.json'),
+  fuel: () => load<Record<string, unknown>>('fuel.json'),
+  tests: () => load<Record<string, unknown>>('tests.json'),
+  science: () => load<unknown[]>('science.json'),
+  readiness: () => load<Record<string, unknown>>('readiness.json'),
+  plans: () => load<Record<string, unknown>>('plans.json'),
   text: (key: string, fallback: string) => {
     const v = load<Record<string, unknown>>('copy.json')[key];
     return typeof v === 'string' && v ? v : fallback;

@@ -52,6 +52,8 @@ const migrations: string[] = [
    ALTER TABLE sessions ADD COLUMN run_type TEXT;
    ALTER TABLE sessions ADD COLUMN origin TEXT;
    ALTER TABLE sessions ADD COLUMN external_id TEXT;`,
+  // 4: abitudine alimentare scelta per la persona, settimana per settimana
+  `CREATE TABLE user_habits (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, week_start TEXT NOT NULL, habit_id TEXT NOT NULL, why TEXT, PRIMARY KEY (user_id, week_start));`,
 ];
 
 db.exec('CREATE TABLE IF NOT EXISTS schema_version (v INTEGER NOT NULL)');

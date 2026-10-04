@@ -10,6 +10,7 @@ import { addDays, DAY_LETTERS, diffDays, today, weekStart } from './dates.js';
 import { db } from './db.js';
 import { acceptLevel, checkin, complete, skip } from './engine/actions.js';
 import { mealFeedback } from './engine/meals.js';
+import { FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from './engine/food.js';
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
@@ -62,6 +63,7 @@ function todaySession(user: UserRow) {
 
 function mePayload(user: UserRow) {
   ensureCurrentWeek(user);
+  habitFor(user);
   const info = levelInfo(user);
   const habit = currentHabit(user);
   return {
@@ -249,11 +251,27 @@ export async function buildServer() {
     return { doneDays: habitDoneDays(user.id) };
   });
 
+  // ---------- Alimentazione 2.0 ----------
+  app.post('/api/food/profile', async (req) => {
+    const user = requireUser(req);
+    return saveFoodProfile(user, parse(FoodSchema, req.body));
+  });
+
+  app.get('/api/food/today', async (req) => {
+    const user = requireUser(req);
+    ensureCurrentWeek(user);
+    const chosen = habitFor(user);
+    return { habit: chosen?.habit ?? currentHabit(user), why: chosen?.why ?? null, doneDays: habitDoneDays(user.id), training: trainingFuel(user) };
+  });
+
+  app.get('/api/food/recap', async (req) => foodRecap(requireUser(req)));
+
   app.post('/api/meals/photo', async (req) => {
     const user = requireUser(req);
     const { imageBase64, mimeType } = parse(z.object({ imageBase64: z.string().min(100), mimeType: z.string().default('image/jpeg') }), req.body);
     const data = imageBase64.replace(/^data:[^;]+;base64,/, '');
     if (data.length > 6 * 1024 * 1024 * 1.37) throw fail(413, 'too_large', 'La foto è un po\' pesante. Prova con una più piccola.');
+    habitFor(user);
     const habit = currentHabit(user);
     const fb = await mealFeedback({ base64: data, mimeType }, habit);
     db.prepare('INSERT INTO meals (user_id, date, habit_id, feedback) VALUES (?, ?, ?, ?)').run(user.id, today(), habit.id, JSON.stringify(fb));

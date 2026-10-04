@@ -193,6 +193,9 @@ function ruleCoach(text: string, profile: Profile, slots: FreeSlot[] | null): { 
   };
 }
 
+// mi faccio vomitare, digiuno per dimagrire, salto i pasti per dimagrire, mi abbuffo, mi sento in colpa quando mangio…
+const FOOD_RISK = /mi faccio vomitare|vomito dopo (i pasti|mangiato|aver mangiato)|(digiun|salt\w* (i )?pasti|non mangio)\w* .{0,20}(dimagr|perdere peso|compensare)|mi abbuff|abbuffat|in colpa (quando|dopo aver|se) mang|(brucia|compens)\w* quello che (ho )?mangi/;
+
 // ---------- Messaggio ----------
 
 export async function coachMessage(user: UserRow, messages: CoachMessage[]): Promise<CoachReply> {
@@ -206,6 +209,16 @@ export async function coachMessage(user: UserRow, messages: CoachMessage[]): Pro
     const todayRow = sessionsBetween(user.id, today(), today()).find((s) => s.status === 'planned');
     if (todayRow) { updateSession(todayRow.id, { status: 'blocked' }); applied.push('Seduta di oggi in pausa'); }
     return { reply: redFlag.message, quickReplies: ['Ok, oggi riposo', 'Ho scritto male'], applied, redFlag };
+  }
+
+  // 1b. Segnali di rapporto difficile con il cibo: risposta di cura, deterministica
+  if (FOOD_RISK.test(normalize(last))) {
+    return {
+      reply: 'Grazie di avermelo detto, non è una cosa da poco. Su questo non ti do consigli sul cibo: parlane con il tuo medico o con un centro per i disturbi alimentari, ti sapranno aiutare davvero.',
+      quickReplies: ['Va bene', 'Parliamo d\'altro'],
+      applied: [],
+      redFlag: null,
+    };
   }
 
   const slots = await calendarSlots(profile);
