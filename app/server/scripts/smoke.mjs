@@ -30,6 +30,9 @@ const widget = await api('GET', '/api/widget/demo');
 check('widget pubblico', widget.status === 200 && widget.json.week.length === 7, JSON.stringify(widget.json?.week?.map((d) => d.status)));
 const progress = await api('GET', '/api/progress', { user: 'demo' });
 check('demo: /progress', progress.status === 200 && progress.json.sessionsDone > 0, `${progress.json?.sessionsDone} sedute, ${progress.json?.minutesTotal} min`);
+const runner = await api('GET', '/api/me', { user: 'demo-runner' });
+const segs = runner.json?.today?.segments;
+check('demo-runner: livello 4, corsa a segmenti', runner.status === 200 && runner.json.level.n === 4 && Array.isArray(segs) && segs.length >= 3, `${runner.json?.today?.title}, ${runner.json?.today?.minutes} min`);
 const levels = await api('GET', '/api/levels', { user: 'demo' });
 check('/levels', levels.status === 200 && levels.json.levels.length === 5 && levels.json.current === 2);
 

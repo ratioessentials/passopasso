@@ -15,7 +15,7 @@ import { FoodSchema, foodRecap, habitFor, saveFoodProfile, trainingFuel } from '
 import { CalendarError, demoIcs, isDemoIcs, normalizeIcsUrl } from './engine/calendar.js';
 import { coachMessage, connectCalendar, disconnectCalendar } from './engine/coach.js';
 import { onboardingStep } from './engine/onboarding.js';
-import { saveProfile, seedDemo, touchDemo, DEMO_ID } from './engine/seed.js';
+import { isDemo, saveProfile, seedDemo, touchDemo } from './engine/seed.js';
 import { CardPatchSchema, CardSchema, cautionFromHealth, cautionMessage, publicProfile, type Card } from './engine/person.js';
 import {
   allSessions, consistencyAt, createUser, currentHabit, ensureCurrentWeek, getSessionRow, getUser, habitDoneDays, levelInfo, listWins,
@@ -37,10 +37,10 @@ function parse<T>(schema: z.ZodType<T>, body: unknown): T {
 function requireUser(req: FastifyRequest, opts: { profile?: boolean } = { profile: true }): UserRow {
   const id = String(req.headers['x-user-id'] ?? '').trim();
   if (!id) throw fail(401, 'no_user', 'Non so ancora chi sei. Ricominciamo dal benvenuto?');
-  if (id === DEMO_ID) seedDemo();
+  if (isDemo(id)) seedDemo();
   const user = getUser(id);
   if (!user) throw fail(404, 'user_not_found', 'Non ti trovo più. Ricominciamo dal benvenuto?');
-  if (id === DEMO_ID && req.method !== 'GET') touchDemo();
+  if (isDemo(id) && req.method !== 'GET') touchDemo();
   if (opts.profile !== false && !user.profile) throw fail(409, 'no_profile', 'Prima raccontami qualcosa di te: finiamo la chiacchierata iniziale.');
   return user;
 }
@@ -154,7 +154,7 @@ export async function buildServer() {
 
   app.post('/api/onboarding/message', async (req) => {
     const user = requireUser(req, { profile: false });
-    if (user.id === DEMO_ID) throw fail(409, 'demo', 'Il profilo demo è già pronto: crea un nuovo profilo per fare l\'onboarding.');
+    if (isDemo(user.id)) throw fail(409, 'demo', 'Il profilo demo è già pronto: crea un nuovo profilo per fare l\'onboarding.');
     const { messages } = parse(z.object({
       messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(2000) })).min(1).max(40),
     }), req.body);
@@ -172,7 +172,7 @@ export async function buildServer() {
   // La scheda (chi sei + PAR-Q+) prima della conversazione
   app.post('/api/onboarding/profile', async (req) => {
     const user = requireUser(req, { profile: false });
-    if (user.id === DEMO_ID) throw fail(409, 'demo', 'Il profilo demo è già pronto: crea un nuovo profilo per provare la scheda.');
+    if (isDemo(user.id)) throw fail(409, 'demo', 'Il profilo demo è già pronto: crea un nuovo profilo per provare la scheda.');
     const card = parse(CardSchema, req.body);
     const caution = cautionFromHealth(card.health);
     if (user.profile) {
@@ -268,7 +268,7 @@ export async function buildServer() {
 
   app.delete('/api/me', async (req, reply) => {
     const user = requireUser(req, { profile: false });
-    if (user.id === DEMO_ID) seedDemo(true); // il demo non si cancella: torna allo stato iniziale
+    if (isDemo(user.id)) seedDemo(true); // il demo non si cancella: torna allo stato iniziale
     else db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
     return reply.status(204).send();
   });
@@ -303,7 +303,7 @@ export async function buildServer() {
 
   app.get('/api/levels', async (req) => {
     const id = String(req.headers['x-user-id'] ?? '');
-    if (id === DEMO_ID) seedDemo();
+    if (isDemo(id)) seedDemo();
     const user = id ? getUser(id) : undefined;
     const profile = user ? profileOf(user) : null;
     const track = profile?.track ?? 'corsa';
@@ -368,7 +368,7 @@ export async function buildServer() {
   app.get('/api/widget/:userId', async (req, reply) => {
     reply.header('Access-Control-Allow-Origin', '*').header('Cache-Control', 'no-store');
     const id = (req.params as { userId: string }).userId;
-    if (id === DEMO_ID) seedDemo();
+    if (isDemo(id)) seedDemo();
     const user = getUser(id);
     if (!user || !user.profile) throw fail(404, 'user_not_found', 'Profilo non trovato.');
     ensureCurrentWeek(user);

@@ -23,6 +23,8 @@ export function saveProfile(user: UserRow, profile: Profile) {
 // ---------- Utente demo ----------
 
 export const DEMO_ID = 'demo';
+export const RUNNER_ID = 'demo-runner';
+export const isDemo = (id: string) => id === DEMO_ID || id === RUNNER_ID;
 
 const DEMO_PROFILE: Profile = {
   name: 'Giulia',
@@ -85,11 +87,15 @@ export function seedDemo(force = false) {
   const t = today();
   const meta = db.prepare("SELECT value FROM meta WHERE key = 'demo_seed'").get() as { value: string } | undefined;
   const touched = Number((db.prepare("SELECT value FROM meta WHERE key = 'demo_touched'").get() as { value: string } | undefined)?.value ?? 0);
-  const stamp = `${t}|${content.sources()['exercises.json']}|v5`;
+  const stamp = `${t}|${content.sources()['exercises.json']}|v6`;
   const stale = touched > 0 && Date.now() - touched > DEMO_RESET_MS;
-  if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID)) return;
+  if (!force && !stale && meta?.value === stamp && getUser(DEMO_ID) && getUser(RUNNER_ID)) return;
   db.prepare("DELETE FROM meta WHERE key = 'demo_touched'").run();
+  seedGiulia(t, stamp);
+  seedRunner(t);
+}
 
+function seedGiulia(t: string, stamp: string) {
   db.transaction(() => {
     db.prepare('DELETE FROM users WHERE id = ?').run(DEMO_ID);
     const start = addDays(t, -22);
@@ -153,4 +159,62 @@ export function seedDemo(force = false) {
   // la seduta di oggi ha una reason pronta, così la demo parte bene anche prima del check-in
   const todayRow = db.prepare("SELECT id FROM sessions WHERE user_id = ? AND date = ? AND status = 'planned'").get(DEMO_ID, t) as { id: string } | undefined;
   if (todayRow) updateSession(todayRow.id, { reason: 'Se oggi va come le ultime, il livello successivo è a un passo.' });
+}
+
+// ---------- Secondo demo: Luca, che corre già ----------
+
+const RUNNER_PROFILE: Profile = {
+  name: 'Luca',
+  age: 43,
+  sex: 'm',
+  heightCm: 178,
+  weightKg: 72,
+  job: 'seduto',
+  sleepHours: 7,
+  health: { heartCondition: false, chestPain: false, dizziness: false, jointIssue: false, medication: false, pregnancy: false, otherCondition: false, notes: '' },
+  caution: false,
+  medicalOk: null,
+  calendarUrl: null,
+  track: 'corsa',
+  runner: { kmPerWeek: 25, longestRunMin: 50, easyPaceMinKm: 5.8, runGoal: '10 km sotto i 55 minuti' },
+  food: { breakfast: true, veggiesPerDay: 2, sugaryDrinks: 'mai', mealsOut: 4, cooks: 'a_volte' },
+  goal: 'Correre una 10 km sotto i 55 minuti',
+  experience: 'qualche_volta',
+  daysPerWeek: 4,
+  minutesPerSession: 50,
+  equipment: ['tappetino', 'elastico'],
+  limitations: [],
+  preferredTime: 'mattina',
+  startLevel: 4,
+};
+
+/**
+ * Luca: 43 anni, 25 km a settimana, livello 4 del percorso corsa da tre settimane.
+ * Settimana da podista (facile, qualità, forza di supporto, lungo la domenica) con feedback realistici.
+ */
+function seedRunner(t: string) {
+  db.prepare('DELETE FROM users WHERE id = ?').run(RUNNER_ID);
+  const start = addDays(weekStart(t), -14);
+  db.prepare('INSERT INTO users (id, profile, level, intensity, created_at, start_date, level_since) VALUES (?, ?, 4, 1.0, ?, ?, ?)')
+    .run(RUNNER_ID, JSON.stringify(RUNNER_PROFILE), new Date(start).toISOString(), start, start);
+  db.prepare('INSERT INTO level_history (user_id, n, from_date) VALUES (?, 4, ?)').run(RUNNER_ID, start);
+  const feedbacks: Feedback[] = ['giusto', 'duro', 'giusto', 'facile', 'giusto', 'giusto', 'facile', 'giusto', 'giusto', 'giusto', 'facile'];
+  let fi = 0;
+  for (let w = 0; w < 3; w++) {
+    const ws = addDays(start, 7 * w);
+    planWeek(getUser(RUNNER_ID)!, RUNNER_PROFILE, ws, ws);
+    // tutto ciò che è prima di oggi è fatto (una sola seduta saltata, la prima settimana)
+    const rows = db.prepare('SELECT id, date, run_type FROM sessions WHERE user_id = ? AND date >= ? AND date <= ? ORDER BY date').all(RUNNER_ID, ws, addDays(ws, 6)) as { id: string; date: string; run_type: string | null }[];
+    for (const r of rows) {
+      if (r.date >= t) continue;
+      if (w === 0 && r.run_type === null) { updateSession(r.id, { status: 'skipped', skip_reason: 'tempo' }); continue; }
+      updateSession(r.id, { status: 'done', feedback: feedbacks[fi++ % feedbacks.length], done_at: `${r.date}T06:45:00.000Z` });
+      evaluateWins(getUser(RUNNER_ID)!, r.date);
+    }
+  }
+  // abitudine della settimana, con due giorni segnati
+  const habit = currentHabit(getUser(RUNNER_ID)!);
+  for (const d of [addDays(t, -1), addDays(t, -2)].filter((x) => x >= weekStart(t))) {
+    db.prepare('INSERT OR IGNORE INTO habit_checkins (user_id, date, habit_id) VALUES (?, ?, ?)').run(RUNNER_ID, d, habit.id);
+  }
 }

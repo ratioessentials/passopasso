@@ -114,11 +114,18 @@ export function sessionsPerWeek(user: UserRow, profile: Profile) {
 }
 
 /** Pianifica i giorni della settimana a partire da `from` (incluso), senza toccare quelli che hanno già una seduta. */
+/** La forza di supporto della settimana da podista. */
+function supportStrength(user: UserRow, profile: Profile, date: string, pain?: BodyZone[]) {
+  const d = ruleDraft(user, profile, date, { pain });
+  return { ...d, title: 'Forza di supporto', reason: 'Forza per gambe e core: la corsa diventa più solida ed economica.', run_type: 'forza' };
+}
+
 /** La seduta pianificata per una data: settimana da podista (corsa 4-5) o seduta a regole. */
 export function draftFor(user: UserRow, profile: Profile, date: string, opts: { restart?: boolean; pain?: BodyZone[]; type?: string } = {}) {
   if (!opts.restart && runLevel(profile, user.level)) {
     const type = opts.type ?? typeForDate(user, profile, date);
     if (type !== 'forza') return runDraft(user, profile, date, type);
+    return supportStrength(user, profile, date, opts.pain);
   }
   return ruleDraft(user, profile, date, { restart: opts.restart, pain: opts.pain });
 }
@@ -129,7 +136,7 @@ export function planWeek(user: UserRow, profile: Profile, ws: string, from: stri
     const slots = planRunWeek(user, profile, ws, from, busy, { prefer: opts.prefer });
     if (opts.includeFrom && !busy.has(from) && !slots.some((s) => s.date === from)) slots.unshift({ date: from, type: 'facile', draft: runDraft(user, profile, from, 'facile') });
     db.transaction(() => {
-      for (const s of slots) insertSession(user.id, { date: s.date, level: user.level, ...(s.draft ?? ruleDraft(user, profile, s.date, { pain: opts.pain })) });
+      for (const s of slots) insertSession(user.id, { date: s.date, level: user.level, ...(s.draft ?? supportStrength(user, profile, s.date, opts.pain)) });
       db.prepare('INSERT OR IGNORE INTO planned_weeks (user_id, week_start) VALUES (?, ?)').run(user.id, ws);
     })();
     return slots.map((s) => s.date).sort();
