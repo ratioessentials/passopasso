@@ -22,7 +22,8 @@ Il 70% delle persone abbandona un'app fitness entro 100 giorni (JMIR 2024). Chi 
 PassoPasso è una PWA che accompagna il principiante in un percorso di 5 livelli in circa 12 settimane: Attivazione, Fondamenta, Costruzione, Slancio, Autonomia. Dalla camminata allo sprint. Si sale di livello quando sei pronto, non quando lo dice il calendario, e il percorso non si azzera mai. Anche l'icona dell'app cresce con te.
 
 Il piano si adatta grazie a Claude:
-- **Onboarding a conversazione** al posto di un modulo.
+- **La tua scheda:** età, corpo, sonno, lavoro e screening di salute PAR-Q+. Il peso serve solo a tarare il carico, mai come obiettivo.
+- **Onboarding a conversazione:** 4-5 domande in chat al posto di un modulo lungo.
 - **Check-in prima di ogni seduta** (tempo, energia, mappa del corpo): la seduta si rigenera e l'AI spiega perché.
 - **Coach sempre disponibile:** gli scrivi cosa è cambiato e il piano si aggiorna, dicendoti cosa ha cambiato.
 - **Calendario collegato** con un link iCal: le sedute vanno negli spazi liberi.

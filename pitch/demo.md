@@ -27,7 +27,8 @@ I ciak sono separati perché alcune azioni si escludono a vicenda: dopo aver com
 
 | Ciak | Battute | Parti da | Azioni | Cosa deve vedersi |
 |---|---|---|---|---|
-| 1 | B07 | incognito, nuovo utente | Benvenuto → "Inizia" → rispondi da principiante: "Non faccio sport da anni", "20 minuti, 3 volte", "Ho una sedia e un muro", "A volte le ginocchia" | Domande una dopo l'altra (3-4 s a risposta), poi la prima settimana al livello 1 |
+| 1 | B07 | incognito, nuovo utente | Benvenuto → "Inizia" → **La tua scheda**: Chi sei (nome, 34 anni, 168 cm, peso, lavoro seduto, 6,5 h di sonno) → Salute (7 interruttori PAR-Q+, tutti "no") → chat da principiante: "Non faccio sport da anni", "20 minuti, 3 volte", "Ho una sedia e un muro", "A volte le ginocchia" | La frase sul peso ben leggibile; barra di avanzamento; 4-5 domande in chat (3-4 s a risposta), senza richiedere il nome; prima settimana al livello 1 |
+| 1b | (dal vivo) | incognito | Nella scheda Salute, accendi "Ti hanno mai detto che hai un problema al cuore?" | Schermata calma con il messaggio di prudenza: solo camminata e mobilità finché non senti il medico |
 | 2 | B08-B11 | reset, utente demo | Home → "Inizia" → check-in: 15 minuti, energia bassa, ginocchia sulla mappa → "Prepara la mia seduta" → player → completa → "giusto" → accetta il livello 3 | `reason` dell'AI in "Perché questa seduta"; marcia in casa al posto della camminata; omino animato nel player; anello della costanza; proposta del livello 3 (Costruzione); icona nuova |
 | 3 | B12-B13 | stato dopo il ciak 2 (va bene) | Tab Coach → scrivi "Questa settimana lavoro di sera" → poi "Collega il calendario" → incolla il link iCal → "Sì, sposta" | Risposta del coach con i chip verdi (`applied`); spazi liberi; settimana spostata |
 | 4 | B14 | reset, utente demo | Settimana → seduta di oggi → "Oggi non ce la faccio" → motivo "tempo" | "Capita. Riprendiamo da qui, con calma." e la ripartenza con +10 |

@@ -36,7 +36,8 @@ In circa 12 settimane. Si sale per prontezza, non per calendario, e il percorso 
 | <img src="brand/icons/level-5.svg" width="40"> | 5. Autonomia | sprint |
 
 ### Un piano che si adatta
-- **Onboarding a conversazione:** poche domande in chat al posto di un modulo, poi la prima settimana.
+- **La tua scheda:** età, sesso, altezza, peso, lavoro, sonno e le 7 domande di salute del PAR-Q+. Il peso serve solo a tarare il carico: non è mai un obiettivo e l'app non lo mostra più. Con una risposta a rischio, l'app propone solo camminata e mobilità e consiglia di sentire il medico.
+- **Onboarding a conversazione:** dopo la scheda, 4-5 domande in chat (obiettivo, esperienza, tempo, attrezzatura, dolori), poi la prima settimana.
 - **Check-in prima di ogni seduta:** tempo, energia e mappa del corpo per i dolori. La seduta si rigenera e l'AI spiega in una frase perché è cambiata. Con le ginocchia doloranti, per esempio, la camminata lascia il posto alla marcia in casa.
 - **Coach sempre disponibile:** scrivi cosa è cambiato ("questa settimana lavoro di sera") e il piano si aggiorna, con l'elenco di cosa è cambiato davvero.
 - **Calendario:** colleghi il tuo calendario con un link iCal e PassoPasso sposta le sedute negli spazi liberi. Gli eventi non vengono salvati né passati all'AI: solo gli spazi liberi.
@@ -56,11 +57,12 @@ Un'abitudine a settimana, ispirata alle linee guida CREA [9]. Fotografi il piatt
 ## Sicurezza
 PassoPasso non sostituisce il parere di un medico. Per questo l'AI lavora dentro confini stretti:
 
-1. **Bandiere rosse prima dell'AI.** Dolore al petto, svenimento, fiato corto a riposo, palpitazioni e altri 5 sintomi (da PAR-Q+ e ACSM [10]) bloccano la seduta con regole fisse, senza chiamare l'AI. Per i sintomi urgenti l'app indica il 112. Lo stesso controllo, con parole chiave, vale per i messaggi al coach. Un sintomo sconosciuto blocca comunque, per prudenza.
+1. **Screening e bandiere rosse prima dell'AI.** La scheda iniziale contiene le 7 domande del PAR-Q+ [10]. Dolore al petto, svenimento, fiato corto a riposo, palpitazioni e altri 5 sintomi (da PAR-Q+ e ACSM [10]) bloccano la seduta con regole fisse, senza chiamare l'AI. Per i sintomi urgenti l'app indica il 112. Lo stesso controllo, con parole chiave, vale per i messaggi al coach. Un sintomo sconosciuto blocca comunque, per prudenza.
 2. **Catalogo verificato.** Gli esercizi sono scritti a mano in [`content/`](content/), con le fonti in [`content/FONTI.md`](content/FONTI.md) (OMS, ACSM, NHS Couch to 5K). L'AI vede solo gli esercizi già filtrati e risponde con i loro id: quelli sconosciuti vengono scartati.
 3. **Filtri deterministici.** Esercizi sopra il livello, senza l'attrezzatura giusta o che coinvolgono una zona dolorante vengono esclusi; al loro posto c'è la versione più facile, se è sicura.
-4. **Output validato.** Ogni risposta di Claude è JSON validato con zod. Dosaggi riportati nei limiti, riscaldamento e defaticamento sempre presenti. Nel feedback sul cibo, le frasi con numeri, calorie, peso o diete vengono scartate.
-5. **Regole di riserva.** Se l'AI fallisce o supera i 25 secondi, il motore costruisce la seduta a regole. L'app funziona anche con l'AI spenta (`AI_MODE=off`).
+4. **Taratura sulla persona.** Se la scheda sconsiglia gli impatti, niente salti, corsa o scatti (al loro posto camminata veloce o step). Se lo screening PAR-Q+ segnala un rischio, solo camminata, mobilità e respirazione finché non confermi il parere del medico. Con 65 anni o più, o meno di 6 ore di sonno, si parte più piano. Età, sesso e BMI arrivano all'AI solo come contesto per i dosaggi e non compaiono mai nei testi.
+5. **Output validato.** Ogni risposta di Claude è JSON validato con zod. Dosaggi riportati nei limiti, riscaldamento e defaticamento sempre presenti. Nel feedback sul cibo, le frasi con numeri, calorie, peso o diete vengono scartate.
+6. **Regole di riserva.** Se l'AI fallisce o supera i 25 secondi, il motore costruisce la seduta a regole. L'app funziona anche con l'AI spenta (`AI_MODE=off`).
 
 ## Architettura
 

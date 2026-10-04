@@ -54,10 +54,10 @@ Come si usa:
 
 ## Demo
 
-**B07 · 0:55-1:08 · 13 s** — onboarding
-> Si parte con una conversazione, non con un modulo. Poche domande: quanto tempo hai, cosa hai in casa, se qualcosa ti fa male. E l'AI costruisce la prima settimana.
+**B07 · 0:55-1:13 · 18 s** — la scheda e l'onboarding
+> Prima di tutto PassoPasso vuole sapere chi sei: età, corpo, salute, con lo screening PAR-Q+ usato dai professionisti. Il peso serve solo a tarare il carico: non te lo rinfacceremo mai. Poi poche domande in chat, e l'AI costruisce la prima settimana.
 
-*Schermo:* ciak 1. Chat di onboarding accelerata, le risposte rapide toccate, poi la prima settimana.
+*Schermo:* ciak 1. "La tua scheda": Chi sei (età, altezza, peso con la frase "Serve solo per tarare il carico…", lavoro, sonno), poi Salute con gli interruttori PAR-Q+. Poi la chat accelerata e la prima settimana.
 
 **B08 · 1:08-1:20 · 12 s** — check-in
 > Prima di ogni seduta, un check-in. Oggi Giulia ha quindici minuti, poca energia, e le ginocchia che fanno male.
