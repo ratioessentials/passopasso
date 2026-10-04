@@ -26,6 +26,10 @@ node content/validate.mjs
 - **Livello 5**: `readiness` è `null` (ultimo livello).
 - **Ripartenza**: `restartSession` ha un suo `sessionTemplate` (15 minuti), `intensity` 0.8 e `bonusPoints` 10. Usa esercizi del livello attuale preferendo le regressioni.
 - **Bandiere rosse**: controllo deterministico, nessuna chiamata all'AI.
+- **`motion`** (esercizi): archetipo dell'omino animato (elenco in `docs/schema.md`), `null` se nessuno calza → pittogramma fermo. Tutti i 17 archetipi sono usati almeno una volta.
+- **`keywords`** (bandiere rosse, per il coach): espressioni in minuscolo da cercare come **sottostringhe** nel testo dell'utente, dopo averlo messo in minuscolo e con gli apostrofi tipografici (’) normalizzati in '. Sono volutamente specifiche ("fiato corto a riposo", non "fiato corto"; "ho preso una storta", non "gonfio"), così "dopo la corsa ho il fiato corto" o "ho il ginocchio un po' gonfio" non bloccano: vanno all'AI, che aggiorna le `limitations`. `validate.mjs` controlla una lista di frasi innocue che non devono far scattare il blocco.
+- **Calendario**: Apple dà link `webcal://`: conviene accettarli sostituendo lo schema con `https://`.
+- **Testi del Coach e del calendario**: chiavi `coach.*` e `calendar.*` in `copy.json` (segnaposto `{name}`, `{events}`).
 
 ## Tipi di condizione delle vittorie (`wins.json` → `rule`)
 Ogni vittoria ha `condition` (testo per l'utente) e `rule` (per il calcolo). Si assegna una volta sola, quando la regola diventa vera.
