@@ -8,6 +8,7 @@ import { useStore } from '../lib/store'
 import { Button, ErrorBox, Header, Skeleton } from '../ui/kit'
 import { press, spring } from '../ui/motion'
 import { BonusBadge } from './Home'
+import { SkipGate, WhyCard, whyOf } from '../features/why'
 
 const DAYS = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']
 const REASONS: { v: SkipReason; label: string; icon: string }[] = [
@@ -30,10 +31,11 @@ const STATUS: Record<Session['status'], { label: string; dot: string; text: stri
 
 export default function WeekScreen() {
   const nav = useNavigate()
-  const { putSession, loadMe } = useStore()
+  const { putSession, loadMe, me } = useStore()
   const [week, setWeek] = useState<Week | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [skipFor, setSkipFor] = useState<Session | null>(null)
+  const [gateFor, setGateFor] = useState<Session | null>(null)
   const [busy, setBusy] = useState(false)
   const [restart, setRestart] = useState<{ message: string; s: Session; unwell: boolean } | null>(null)
 
@@ -103,6 +105,7 @@ export default function WeekScreen() {
                   </div>
                   <h3 className="font-title mt-1 text-2xl">{restart.s.title}</h3>
                   <p className="mt-1 text-sm text-white/85">{restart.s.minutes} minuti leggeri. {restart.s.reason ?? 'Completala e la costanza sale di più.'}</p>
+                  {whyOf(me) && <WhyCard why={whyOf(me)!} level={me?.level.n} compact className="mt-3" />}
                 </div>
               </motion.div>
             )}
@@ -129,7 +132,7 @@ export default function WeekScreen() {
                   {(canSkip || canStart) && (
                     <div className="mt-3 flex gap-2">
                       {canStart && <Button className="flex-1 py-2.5 text-sm" onClick={() => nav(`/checkin/${s.id}`)}>Inizia</Button>}
-                      {canSkip && <Button variant="light" className="flex-1 py-2.5 text-sm" onClick={() => setSkipFor(s)}>Oggi non ce la faccio</Button>}
+                      {canSkip && <Button variant="light" className="flex-1 py-2.5 text-sm" onClick={() => setGateFor(s)}>Oggi non ce la faccio</Button>}
                     </div>
                   )}
                 </motion.div>
@@ -160,6 +163,7 @@ export default function WeekScreen() {
             </motion.div>
           </motion.div>
         )}
+        {gateFor && <SkipGate key="gate" session={gateFor} onSkip={() => { setSkipFor(gateFor); setGateFor(null) }} onClose={() => setGateFor(null)} />}
       </AnimatePresence>
     </div>
   )

@@ -8,6 +8,7 @@ import { levelInfo, LEVEL_COLORS, TRACK_LABELS } from '../content/copy'
 import { useStore } from '../lib/store'
 import { Button, LevelIcon, MeshBackground } from '../ui/kit'
 import { Minor } from './Minor'
+import { WhyPrompt } from '../features/why'
 import { press, spring } from '../ui/motion'
 
 const GOALS = ['Correre senza fermarmi', 'Sentirmi più forte', 'Meno rigidità e mal di schiena', 'Corro già regolarmente']
@@ -21,6 +22,7 @@ export default function Onboarding() {
   const [messages, setMessages] = useState<ChatMessage[]>([{ role: 'assistant', content: `Piacere${name ? ` ${name}` : ''}! La scheda c'è. Ora dimmi: cosa ti piacerebbe riuscire a fare?` }])
   const [quick, setQuick] = useState<string[]>(GOALS)
   const [minor, setMinor] = useState<string | null>(null)
+  const [askWhy, setAskWhy] = useState(false)
   const [typing, setTyping] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -52,6 +54,7 @@ export default function Onboarding() {
         if (!r.profile) setTimeout(() => setProfile({ startLevel: 1 } as Profile), 1100)
       } else {
         setQuick(r.quickReplies ?? [])
+        setAskWhy(!!r.askWhy)
       }
     } catch (e) {
       setTyping(false)
@@ -107,6 +110,10 @@ export default function Onboarding() {
       </div>
 
       <div className="safe-bottom border-t border-petrolio/10 bg-white/70 px-4 pt-3 backdrop-blur-xl">
+        {askWhy ? (
+          <WhyPrompt name={name} busy={typing} onDone={(w) => { setAskWhy(false); void send(w) }} onSkip={() => { setAskWhy(false); void send('Preferisco non dirlo adesso') }} />
+        ) : (
+        <>
         <div className="mb-3 flex flex-wrap justify-end gap-2">
           <AnimatePresence>
             {quick.map((q, i) => (
@@ -135,6 +142,8 @@ export default function Onboarding() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </motion.button>
         </form>
+        </>
+        )}
       </div>
     </div>
   )

@@ -46,7 +46,7 @@ export interface Level {
 }
 
 export type SessionStatus = 'planned' | 'done' | 'skipped' | 'blocked'
-export type SessionKind = 'normale' | 'ripartenza' | 'importata'
+export type SessionKind = 'normale' | 'ripartenza' | 'importata' | 'ridotta'
 
 export interface Segment {
   label: string
@@ -152,6 +152,7 @@ export interface Profile extends Partial<PersonCard> {
   preferredTime: 'mattina' | 'pausa_pranzo' | 'sera'
   startLevel: number
   calendarUrl?: string | null
+  why?: string | null
   track?: Track
   runner?: { kmPerWeek: number; longestRunMin: number; easyPaceMinKm: number | null; runGoal: string } | null
   food?: FoodProfile | null
@@ -164,6 +165,7 @@ export interface OnboardingReply {
   reply: string
   done: boolean
   minor?: boolean
+  askWhy?: boolean
   quickReplies?: string[]
   profile?: Profile
 }
@@ -196,6 +198,7 @@ export interface CompleteResponse {
   levelUp: LevelUp | null
   message: string
   testRequired?: boolean
+  afterFood?: string
 }
 
 export type SkipReason = 'tempo' | 'stanchezza' | 'malessere' | 'altro'

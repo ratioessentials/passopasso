@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { api } from '../api/client'
 import type { FoodProfile, FoodRecap, FoodToday, Habit, MealFeedback, Plate } from '../api/types'
 import { copy } from '../content/copy'
@@ -24,6 +25,7 @@ async function resize(file: File): Promise<{ b64: string; url: string }> {
 
 export default function Food() {
   const { me, loadMe, toast } = useStore()
+  const nav = useNavigate()
   const [today, setToday] = useState<FoodToday | null>(null)
   const [habit, setHabit] = useState<(Habit & { why?: string }) | null>(null)
   const [days, setDays] = useState(0)
@@ -93,6 +95,7 @@ export default function Food() {
           </Card>
         )}
 
+        <Button variant="light" className="w-full" onClick={() => nav('/cibo/percorso')}>🥗 Il tuo percorso alimentare</Button>
         <PhotoCard />
         <RecapCard onNewQuiz={() => setQuiz(true)} />
       </div>

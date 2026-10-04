@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { NavLink, useLocation } from 'react-router'
 import { press, spring } from './motion'
+import { InboxBadge } from '../features/coach-inbox'
 
 const I = (d: string) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML={{ __html: d }} />
@@ -15,7 +16,7 @@ const TABS = [
 ]
 export const TAB_PATHS = TABS.map((t) => t.to)
 /** Schermate con la tab bar visibile (le tab più le sottopagine) */
-export const TABBAR_PATHS = [...TAB_PATHS, '/progressi']
+export const TABBAR_PATHS = [...TAB_PATHS, '/progressi', '/cibo/percorso']
 
 export function TabBar() {
   const { pathname } = useLocation()
@@ -31,7 +32,7 @@ export function TabBar() {
           return (
             <NavLink key={t.to} to={t.to} className="relative flex-1">
               <motion.div whileTap={press} className={`relative z-10 flex flex-col items-center gap-0.5 py-2 text-[10.5px] font-semibold transition-colors ${on ? 'text-white' : 'text-petrolio/70'}`}>
-                {t.icon}
+                <span className="relative">{t.icon}{t.to === '/coach' && <InboxBadge />}</span>
                 {t.label}
               </motion.div>
               {on && <motion.div layoutId="tab-pill" transition={spring.snappy} className="absolute inset-0 rounded-[22px] bg-gradient-to-b from-petrolio to-acqua shadow-[0_8px_18px_-8px_rgb(44_105_117/.9)]" />}

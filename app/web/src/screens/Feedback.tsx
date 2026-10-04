@@ -8,6 +8,7 @@ import { winIcon } from '../content/copy'
 import { useStore } from '../lib/store'
 import { AnimatedNumber, Button, ConsistencyRing, MeshBackground } from '../ui/kit'
 import { spring } from '../ui/motion'
+import { AfterFoodNote } from '../features/food-path'
 
 const OPTIONS: { v: Feedback; face: string; label: string; hint: string }[] = [
   { v: 'facile', face: '😌', label: 'Facile', hint: 'Potevo fare di più' },
@@ -93,6 +94,7 @@ export default function FeedbackScreen() {
                 </motion.div>
               )}
               <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="font-title mt-6 text-[26px] leading-tight">{result.message}</motion.p>
+              <AfterFoodNote text={result.afterFood} className="mt-5 w-full" />
 
               {result.newWins.length > 0 && (
                 <div className="mt-8 w-full">

@@ -99,7 +99,7 @@ function initialWeek(): Session[] {
 const giulia: Profile = {
   name: 'Giulia', age: 34, sex: 'f', heightCm: 168, weightKg: 74, job: 'seduto', sleepHours: 6.5,
   health: { heartCondition: false, chestPain: false, dizziness: false, jointIssue: true, medication: false, pregnancy: false, otherCondition: false, notes: 'Lieve fastidio al ginocchio destro' },
-  track: 'corsa', runner: null, food: null, caution: false, calendarUrl: null,
+  track: 'corsa', runner: null, food: null, caution: false, calendarUrl: null, why: 'Per giocare con mio figlio senza fiatone',
   goal: 'Riuscire a correre 20 minuti senza fermarmi', experience: 'poca',
   daysPerWeek: 3, minutesPerSession: 25, equipment: ['sedia', 'muro'], limitations: ['ginocchia'],
   preferredTime: 'sera', startLevel: 1,

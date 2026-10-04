@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { CoachInbox } from '../features/coach-inbox'
 import { api, getUserId } from '../api/client'
 import type { CalendarConnectResponse, ChatMessage, RedFlag } from '../api/types'
 import { useStore } from '../lib/store'
@@ -97,6 +98,7 @@ export default function Coach() {
       </div>
 
       <div ref={scroller} className="no-scrollbar flex-1 space-y-2.5 overflow-y-auto px-4 py-5">
+        <CoachInbox />
         {all.map((m, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 14, scale: 0.92 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={spring.bouncy}
             style={{ originX: m.role === 'user' ? 1 : 0, originY: 1 }} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>

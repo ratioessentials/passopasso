@@ -8,6 +8,7 @@ import { levelInfo, LEVEL_COLORS } from '../content/copy'
 import { useStore } from '../lib/store'
 import { Button, LevelIcon } from '../ui/kit'
 import { spring } from '../ui/motion'
+import { WhyCard, whyOf } from '../features/why'
 
 export function LevelUpOverlay() {
   const { me, levelUp, showLevelUp, setMe, loadMe, toast } = useStore()
@@ -75,6 +76,7 @@ export function LevelUpOverlay() {
 }
 
 function Celebrate({ lu, track, onClose }: { lu: LevelUp; track?: string; onClose: () => void }) {
+  const { me } = useStore()
   const [step, setStep] = useState(0) // 0 vecchio, 1 trasformazione, 2 nuovo
   const [a1, a2] = LEVEL_COLORS[lu.from]
   const [b1, b2] = LEVEL_COLORS[lu.to]
@@ -134,6 +136,7 @@ function Celebrate({ lu, track, onClose }: { lu: LevelUp; track?: string; onClos
           ))}
         </span>
       </h1>
+      {whyOf(me) && <WhyCard why={whyOf(me)!} tone="light" label="Ricordi perché?" className="mt-6 w-full" />}
       <motion.p initial={{ opacity: 0, y: 10 }} animate={step >= 2 ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.1 }} className="relative mt-3 text-lg text-white/90">
         Adesso si va di {info.verb.toLowerCase()}. Te lo sei guadagnato, passo dopo passo.
       </motion.p>

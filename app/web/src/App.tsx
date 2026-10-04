@@ -25,6 +25,7 @@ import Science from './screens/Science'
 import HealthDevices from './screens/HealthDevices'
 import Notifications from './screens/Notifications'
 import Plans from './screens/Plans'
+import { FoodPath } from './features/food-path'
 import WidgetGallery from './screens/WidgetGallery'
 
 const MotionLab = lazy(() => import('./features/motion/MotionLab'))
@@ -81,6 +82,7 @@ export function AppRoutes() {
               <Route path="/progressi" element={r(<ProgressScreen />)} />
               <Route path="/cibo" element={r(<Food />)} />
               <Route path="/coach" element={r(<Coach />)} />
+              <Route path="/cibo/percorso" element={r(<FoodPath />)} />
               <Route path="/widget" element={<WidgetGallery />} />
               <Route path="/formcheck" element={FormCheck ? <Suspense fallback={null}><FormCheck /></Suspense> : <Navigate to="/" replace />} />
               <Route path="/motion-lab" element={<Suspense fallback={null}><MotionLab /></Suspense>} />
