@@ -24,7 +24,20 @@ export const copy = {
 
 export type LevelInfo = { n: number; name: string; verb: string }
 export const LEVELS: LevelInfo[] = (levelsJson as { n: number; name: string; verb: string }[]).map(({ n, name, verb }) => ({ n, name, verb }))
-export const levelInfo = (n: number): LevelInfo => LEVELS[Math.min(Math.max(n, 1), 5) - 1]
+export const TRACK_LABELS: Record<string, string> = { corsa: 'Corsa', forza: 'Forza', mobilita: 'Mobilità' }
+
+// Verbi dei livelli per percorso (riserva: la fonte è content/program.json → tracks)
+export const TRACK_VERBS: Record<string, string[]> = {
+  corsa: ['Cammina', 'Passo svelto', 'Corsetta', 'Corsa', 'Sprint'],
+  forza: ['Alzati dalla sedia', 'Corpo libero', 'Più controllo', 'Elastici e manubri', 'Forza piena'],
+  mobilita: ['Sciogli', 'Allunga', 'Stabilizza', 'Controlla', 'Fluidità'],
+}
+
+export const levelInfo = (n: number, track?: string | null): LevelInfo => {
+  const base = LEVELS[Math.min(Math.max(n, 1), 5) - 1]
+  const verb = track ? TRACK_VERBS[track]?.[base.n - 1] : undefined
+  return verb ? { ...base, verb } : base
+}
 
 // Colori di ogni livello (dalle icone del brand): scuro in alto, chiaro in basso
 export const LEVEL_COLORS: Record<number, [string, string]> = {

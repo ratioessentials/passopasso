@@ -17,7 +17,7 @@ export default function Welcome() {
     try {
       const { userId } = await api.createUser()
       setUserId(userId)
-      nav('/onboarding')
+      nav('/scheda')
     } catch (e) {
       toast((e as Error).message, '🌿')
       setBusy(null)

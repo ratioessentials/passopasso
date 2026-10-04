@@ -18,6 +18,7 @@ import Path from './screens/Path'
 import ProgressScreen from './screens/Progress'
 import Food from './screens/Food'
 import Coach from './screens/Coach'
+import Scheda from './screens/Scheda'
 import WidgetGallery from './screens/WidgetGallery'
 
 const MotionLab = lazy(() => import('./features/motion/MotionLab'))
@@ -46,11 +47,9 @@ function Page({ children, k }: { children: ReactNode; k: string }) {
 
 export function AppRoutes() {
   const location = useLocation()
-  const top = '/' + (location.pathname.split('/')[1] ?? '')
-  const showTabs = TABBAR_PATHS.includes(top)
+  const showTabs = TABBAR_PATHS.includes(location.pathname)
   const r = (el: ReactNode) => <RequireUser>{el}</RequireUser>
-  // le schermate della seduta cambiano chiave per id, le tab per sezione
-  const pageKey = ['/seduta', '/checkin', '/feedback'].includes(top) ? location.pathname : top
+  const pageKey = location.pathname
   return (
     <StoreProvider>
       <div className="app-screen bg-salvia-chiaro">
@@ -58,7 +57,9 @@ export function AppRoutes() {
           <Page k={pageKey} key={pageKey}>
             <Routes location={location}>
               <Route path="/benvenuto" element={<Welcome />} />
-              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/scheda" element={r(<Scheda />)} />
+              <Route path="/onboarding" element={r(<Onboarding />)} />
+              <Route path="/coach/scheda" element={r(<Scheda mode="edit" />)} />
               <Route path="/" element={r(<Home />)} />
               <Route path="/checkin/:id" element={r(<Checkin />)} />
               <Route path="/seduta/:id" element={r(<Player />)} />

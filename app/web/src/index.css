@@ -109,3 +109,8 @@
   .shimmer { animation: none; }
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* slider della scheda */
+.pp-range { -webkit-appearance: none; appearance: none; height: 10px; border-radius: 999px; outline: none; }
+.pp-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; border-radius: 999px; background: #fff; border: 3px solid #2C6975; box-shadow: 0 6px 14px -6px rgb(44 105 117 / .8); cursor: pointer; }
+.pp-range::-moz-range-thumb { width: 26px; height: 26px; border-radius: 999px; background: #fff; border: 3px solid #2C6975; cursor: pointer; }

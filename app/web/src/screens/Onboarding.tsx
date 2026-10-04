@@ -1,19 +1,26 @@
 import { AnimatePresence, motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { api } from '../api/client'
 import type { ChatMessage, Profile } from '../api/types'
-import { copy, levelInfo, LEVEL_COLORS } from '../content/copy'
+import { levelInfo, LEVEL_COLORS, TRACK_LABELS } from '../content/copy'
 import { useStore } from '../lib/store'
 import { Button, LevelIcon, MeshBackground } from '../ui/kit'
+import { Minor } from './Minor'
 import { press, spring } from '../ui/motion'
+
+const GOALS = ['Correre senza fermarmi', 'Sentirmi più forte', 'Meno rigidità e mal di schiena', 'Corro già regolarmente']
 
 export default function Onboarding() {
   const nav = useNavigate()
-  const { loadMe } = useStore()
-  const [messages, setMessages] = useState<ChatMessage[]>([{ role: 'assistant', content: copy['onboarding.hello'] }])
-  const [quick, setQuick] = useState<string[]>([])
+  const { me, loadMe } = useStore()
+  const loc = useLocation()
+  const name = (loc.state as { name?: string } | null)?.name ?? me?.profile?.name
+  // la scheda ha già nome e dati fisici: la chat parte dall'obiettivo
+  const [messages, setMessages] = useState<ChatMessage[]>([{ role: 'assistant', content: `Piacere${name ? ` ${name}` : ''}! La scheda c'è. Ora dimmi: cosa ti piacerebbe riuscire a fare?` }])
+  const [quick, setQuick] = useState<string[]>(GOALS)
+  const [minor, setMinor] = useState<string | null>(null)
   const [typing, setTyping] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +45,9 @@ export default function Onboarding() {
       const r = await api.onboardingMessage(next)
       setMessages([...next, { role: 'assistant', content: r.reply }])
       setTyping(false)
-      if (r.done) {
+      if (r.done && r.minor) {
+        setTimeout(() => setMinor(r.reply), 900)
+      } else if (r.done) {
         setTimeout(() => setProfile(r.profile ?? null), 1100)
         if (!r.profile) setTimeout(() => setProfile({ startLevel: 1 } as Profile), 1100)
       } else {
@@ -52,7 +61,8 @@ export default function Onboarding() {
     }
   }
 
-  if (profile) return <LevelReveal level={profile.startLevel || 1} name={profile.name} onGo={async () => { await loadMe(); nav('/', { replace: true }) }} />
+  if (minor) return <Minor message={minor} />
+  if (profile) return <LevelReveal level={profile.startLevel || 1} name={profile.name} track={profile.track} onGo={async () => { await loadMe(); nav('/', { replace: true }) }} />
 
   return (
     <div className="flex h-full flex-col bg-gradient-to-b from-salvia-chiaro to-white">
@@ -60,7 +70,7 @@ export default function Onboarding() {
         <LevelIcon n={1} size={40} />
         <div>
           <div className="font-title text-lg leading-tight text-inchiostro">Il tuo coach</div>
-          <div className="text-xs text-acqua">{typing ? copy['onboarding.typing'] : 'PassoPasso · AI'}</div>
+          <div className="text-xs text-acqua">{typing ? 'sta scrivendo…' : 'PassoPasso · AI'}</div>
         </div>
       </div>
 
@@ -130,8 +140,8 @@ export default function Onboarding() {
   )
 }
 
-function LevelReveal({ level, name, onGo }: { level: number; name?: string; onGo: () => void }) {
-  const info = levelInfo(level)
+function LevelReveal({ level, name, track, onGo }: { level: number; name?: string; track?: string; onGo: () => void }) {
+  const info = levelInfo(level, track)
   const title = `${info.name}`
   useEffect(() => {
     const t = setTimeout(() => {
@@ -154,6 +164,11 @@ function LevelReveal({ level, name, onGo }: { level: number; name?: string; onGo
         {name ? `${name}, si parte dal` : 'Si parte dal'}
       </motion.p>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="font-title relative text-[30px]">livello {level}</motion.div>
+      {track && (
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ ...spring.bouncy, delay: 0.9 }} className="relative mt-2 rounded-full bg-white/90 px-4 py-1.5 text-sm font-bold text-petrolio">
+          Percorso {TRACK_LABELS[track] ?? track} · Livello {level}
+        </motion.div>
+      )}
       <h2 className="font-title relative mt-1 text-[52px] leading-none">
         {title.split('').map((ch, i) => (
           <motion.span key={i} className="inline-block" initial={{ opacity: 0, y: 20, rotate: 8 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ ...spring.bouncy, delay: 1 + i * 0.05 }}>

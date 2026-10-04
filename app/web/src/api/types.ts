@@ -5,7 +5,7 @@ export type BodyZone =
   | 'braccia' | 'polsi' | 'anche' | 'ginocchia' | 'caviglie'
 
 export type Category = 'riscaldamento' | 'cardio' | 'forza' | 'mobilita' | 'defaticamento'
-export type Equipment = 'sedia' | 'muro' | 'tappetino' | 'scalino'
+export type Equipment = 'sedia' | 'muro' | 'tappetino' | 'scalino' | 'elastico' | 'manubri'
 
 export interface Exercise {
   id: string
@@ -20,6 +20,7 @@ export interface Exercise {
   regression: string | null
   progression: string | null
   formCheck: boolean
+  impact?: boolean
   motion?: MotionArchetype | null
 }
 
@@ -45,7 +46,16 @@ export interface Level {
 }
 
 export type SessionStatus = 'planned' | 'done' | 'skipped' | 'blocked'
-export type SessionKind = 'normale' | 'ripartenza'
+export type SessionKind = 'normale' | 'ripartenza' | 'importata'
+
+export interface Segment {
+  label: string
+  minutes: number
+  motion?: MotionArchetype | null
+  rpe?: number
+  repeat?: number
+  recovery?: Segment
+}
 
 export interface SessionItem {
   exerciseId: string
@@ -69,6 +79,8 @@ export interface Session {
   reason?: string
   items: SessionItem[]
   bonusPoints: number
+  segments?: Segment[] | null
+  source?: string | null
 }
 
 export interface Habit {
@@ -94,9 +106,43 @@ export interface Win {
   icon: string
 }
 
-export interface Profile {
+export type Sex = 'f' | 'm' | 'altro' | 'non_dico'
+export type Job = 'seduto' | 'in_piedi' | 'fisico'
+export type Track = 'corsa' | 'forza' | 'mobilita'
+
+export interface HealthScreening {
+  heartCondition: boolean
+  chestPain: boolean
+  dizziness: boolean
+  jointIssue: boolean
+  medication: boolean
+  pregnancy: boolean
+  otherCondition: boolean
+  notes: string
+}
+
+/** La scheda compilata prima della conversazione (chi sei + salute) */
+export interface PersonCard {
   name: string
-  age?: number
+  age: number
+  sex: Sex
+  heightCm: number
+  weightKg: number
+  job: Job
+  sleepHours: number
+  health: HealthScreening
+}
+
+export interface FoodProfile {
+  breakfast: boolean
+  veggiesPerDay: number
+  sugaryDrinks: string
+  mealsOut: number
+  cooks: string
+}
+
+export interface Profile extends Partial<PersonCard> {
+  name: string
   goal: string
   experience: 'nessuna' | 'poca' | 'qualche_volta'
   daysPerWeek: number
@@ -105,6 +151,11 @@ export interface Profile {
   limitations: BodyZone[]
   preferredTime: 'mattina' | 'pausa_pranzo' | 'sera'
   startLevel: number
+  calendarUrl?: string | null
+  track?: Track
+  runner?: { kmPerWeek: number; longestRunMin: number; easyPaceMinKm: number | null; runGoal: string } | null
+  food?: FoodProfile | null
+  caution?: boolean
 }
 
 export interface ChatMessage { role: 'assistant' | 'user'; content: string }
@@ -112,6 +163,7 @@ export interface ChatMessage { role: 'assistant' | 'user'; content: string }
 export interface OnboardingReply {
   reply: string
   done: boolean
+  minor?: boolean
   quickReplies?: string[]
   profile?: Profile
 }
@@ -143,6 +195,7 @@ export interface CompleteResponse {
   newWins: Win[]
   levelUp: LevelUp | null
   message: string
+  testRequired?: boolean
 }
 
 export type SkipReason = 'tempo' | 'stanchezza' | 'malessere' | 'altro'
@@ -163,6 +216,7 @@ export interface MealFeedback {
   suggestion: string
   habitMatch: boolean
   tone: string
+  plate?: Plate | null
 }
 
 export type DayStatus = 'done' | 'skipped' | 'planned' | 'rest'
@@ -190,5 +244,42 @@ export interface CalendarConnectResponse {
   freeSlots: FreeSlot[]
   suggestion: string
 }
+
+export interface ProfileCardResponse { ok: boolean; caution: boolean; cautionMessage: string | null }
+
+export interface FoodToday {
+  habit: Habit | null
+  doneDays: number
+  training: null | { sessionAt: string; before: string; after: string }
+}
+export interface FoodProfileResponse { habit: Habit; why: string }
+export interface Plate { veggies: number; protein: number; grains: number }
+export interface FoodRecap { photos: number; strengths: string[]; gaps: string[]; nextHabit: Habit | null; why: string }
+
+export interface ReadinessTest { id: string; title: string; instructions: string[]; unit: string; target: number }
+export interface LevelTestResult { passed: boolean; message: string; levelUp: LevelUp | null }
+
+export interface ScienceItem { id: string; claim: string; source: string; url: string; inApp: string }
+
+export interface Readiness {
+  score: number
+  level: 'alta' | 'media' | 'bassa' | string
+  signals: string[]
+  suggestion: string
+  suggestedEnergy: number
+  restAdvised: boolean
+}
+export interface HealthSource { id: string; connected: boolean; lastSync?: string | null; comingSoon?: boolean }
+export interface HealthMetrics { steps?: number; restingHr?: number; hrv?: number; sleepMinutes?: number }
+export interface HealthSummary {
+  sources: HealthSource[]
+  today: HealthMetrics | null
+  baseline: HealthMetrics | null
+  readiness: Readiness | null
+  history?: ({ date: string } & HealthMetrics)[]
+}
+
+export interface Plan { id: string; name: string; price?: string; features: string[]; limits?: string[] }
+export interface PlansResponse { plans: Plan[]; promises: string[]; demo: boolean }
 
 export interface ApiErrorBody { error: { code: string; message: string } }

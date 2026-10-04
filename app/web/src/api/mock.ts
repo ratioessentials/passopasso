@@ -1,7 +1,8 @@
 // Backend finto per lavorare senza server (VITE_MOCK=1).
 // Utente "Giulia", livello 2, settimana con una seduta saltata.
 import type {
-  BodyZone, CalendarConnectResponse, Category, ChatMessage, CoachReply, CheckinRequest, CheckinResponse, CompleteResponse, Exercise, Feedback,
+  BodyZone, CalendarConnectResponse, Category, ChatMessage, CoachReply, PersonCard, ProfileCardResponse, FoodProfile,
+  FoodProfileResponse, FoodToday, FoodRecap, ReadinessTest, LevelTestResult, ScienceItem, HealthSummary, PlansResponse, CheckinRequest, CheckinResponse, CompleteResponse, Exercise, Feedback,
   Level, LevelsResponse, MealFeedback, Me, OnboardingReply, Profile, Progress, Session, SessionItem,
   SkipReason, SkipResponse, Week, WidgetData, Win,
 } from './types'
@@ -92,7 +93,10 @@ function initialWeek(): Session[] {
 }
 
 const giulia: Profile = {
-  name: 'Giulia', age: 34, goal: 'Riuscire a correre 20 minuti senza fermarmi', experience: 'poca',
+  name: 'Giulia', age: 34, sex: 'f', heightCm: 168, weightKg: 74, job: 'seduto', sleepHours: 6.5,
+  health: { heartCondition: false, chestPain: false, dizziness: false, jointIssue: true, medication: false, pregnancy: false, otherCondition: false, notes: 'Lieve fastidio al ginocchio destro' },
+  track: 'corsa', runner: null, food: null, caution: false, calendarUrl: null,
+  goal: 'Riuscire a correre 20 minuti senza fermarmi', experience: 'poca',
   daysPerWeek: 3, minutesPerSession: 25, equipment: ['sedia', 'muro'], limitations: ['ginocchia'],
   preferredTime: 'sera', startLevel: 1,
 }
@@ -192,16 +196,25 @@ function regenerate(s: Session, req: CheckinRequest): Session {
   }
 }
 
+// Una seduta a segmenti (percorso corsa, livelli 4-5) per provare il player: /seduta/s_segmenti
+const SEGMENTS_SESSION: Session = {
+  id: 's_segmenti', date: iso(today), status: 'planned', kind: 'normale', level: 4, minutes: 28, intensity: 1, title: 'Ripetute brevi',
+  reason: 'Gambe fresche e buon sonno: oggi un po\' di qualità, con recuperi camminati.', bonusPoints: 0, items: [],
+  segments: [
+    { label: 'Riscaldamento facile', minutes: 8, motion: 'corsetta', rpe: 3 },
+    { label: 'Svelto', minutes: 1, motion: 'corsa', rpe: 7, repeat: 6, recovery: { label: 'Cammina', minutes: 1, motion: 'marcia', rpe: 2 } },
+    { label: 'Defaticamento', minutes: 5, motion: 'marcia', rpe: 2 },
+  ],
+}
+
 function weekResp(): Week { return { weekStart: iso(monday), sessions: clone(state.sessions) } }
 
 let onboardingStep = 0
 const ONBOARDING: { reply: (name: string) => string; quick: string[] }[] = [
-  { reply: (n) => `Piacere ${n}! Quanto ti muovi in una settimana normale?`, quick: ['Quasi mai', 'Cammino un po\'', 'Qualche volta'] },
-  { reply: () => 'Chiaro. C\'è un obiettivo che ti piacerebbe raggiungere?', quick: ['Correre 20 minuti', 'Sentirmi più in forma', 'Fare le scale senza fiatone'] },
-  { reply: () => 'Bellissimo obiettivo. Quanti giorni a settimana puoi dedicarci, senza stress?', quick: ['2 giorni', '3 giorni', '4 giorni'] },
-  { reply: () => 'E quanto tempo per volta?', quick: ['10 minuti', '20 minuti', '30 minuti'] },
-  { reply: () => 'C\'è qualche zona del corpo che ti dà fastidio o che vuoi tenere d\'occhio?', quick: ['Ginocchia', 'Schiena', 'Nessuna'] },
-  { reply: () => 'Ultima cosa: in casa hai una sedia stabile o un muro libero?', quick: ['Sì, entrambi', 'Solo la sedia', 'Niente'] },
+  { reply: () => 'Bellissimo obiettivo. Quanto ti muovi in una settimana normale?', quick: ['Quasi mai', 'Cammino un po\'', 'Qualche volta'] },
+  { reply: () => 'Chiaro. Quanti giorni a settimana puoi dedicarci, e per quanto tempo?', quick: ['3 giorni, 20 minuti', '2 giorni, 30 minuti', '4 giorni, 15 minuti'] },
+  { reply: () => 'C\'è qualche zona del corpo da tenere d\'occhio?', quick: ['Ginocchia', 'Schiena', 'Nessuna'] },
+  { reply: () => 'Ultima cosa: in casa cosa hai? E quando preferisci allenarti?', quick: ['Sedia, la sera', 'Elastico, la mattina', 'Niente, a pranzo'] },
 ]
 
 export const mockApi = {
@@ -209,19 +222,24 @@ export const mockApi = {
   createUser: async () => { await wait(200); return { userId: 'u_mock' + Math.random().toString(36).slice(2, 6) } },
   onboardingMessage: async (messages: ChatMessage[]): Promise<OnboardingReply> => {
     await wait(900)
-    const name = messages.find((m) => m.role === 'user')?.content.split(' ')[0] ?? 'amica'
+    const name = state.profile.name
     onboardingStep = messages.filter((m) => m.role === 'user').length - 1
+    const goal = messages.find((m) => m.role === 'user')?.content.toLowerCase() ?? ''
+    const track = /forte|forza|tono/.test(goal) ? 'forza' as const : /schiena|rigid|postura|mobil/.test(goal) ? 'mobilita' as const : 'corsa' as const
     if (onboardingStep < ONBOARDING.length) {
       const s = ONBOARDING[onboardingStep]
       return { reply: s.reply(name), done: false, quickReplies: s.quick }
     }
-    state.profile = { ...giulia, name }
-    return { reply: `Perfetto ${name}, ho tutto. Partiamo con calma: si parte dal livello 1.`, done: true, profile: { ...giulia, name, startLevel: 1 } }
+    const runner = /corro già/.test(goal)
+    const startLevel = runner ? 4 : 1
+    state.profile = { ...state.profile, track, startLevel }
+    return { reply: `Perfetto ${name}, ho tutto. Si parte dal livello ${startLevel}.`, done: true, profile: { ...state.profile, startLevel, track } }
   },
   me: async (): Promise<Me> => { await wait(350); return clone(me()) },
   week: async (): Promise<Week> => { await wait(300); return weekResp() },
   session: async (id: string): Promise<Session> => {
     await wait(200)
+    if (id === SEGMENTS_SESSION.id) return clone(SEGMENTS_SESSION)
     const s = state.sessions.find((x) => x.id === id)
     if (!s) throw new Error('Seduta non trovata')
     return clone(s)
@@ -327,6 +345,7 @@ export const mockApi = {
   mealPhoto: async (_b64: string, _mime: string): Promise<MealFeedback> => {
     await wait(2600)
     return {
+      plate: { veggies: 0.45, protein: 0.15, grains: 0.4 },
       positives: ['Tanta verdura colorata', 'Porzione equilibrata', 'Cereali integrali: ottima scelta'],
       suggestion: 'Prova ad aggiungere una fonte di proteine, come legumi, uova o pesce.',
       habitMatch: true,
@@ -363,6 +382,104 @@ export const mockApi = {
     }
   },
   calendarDisconnect: async () => { await wait(300); return { ok: true } },
+  profileCard: async (card: PersonCard): Promise<ProfileCardResponse> => {
+    await wait(700)
+    state.profile = { ...state.profile, ...card }
+    const h = card.health
+    const caution = h.heartCondition || h.chestPain || h.dizziness || h.medication || h.pregnancy || h.otherCondition
+    return {
+      ok: true, caution,
+      cautionMessage: caution ? 'Hai segnalato qualcosa che merita un parere del medico prima di iniziare. Nel frattempo ti proponiamo solo camminata e mobilità, con calma.' : null,
+    }
+  },
+  patchProfile: async (patch: Partial<PersonCard>) => {
+    await wait(500)
+    state.profile = { ...state.profile, ...patch }
+    return { profile: clone(state.profile), ok: true, caution: false, cautionMessage: null }
+  },
+  foodProfile: async (food: FoodProfile): Promise<FoodProfileResponse> => {
+    await wait(1500)
+    state.profile = { ...state.profile, food }
+    return food.breakfast
+      ? { habit: { ...habit }, why: 'Fai già colazione: partiamo dalla verdura a pranzo, che oggi è poca.' }
+      : { habit: { id: 'colazione', week: 3, title: 'Una colazione semplice, ogni mattina', why: 'Partire con qualcosa nello stomaco aiuta energia e fame più tranquilla.', tips: ['Yogurt e frutta', 'Pane e un uovo', 'Va bene anche in 3 minuti'] }, why: 'Bevi già abbastanza: partiamo dalla colazione, che salti spesso.' }
+  },
+  foodToday: async (): Promise<FoodToday> => {
+    await wait(300)
+    return { habit: { ...habit }, doneDays: state.habitDays, training: todaySession() ? { sessionAt: '19:00', before: 'Uno spuntino leggero verso le 17: frutta o uno yogurt.', after: 'Cena normale, con una fonte di proteine e un po\' di verdura.' } : null }
+  },
+  foodRecap: async (): Promise<FoodRecap> => {
+    await wait(900)
+    return { photos: 5, strengths: ['Tanta verdura a pranzo', 'Pasti regolari'], gaps: ['Colazioni senza proteine'], nextHabit: { id: 'proteine_colazione', week: 4, title: 'Una fonte di proteine a colazione', why: 'Ti tiene sazia più a lungo e aiuta i muscoli che stai allenando.', tips: ['Yogurt greco', 'Un uovo', 'Ricotta sul pane'] }, why: 'La verdura ormai è un\'abitudine: il prossimo passo è la colazione.' }
+  },
+  levelTests: async (): Promise<ReadinessTest[]> => {
+    await wait(300)
+    return [
+      { id: 'sit_to_stand_30s', title: 'Alzati e siediti per 30 secondi', unit: 'ripetizioni', target: 12, instructions: ['Siediti al centro di una sedia stabile, braccia incrociate sul petto', 'Al via, alzati in piedi del tutto e torna seduta', 'Ripeti più volte che puoi in 30 secondi, senza fretta di sbagliare'] },
+      { id: 'marcia_1min', title: 'Marcia sul posto per 1 minuto', unit: 'sforzo', target: 5, instructions: ['Marcia sul posto alzando bene le ginocchia', 'Tieni un ritmo svelto ma regolare per un minuto', 'Alla fine dimmi quanto è stato faticoso, da 1 a 10'] },
+    ]
+  },
+  levelTest: async (results: Record<string, number | null>): Promise<LevelTestResult> => {
+    await wait(900)
+    const sts = results.sit_to_stand_30s ?? 0
+    const rpe = results.marcia_1min ?? 10
+    const passed = sts >= 12 && rpe <= 6
+    if (!passed) return { passed, message: 'Ci sei quasi. Restiamo ancora un po\' su questo livello e riproviamo tra una settimana.', levelUp: null }
+    state.levelUpOffered = true
+    return { passed, message: 'Test superato: le gambe e il fiato sono pronti.', levelUp: { from: state.level, to: state.level + 1, name: PROGRAM.levels[state.level].name } }
+  },
+  deleteMe: async () => { await wait(600); return null },
+  science: async (): Promise<ScienceItem[]> => {
+    await wait(300)
+    return [
+      { id: 'ripartenza', claim: 'Premiare chi riprende funziona più che premiare chi non salta mai', source: 'Milkman et al., Nature 2021', url: 'https://www.nature.com/articles/s41586-021-04128-4', inApp: 'La seduta di ripartenza con bonus' },
+      { id: 'abitudini', claim: 'Un\'abitudine diventa automatica in circa 66 giorni, non in 21', source: 'Lally et al., 2010', url: 'https://doi.org/10.1002/ejsp.674', inApp: 'Un\'abitudine alimentare alla volta' },
+      { id: 'parq', claim: 'Lo screening PAR-Q+ individua chi deve sentire il medico prima di iniziare', source: 'PAR-Q+ Collaboration', url: 'https://eparmedx.com', inApp: 'La scheda della salute' },
+      { id: 'piatto', claim: 'Metà verdura, un quarto proteine, un quarto cereali: senza contare niente', source: 'Harvard T.H. Chan, Healthy Eating Plate', url: 'https://www.hsph.harvard.edu/nutritionsource/healthy-eating-plate/', inApp: 'Il piatto in tre parti' },
+      { id: 'costanza', claim: 'Una streak che si azzera scoraggia: meglio misurare la costanza nel tempo', source: 'Ricerca sulla motivazione', url: 'https://doi.org/10.1037/a0028216', inApp: 'Il punteggio di costanza' },
+    ]
+  },
+  healthToken: async () => { await wait(200); return { token: 'ht_demo_7f3a9c' } },
+  healthSummary: async (): Promise<HealthSummary> => {
+    await wait(400)
+    const history = [...Array(14)].map((_, i) => ({
+      date: iso(addDays(today, i - 13)),
+      sleepMinutes: i === 13 ? 340 : 390 + Math.round(Math.sin(i * 1.3) * 35),
+      restingHr: i === 13 ? 59 : 54 + Math.round(Math.cos(i * 0.9) * 2),
+      hrv: i === 13 ? 40 : 48 + Math.round(Math.sin(i) * 4),
+      steps: 5200 + Math.round(Math.sin(i * 0.7) * 2400),
+    }))
+    return {
+      sources: [
+        { id: 'apple_health', connected: true, lastSync: new Date().toISOString() },
+        { id: 'strava', connected: false },
+        { id: 'health_connect', connected: false, comingSoon: true },
+        { id: 'garmin', connected: false, comingSoon: true },
+        { id: 'fitbit', connected: false, comingSoon: true },
+        { id: 'oura', connected: false, comingSoon: true },
+      ],
+      today: { steps: 6400, restingHr: 59, hrv: 40, sleepMinutes: 340 },
+      baseline: { restingHr: 55, hrv: 48, sleepMinutes: 405 },
+      readiness: { score: 62, level: 'media', signals: ['Sonno 5h40, meno del solito', 'Battito a riposo +7%'], suggestion: 'Oggi ti propongo una seduta più leggera.', suggestedEnergy: 2, restAdvised: false },
+      history,
+    }
+  },
+  disconnectStrava: async () => { await wait(300); return { ok: true } },
+  pushVapid: async () => { await wait(100); return { publicKey: '' } },
+  pushSubscribe: async (_s: PushSubscriptionJSON, _m?: number) => { await wait(300); return { ok: true } },
+  pushUnsubscribe: async () => { await wait(200); return { ok: true } },
+  pushTest: async () => { await wait(300); return { ok: true } },
+  plans: async (): Promise<PlansResponse> => {
+    await wait(300)
+    return {
+      demo: true,
+      plans: [
+        { id: 'free', name: 'Free', price: 'Gratis, per sempre', features: ['Livelli 1 e 2', 'Check-in e seduta su misura', 'Coach: 5 messaggi a settimana', 'Foto del piatto: 3 a settimana'] },
+        { id: 'plus', name: 'Plus', price: '4,99 € al mese', features: ['Tutti i livelli e i 3 percorsi', 'Coach senza limiti', 'Calendario, salute e wearable', 'Test di prontezza', 'Alimentazione completa'] },
+      ],
+      promises: ['Niente prova che si rinnova a tradimento', 'Cancelli in un tocco, dall\'app', 'Il prezzo lo vedi prima, sempre', 'I tuoi dati restano tuoi anche se smetti'],
+    }
+  },
   redFlags: async () => { await wait(150); return clone(RED_FLAGS) },
   demoReset: async () => { await wait(150); return { ok: true } },
   widget: async (_userId: string): Promise<WidgetData> => {

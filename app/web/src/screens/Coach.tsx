@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { api, getUserId } from '../api/client'
 import type { CalendarConnectResponse, ChatMessage, RedFlag } from '../api/types'
 import { useStore } from '../lib/store'
@@ -35,6 +36,7 @@ export default function Coach() {
   const [input, setInput] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [calOpen, setCalOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const scroller = useRef<HTMLDivElement>(null)
 
   useEffect(() => { saveHistory(messages) }, [messages])
@@ -79,6 +81,9 @@ export default function Coach() {
           <div className="text-xs text-acqua">{typing ? 'sta scrivendo…' : 'Adatta il piano a te'}</div>
         </div>
         <motion.button whileTap={press} onClick={() => setCalOpen(true)} aria-label="Collega il calendario" className="glass grid h-10 w-10 place-items-center rounded-full text-lg">📅</motion.button>
+        <motion.button whileTap={press} onClick={() => setMenuOpen(true)} aria-label="Impostazioni e dati" className="glass grid h-10 w-10 place-items-center rounded-full text-petrolio">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
+        </motion.button>
         {messages.length > 0 && (
           <motion.button whileTap={press} onClick={() => { setMessages([]); setQuick(SUGGESTIONS) }} className="rounded-full px-3 py-1.5 text-xs font-semibold text-petrolio/70">
             Nuova chat
@@ -152,6 +157,7 @@ export default function Coach() {
       </div>
 
       <AnimatePresence>
+        {menuOpen && <CoachMenu key="menu" onClose={() => setMenuOpen(false)} onCalendar={() => { setMenuOpen(false); setCalOpen(true) }} />}
         {calOpen && <CalendarSheet onClose={() => setCalOpen(false)} onMove={() => { setCalOpen(false); void send('Sì, spostale negli spazi liberi') }} />}
       </AnimatePresence>
     </div>
@@ -226,6 +232,38 @@ function CalendarSheet({ onClose, onMove }: { onClose: () => void; onMove: () =>
             </motion.div>
           )}
         </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+export const COACH_MENU: { to: string; icon: string; title: string; sub: string }[] = [
+  { to: '/coach/scheda', icon: '🪪', title: 'La mia scheda', sub: 'Età, corpo, lavoro, sonno e salute' },
+]
+
+function CoachMenu({ onClose, onCalendar }: { onClose: () => void; onCalendar: () => void }) {
+  const nav = useNavigate()
+  return (
+    <motion.div className="fixed inset-0 z-50 flex items-end" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className="absolute inset-0 bg-inchiostro/40 backdrop-blur-sm" onClick={onClose} />
+      <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={spring.gentle}
+        drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.05, bottom: 0.6 }} onDragEnd={(_, i) => { if (i.offset.y > 100) onClose() }}
+        className="safe-bottom relative max-h-[88%] w-full overflow-y-auto rounded-t-[34px] bg-white px-5 pt-3 shadow-[0_-20px_60px_-20px_rgb(18_49_58/.5)]">
+        <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-inchiostro/15" />
+        <div className="space-y-1.5 pb-4">
+          {[...COACH_MENU, { to: '#cal', icon: '📅', title: 'Calendario', sub: 'Le sedute negli spazi liberi' }].map((m, i) => (
+            <motion.button key={m.to} whileTap={press} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.gentle, delay: i * 0.04 }}
+              onClick={() => (m.to === '#cal' ? onCalendar() : (onClose(), nav(m.to)))}
+              className="flex w-full items-center gap-3 rounded-[20px] bg-salvia-chiaro/70 p-3.5 text-left">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-xl">{m.icon}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-inchiostro">{m.title}</span>
+                <span className="block text-xs text-inchiostro/60">{m.sub}</span>
+              </span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C6975" strokeWidth="2.4" strokeLinecap="round"><path d="M9 6l6 6-6 6" /></svg>
+            </motion.button>
+          ))}
+        </div>
       </motion.div>
     </motion.div>
   )

@@ -1,6 +1,8 @@
 import type {
   CalendarConnectResponse, ChatMessage, CheckinRequest, CoachReply, CheckinResponse, CompleteResponse, Feedback, Level, LevelsResponse,
   MealFeedback, Me, OnboardingReply, Progress, RedFlag, Session, SkipReason, SkipResponse, Week, WidgetData,
+  PersonCard, ProfileCardResponse, FoodProfile, FoodProfileResponse, FoodToday, FoodRecap,
+  ReadinessTest, LevelTestResult, ScienceItem, HealthSummary, PlansResponse, Plan, Profile,
 } from './types'
 import { mockApi } from './mock'
 
@@ -57,6 +59,30 @@ function normalizeLevels(raw: unknown): LevelsResponse {
   return { levels: obj.levels ?? [], current: obj.current ?? 1 }
 }
 
+function normalizePlans(raw: unknown): PlansResponse {
+  const o = (raw ?? {}) as { plans?: Plan[]; promises?: string[]; demo?: boolean } | Plan[]
+  if (Array.isArray(o)) return { plans: o, promises: [], demo: true }
+  return { plans: o.plans ?? [], promises: o.promises ?? [], demo: o.demo ?? true }
+}
+
+/** Link diretti (aperti dal browser, non via fetch): il server riconosce l'utente dal parametro u */
+export const directUrl = (path: string) => `/api${path}${path.includes('?') ? '&' : '?'}u=${encodeURIComponent(getUserId() ?? '')}`
+
+/** Scarica un file dall'API con l'header dell'utente (export, week.ics) */
+export async function downloadFile(path: string, filename: string) {
+  const uid = getUserId()
+  const res = await fetch(`/api${path}`, { headers: uid ? { 'X-User-Id': uid } : {} })
+  if (!res.ok) throw new ApiError('http_' + res.status, 'Non riesco a preparare il file. Riprova tra poco.', res.status)
+  const url = URL.createObjectURL(await res.blob())
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 5000)
+}
+
 const realApi = {
   health: () => request<{ ok: boolean; ai: 'sdk' | 'cli' | 'off' }>('GET', '/health'),
   createUser: () => request<{ userId: string }>('POST', '/users'),
@@ -77,6 +103,29 @@ const realApi = {
   calendarDisconnect: () => request<unknown>('DELETE', '/calendar'),
   redFlags: () => request<RedFlag[]>('GET', '/red-flags'),
   demoReset: () => request<unknown>('POST', '/demo/reset'),
+  // terza ondata: la scheda
+  profileCard: (card: PersonCard) => request<ProfileCardResponse>('POST', '/onboarding/profile', card),
+  patchProfile: (patch: Partial<PersonCard>) => request<{ profile?: Profile } & Partial<ProfileCardResponse>>('PATCH', '/me/profile', patch),
+  // quarta ondata
+  foodProfile: (food: FoodProfile) => request<FoodProfileResponse>('POST', '/food/profile', food),
+  foodToday: () => request<FoodToday>('GET', '/food/today'),
+  foodRecap: () => request<FoodRecap>('GET', '/food/recap'),
+  levelTests: async () => {
+    const r = await request<{ tests: ReadinessTest[] } | ReadinessTest[]>('GET', '/level/test')
+    return Array.isArray(r) ? r : r.tests ?? []
+  },
+  levelTest: (results: Record<string, number | null>) => request<LevelTestResult>('POST', '/level/test', { results }),
+  deleteMe: () => request<null>('DELETE', '/me'),
+  science: () => request<ScienceItem[]>('GET', '/science'),
+  // quinta ondata
+  healthToken: () => request<{ token: string }>('GET', '/health/token'),
+  healthSummary: () => request<HealthSummary>('GET', '/health/summary'),
+  disconnectStrava: () => request<unknown>('DELETE', '/connect/strava'),
+  pushVapid: () => request<{ publicKey: string }>('GET', '/push/vapid'),
+  pushSubscribe: (subscription: PushSubscriptionJSON, reminderMinutesBefore = 60) => request<{ ok: boolean }>('POST', '/push/subscribe', { subscription, reminderMinutesBefore }),
+  pushUnsubscribe: () => request<unknown>('DELETE', '/push/subscribe'),
+  pushTest: () => request<{ ok: boolean }>('POST', '/push/test'),
+  plans: async (): Promise<PlansResponse> => normalizePlans(await request<unknown>('GET', '/plans')),
   widget: (userId: string) => request<WidgetData>('GET', `/widget/${encodeURIComponent(userId)}`),
 }
 
