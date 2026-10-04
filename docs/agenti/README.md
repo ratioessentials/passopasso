@@ -14,7 +14,7 @@ La **chat di regia** custodisce il contratto ([api.md](../api.md), [schema.md](.
 ## Regole comuni (valgono per tutte)
 1. Leggi prima `CLAUDE.md`, `docs/api.md` e `docs/schema.md`.
 2. **Modifica solo le tue cartelle.** Se ti serve una modifica altrove o al contratto, fermati e scrivi la richiesta in `docs/agenti/richieste.md` (in fondo, con il numero della tua chat); la chat di regia la gestisce.
-3. Git: committa spesso e in piccolo, **aggiungendo solo i tuoi percorsi** (`git add <tua-cartella>`, mai `git add -A` o `git add .`). Prima di ogni push: `git pull --rebase`, poi `git push`. Messaggi di commit in italiano, preceduti da `[chat-N]`.
+3. Git: committa spesso e in piccolo, **aggiungendo solo i tuoi percorsi** (`git add <tua-cartella>`, mai `git add -A` o `git add .`). Prima di ogni push: `git pull --rebase --autostash`, poi `git push` (senza `--autostash` il pull fallisce per le modifiche non committate delle altre chat, perché la cartella è condivisa). Messaggi di commit in italiano, preceduti da `[chat-N]`.
 4. Non fare `git reset --hard`, `git checkout -- .`, `git stash` o `git clean`: cancelleresti il lavoro delle altre chat.
 5. Niente segreti nel repository (`.env` è già in `.gitignore`).
 6. Tono di ogni testo per l'utente: dai del tu, frasi brevi, mai colpa.
